@@ -1,4 +1,4 @@
-## This is a note for STAT homework
+## This is a note for STAT homework, Spring 2014
 
-1) STAT850 HW2 is due on Thursday
-2) STAT877 HW1 is due on Tuesday
+1. Student: Duy Nguyen
+2. Classes: STAT 850, STAT 877, STAT 710
