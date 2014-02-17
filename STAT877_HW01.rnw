@@ -1,0 +1,21 @@
+\documentclass[10pt]{article}
+\usepackage[hmargin={0.8in, 0.8in}, vmargin={1in, 1in}]{geometry}
+\usepackage{amsmath}
+\usepackage{amsfonts}
+\usepackage{amssymb}
+\usepackage{verbatim}
+\SweaveOpts{strip.white=all,keep.source=TRUE}
+\SweaveOpts{include=TRUE,echo=TRUE,eps=FALSE,pdf=TRUE,width=8}
+
+\newcommand{\code}[1]{\texttt{\small #1}}
+
+\begin{document}
+\SweaveOpts{concordance=TRUE}
+
+\noindent
+\begin{center}
+\textbf{STAT877 - Homework 1: QTL mapping}
+\end{center}
+
+
+\end{document}
