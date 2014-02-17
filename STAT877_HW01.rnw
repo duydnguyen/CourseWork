@@ -17,5 +17,10 @@
 \textbf{STAT877 - Homework 1: QTL mapping}
 \end{center}
 
+\subsection*{Part 1}
+<<load data, echo=FALSE >>=
+library(qtl)
+
+@
 
 \end{document}
