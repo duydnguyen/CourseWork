@@ -13,15 +13,24 @@
 \SweaveOpts{concordance=TRUE}
 
 \noindent
+\begin{flushleft}
+\textbf{Duy Nguyen}\\
+\textbf{02-17-2014}
+\end{flushleft}
 \begin{center}
 \textbf{STAT877 - Homework 1: QTL mapping}
 \end{center}
 
 \subsection*{Part 1: Import the data file}
-<<load data, echo=FALSE >>=
+<<load data, echo=FALSE>>=
 library(qtl)
 setwd("C:/Users/duynguyen/home/Homework/STAT877_Spring2014/")
+data <- read.csv("~/Homework/STAT877_Spring2014/hw1.csv", header=F)
 hw <- read.cross("csv", file="hw1.csv")
+#plot(hw)
+#summary(hw)
 @
+
+\subsection*{Part 2: Perform interval mapping}
 
 \end{document}
