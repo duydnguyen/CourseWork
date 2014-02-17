@@ -15,11 +15,9 @@
 \noindent
 \begin{flushleft}
 \textbf{Duy Nguyen}\\
-\textbf{02-17-2014}
-\end{flushleft}
-\begin{center}
+\textbf{02-17-2014}\\
 \textbf{STAT877 - Homework 1: QTL mapping}
-\end{center}
+\end{flushleft}
 
 \subsection*{Part 1: Import the data file}
 <<load data, echo=FALSE>>=
@@ -30,7 +28,50 @@ hw <- read.cross("csv", file="hw1.csv")
 #plot(hw)
 #summary(hw)
 @
+\begin{center}
+\includegraphics[height=15cm,width=15cm]{part1.png}
+\end{center}
 
 \subsection*{Part 2: Perform interval mapping}
+\subsubsection*{Interval mapping using EM method}
+<<Interval mapping using EM method, echo=TRUE>>=
+#Calculate the conditional genotype probabilities p_ij
+hw <- calc.genoprob(hw, step=1, error.prob=0.001)
+#Interval mapping (EM method)
+out.em <- scanone(hw, method="em")
+#plot the LOD scores
+plot(out.em, ylab="LOD score")
+@
+\subsubsection*{Interval mapping using Haley-Knott method}
+<<Interval mapping using H-K method, echo=TRUE>>=
+out.hk <- scanone(hw, method="hk")
+#plot the LOD scores
+plot(out.hk, ylab="LOD score")
+@
+\begin{figure}[!ht]
+\begin{minipage}[b]{0.4\textwidth}
+\centering
+\includegraphics[height=10cm,width=9cm]{LOD_EM.png}
+\caption{LOD scores by EM interval mapping for our homework data}\label{fig:*1}
+\end{minipage}
+\hfill
+\begin{minipage}[b]{0.4\textwidth}
+\centering
+\includegraphics[height=10cm,width=9cm]{LOD_HK.png}
+\caption{LOD scores by H-K interval mapping for our homework data}\label{fig:*2}
+\end{minipage}
+\end{figure}
+
+\subsubsection*{Permutation tests}
+\begin{itemize}
+\item[(1)] The standard permutation test:
+
+
+\end{itemize}
+
+
+
+
+
 
 \end{document}
