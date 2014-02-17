@@ -1,3 +1,4 @@
+% Remember to change the values of LOD threshold for final submission
 \documentclass[10pt]{article}
 \usepackage[hmargin={0.8in, 0.8in}, vmargin={1in, 1in}]{geometry}
 \usepackage{amsmath}
@@ -21,6 +22,7 @@
 
 \subsection*{Part 1: Import the data file}
 <<load data, echo=FALSE>>=
+set.seed(1)
 library(qtl)
 setwd("C:/Users/duynguyen/home/Homework/STAT877_Spring2014/")
 data <- read.csv("~/Homework/STAT877_Spring2014/hw1.csv", header=F)
@@ -42,36 +44,147 @@ out.em <- scanone(hw, method="em")
 #plot the LOD scores
 plot(out.em, ylab="LOD score")
 @
+See figure \ref{fig:*1} for plot.
 \subsubsection*{Interval mapping using Haley-Knott method}
 <<Interval mapping using H-K method, echo=TRUE>>=
 out.hk <- scanone(hw, method="hk")
 #plot the LOD scores
 plot(out.hk, ylab="LOD score")
 @
+See figure \ref{fig:*2} for plot.
+
+<<Plots EM and H-K together, echo=TRUE>>=
+plot(out.em, out.hk, chr=c(1:6),color=c("blue", "red"), ylab="LOD score")
+@
+See figure \ref{fig:*3} for plot.
+
 \begin{figure}[!ht]
 \begin{minipage}[b]{0.4\textwidth}
 \centering
-\includegraphics[height=10cm,width=9cm]{LOD_EM.png}
+\includegraphics[height=8cm,width=9cm]{LOD_EM.png}
 \caption{LOD scores by EM interval mapping for our homework data}\label{fig:*1}
 \end{minipage}
 \hfill
 \begin{minipage}[b]{0.4\textwidth}
 \centering
-\includegraphics[height=10cm,width=9cm]{LOD_HK.png}
+\includegraphics[height=8cm,width=9cm]{LOD_HK.png}
 \caption{LOD scores by H-K interval mapping for our homework data}\label{fig:*2}
 \end{minipage}
+\hfill
+\begin{minipage}[b]{0.4\textwidth}
+\centering
+\includegraphics[height=8cm,width=9cm]{EM_HK.png}
+\caption{LOD scores by standard interval mapping(black), and the H-K method(blue)}\label{fig:*3}
+\end{minipage}
 \end{figure}
+\noindent
+\textbf{Remark:} Based on the plots of both methods, we see that the region of chromosome $1$ has the largest LOD score. Thus, there is an evidence that chromosome $1$ contains the location of inferred QTL. Further, the LOD scores in H-K methods are larger than those in EM method. 
 
 \subsubsection*{Permutation tests}
 \begin{itemize}
 \item[(1)] The standard permutation test:
+<<standard permutation test, echo=TRUE>>=
+## Use scanone to do the permutation test with n.perm=1000
+operm <- scanone(hw, method="hk", n.perm=1000, verbose=FALSE)
+## We obtain estimated genome-wide LOD thresholds for significance levels 20% and 5%
+summary(operm, alpha=c(0.20, 0.05))
+plot(operm)
+@
 
+\item[(2)] A stratified permutation test:\\
+A selective genotyping strategy was used: only the top 46 and bottom 46 individuals, by
+phenotype, were genotyped. We must first define a vector that indicates the strata. We place $92$ individuals who were genotyped in one group and the other individual in a second group.
+<<Stratified permutation test, echo=TRUE>>=
+nt <- ntyped(hw)
+strat <- as.numeric(nt > 0)
+operm.strata <- scanone(hw, method="hk", n.perm=1000, perm.strat=strat, verbose=FALSE)
+summary(operm.strata, alpha=c(0.20, 0.05))
+plot(operm.strata)
+@
+\begin{figure}[!ht]
+\begin{minipage}[b]{0.4\textwidth}
+\centering
+\includegraphics[height=10cm,width=9cm]{perm.png}
+\caption{Histogram of the genome-wide maximum LOD scores from 1000 permutation replicates. The LOD scores were calculated by H-K regression}\label{fig:*4}
+\end{minipage}
+\hfill
+\begin{minipage}[b]{0.4\textwidth}
+\centering
+\includegraphics[height=10cm,width=9cm]{perm_strata.png}
+\caption{Histogram of the genome-wide maximum LOD scores from 1000 permutation replicates using a stratified permutation test. The LOD scores were calculated by H-K regression}\label{fig:*5}
+\end{minipage}
+\end{figure}
+\noindent
+\textbf{Remark:} From the performed tests, we see a difference in the significant threshold when using the stratified permutation test. The $5\%$ threshold is $5.97$ (versus $2.42$ from the traditional permutation test). 
 
+\item[(3)] 1.5-LOD support intervals for the locations of inferred QTL:\\
+<<1.5-LOD, echo=TRUE>>=
+lodint(out.em, 1, 1.5)
+@
 \end{itemize}
 
+\subsection*{Part 3: How do the results change if you omit the individuals that were not genotyped?}
+<<Data without non-genotyped individuals, echo=TRUE>>=
+hw_sub <- subset(hw, ind=(ntyped(hw) > 0))
+@
 
+\subsubsection*{Interval mapping using EM method}
+<<Interval mapping using EM method, echo=TRUE>>=
+#Calculate the conditional genotype probabilities p_ij
+hw_sub <- calc.genoprob(hw_sub, step=1, error.prob=0.001)
+#Interval mapping (EM method)
+out.em.sub <- scanone(hw_sub, method="em")
+#plot the LOD scores
+plot(out.em.sub, ylab="LOD score")
+@
+\subsubsection*{Interval mapping using Haley-Knott method}
+<<Interval mapping using H-K method, echo=TRUE>>=
+out.hk.sub <- scanone(hw_sub, method="hk")
+#plot the LOD scores
+plot(out.hk.sub, ylab="LOD score")
+@
 
+<<Plots EM and H-K together, echo=TRUE>>=
+plot(out.em.sub, out.hk.sub, chr=c(1:6),color=c("blue", "red"), ylab="LOD score")
+@
 
-
+\begin{figure}[!ht]
+\begin{minipage}[b]{0.4\textwidth}
+\centering
+\includegraphics[height=8cm,width=9cm]{LOD_EM_sub.png}
+\caption{LOD scores by EM interval mapping for our homework data}\label{fig:*6}
+\end{minipage}
+\hfill
+\begin{minipage}[b]{0.4\textwidth}
+\centering
+\includegraphics[height=8cm,width=9cm]{LOD_HK_sub.png}
+\caption{LOD scores by H-K interval mapping for our homework data}\label{fig:*7}
+\end{minipage}
+\hfill
+\begin{minipage}[b]{0.4\textwidth}
+\centering
+\includegraphics[height=8cm,width=9cm]{EM_HK_sub.png}
+\caption{LOD scores by EM method(blue) and H-K method(black)}\label{fig:*8}
+\end{minipage}
+\hfill
+\begin{minipage}[b]{0.4\textwidth}
+\centering
+\includegraphics[height=8cm,width=9cm]{perm_sub.png}
+\caption{Histogram of the genome-wide maximum LOD scores from 1000 permutation replicates. The LOD scores were calculated by H-K regression}\label{fig:*9}
+\end{minipage}
+\end{figure}
+\noindent
+\textbf{Remark:} Based on the plots of both methods, we see that the region of chromosome $1$ has the largest LOD score. Thus, there is an evidence that chromosome $1$ contains the location of inferred QTL. Further, there is a little difference in terms of LOD scores between two methods.
+\subsubsection*{Permutation test}
+The standard permutation test:
+<<standard permutation test, echo=TRUE>>=
+## Use scanone to do the permutation test with n.perm=1000
+operm.sub <- scanone(hw_sub, method="hk", n.perm=1000, verbose=FALSE)
+## We obtain estimated genome-wide LOD thresholds for significance levels 20% and 5%
+summary(operm.sub, alpha=c(0.20, 0.05))
+plot(operm.sub)
+@
+\noindent
+\textbf{Remark:}The $5\%$ threshold is $2.49$ (versus $2.25$ from the standard permutation test with full data). The $20\%$ threshold is $1.78$ (versus $2.69$ from the permutation test with full data). Thus, in terms of the same standard permutation test procedure, we see that there is not a significant difference of genome-wide LOD thresholds between full data and data excluding non-geonotyped. individuals.  
 
 \end{document}
