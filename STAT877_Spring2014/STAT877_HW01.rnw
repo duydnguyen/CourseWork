@@ -115,7 +115,7 @@ plot(operm.strata)
 \end{minipage}
 \end{figure}
 \noindent
-\textbf{Remark:} From the performed tests, we see a difference in the significant threshold when using the stratified permutation test. The $5\%$ threshold is $5.97$ (versus $2.42$ from the traditional permutation test). 
+\textbf{Remark:} From the performed tests, we see a difference in the significant threshold when using the stratified permutation test. The $5\%$ threshold is $6.11$ (versus $2.40$ from the traditional permutation test). 
 
 \item[(3)] 1.5-LOD support intervals for the locations of inferred QTL:\\
 <<1.5-LOD, echo=TRUE>>=
@@ -185,6 +185,6 @@ summary(operm.sub, alpha=c(0.20, 0.05))
 plot(operm.sub)
 @
 \noindent
-\textbf{Remark:}The $5\%$ threshold is $2.49$ (versus $2.25$ from the standard permutation test with full data). The $20\%$ threshold is $1.78$ (versus $2.69$ from the permutation test with full data). Thus, in terms of the same standard permutation test procedure, we see that there is not a significant difference of genome-wide LOD thresholds between full data and data excluding non-geonotyped. individuals.  
+\textbf{Remark:}The $5\%$ threshold is $2.5$ (versus $2.4$ from the standard permutation test with full data). The $20\%$ threshold is $1.8$ (versus $1.71$ from the permutation test with full data). Thus, in terms of the same standard permutation test procedure, we see that there is not a significant difference of genome-wide LOD thresholds between full data and data excluding non-geonotyped. individuals.  
 
 \end{document}
