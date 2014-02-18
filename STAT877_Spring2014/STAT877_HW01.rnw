@@ -84,8 +84,9 @@ See figure \ref{fig:*3} for plot.
 
 \subsubsection*{Permutation tests}
 \begin{itemize}
-\item[(1)] The standard permutation test:
-<<standard permutation test, echo=TRUE>>=
+\item[(1)] The standard permutation test:\\
+\textbf{Standard permutation test using H-K method}
+<<standard permutation test H-K method, echo=TRUE>>=
 ## Use scanone to do the permutation test with n.perm=1000
 operm <- scanone(hw, method="hk", n.perm=1000, verbose=FALSE)
 ## We obtain estimated genome-wide LOD thresholds for significance levels 20% and 5%
@@ -93,13 +94,33 @@ summary(operm, alpha=c(0.20, 0.05))
 plot(operm)
 ## Significance of identified QTLs,
 summary(out.hk,perms=operm, alpha=0.1, pvalues=TRUE)
+@
+
+\textbf{Standard permutation test using EM method}
+<<standard permutation test EM method, echo=FALSE>>=
+#operm.em <- scanone(hw, method="em", n.perm=1000, verbose=FALSE)
+## We obtain estimated genome-wide LOD thresholds for significance levels 20% and 5%
+#summary(operm.em, alpha=c(0.20, 0.05))
+## Significance of identified QTLs,
+#summary(out.em,perms=operm.em, alpha=0.1, pvalues=TRUE)
 
 @
+\begin{verbatim}
+LOD thresholds (1000 permutations)
+     lod
+20% 1.81
+5%  2.56
+         chr pos  lod pval
+c1.loc61   1  61 10.1    0
+\end{verbatim}
+
 
 \item[(2)] A stratified permutation test:\\
 A selective genotyping strategy was used: only the top 46 and bottom 46 individuals, by
-phenotype, were genotyped. We must first define a vector that indicates the strata. We place $92$ individuals who were genotyped in one group and the other individual in a second group.
-<<Stratified permutation test, echo=TRUE>>=
+phenotype, were genotyped. We must first define a vector that indicates the strata. We place $92$ individuals who were genotyped in one group and the other individual in a second group.\\
+\textbf{A stratified permutation test using H-K method}
+
+<<Stratified permutation test H-K method, echo=TRUE>>=
 nt <- ntyped(hw)
 strat <- as.numeric(nt > 0)
 operm.strata <- scanone(hw, method="hk", n.perm=1000, perm.strat=strat, verbose=FALSE)
@@ -108,6 +129,24 @@ plot(operm.strata)
 ## Significance of identified QTL 
 summary(out.hk,perms=operm.strata, alpha=0.1, pvalues=TRUE)
 @
+
+\textbf{A stratified permutation test using EM method}
+<<Stratified permutation test H-K method, echo=FALSE>>=
+#operm.strata.em <- scanone(hw, method="em", n.perm=1000, perm.strat=strat, verbose=FALSE)
+#summary(operm.strata.em, alpha=c(0.20, 0.05))
+## Significance of identified QTL 
+#summary(out.em,perms=operm.strata.em, alpha=0.1, pvalues=TRUE)
+@
+\begin{verbatim}
+LOD thresholds (1000 permutations)
+     lod
+20% 1.75
+5%  2.27
+Significance of identified QTL
+         chr pos  lod pval
+c1.loc61   1  61 10.1    0
+\end{verbatim}
+
 \begin{figure}[!ht]
 \begin{minipage}[b]{0.4\textwidth}
 \centering
@@ -207,6 +246,31 @@ lodint(out.hk.sub, 1, drop=1.5)
 \textbf{Remark:}The $5\%$ threshold is $2.5$ (versus $2.4$ from the standard permutation test with full data). The $20\%$ threshold is $1.85$ (versus $1.72$ from the permutation test with full data). Thus, in terms of the same standard permutation test procedure, we see that there is not a significant difference of genome-wide LOD thresholds between full data and data excluding non-geonotyped individuals. Further, there is no significant difference in LOD scores between EM and HK methods. In this analysis using H-K method, only chromosome $1$ is significant under $\alpha=0.1.$ Previously, with the full data, the H-K method selected chromosomes $1,2,4,5$ as signigicant. 
 
 \subsection*{Part 4: What do you conclude, regarding the behavior of standard interval mapping vs Haley-Knott regression in the presence of selective genotyping, and regarding the use of an unstratified vs stratified permutation test?}
+\newpage
+\begin{tabular}{| l | l | l |}
+\hline
+&EM method&H-K method\\ 
+\hline
+Full data&LOD scores are considerately &LOD scores are considerately \\
+&different than those in H-K&different than those in EM\\
+\hline
+Selective genotyping&LOD scores are approximately&LOD scores are approximately\\
+&the same as H-K method&the same as EM method\\
+\hline 
+Unstratified permutation&EM significant QTLs: chromosome $1$&H-K significant QTLs: chromosomes $1,2,4,5$\\
+&LOD thresholds are almost the same&LOD thresholds are significantly different\\
+&as those in stratified&than those in stratified\\
+\hline 
+Stratified permutation&EM significant QTLs: chromosome $1$&H-K significant QTL: chromosome $1$\\
+&LOD thresholds are almost the same&LOD thresholds are significantly different\\
+&as those in unstratified&than those in unstratified\\
+\hline
+\end{tabular}
+\textbf{Conclusions:}
+\begin{itemize}
+\item In H-K method, the treatment of missing genotype information is less than ideal. Thus, its approximation of standard (EM) interval mapping can be poor in regions of low genotype information. Such cases are widely spaced or incompletely genotyped markers as in our homework dataset. 
+\item In addition, H-K performance is extremely poor in the case of selective genotyping. 
+\end{itemize}
 
 
 \end{document}
