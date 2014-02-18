@@ -1,4 +1,6 @@
 % Remember to change the values of LOD threshold for final submission
+% perform permutations using EM (all gives 1 chromosome)
+% Part 3: put more parts as part 2. Only chromosome 1 significant
 \documentclass[10pt]{article}
 \usepackage[hmargin={0.8in, 0.8in}, vmargin={1in, 1in}]{geometry}
 \usepackage{amsmath}
@@ -54,7 +56,7 @@ plot(out.hk, ylab="LOD score")
 See figure \ref{fig:*2} for plot.
 
 <<Plots EM and H-K together, echo=TRUE>>=
-plot(out.em, out.hk, chr=c(1:6),color=c("blue", "red"), ylab="LOD score")
+plot(out.em, out.hk, chr=c(1:6),col=c("blue", "red"), ylab="LOD score")
 @
 See figure \ref{fig:*3} for plot.
 
@@ -89,6 +91,9 @@ operm <- scanone(hw, method="hk", n.perm=1000, verbose=FALSE)
 ## We obtain estimated genome-wide LOD thresholds for significance levels 20% and 5%
 summary(operm, alpha=c(0.20, 0.05))
 plot(operm)
+##Print p-value
+summary(out.hk,perms=operm, alpha=0.1, pvalues=TRUE)
+
 @
 
 \item[(2)] A stratified permutation test:\\
@@ -100,6 +105,7 @@ strat <- as.numeric(nt > 0)
 operm.strata <- scanone(hw, method="hk", n.perm=1000, perm.strat=strat, verbose=FALSE)
 summary(operm.strata, alpha=c(0.20, 0.05))
 plot(operm.strata)
+summary(out.hk,perms=operm.strata, alpha=0.1, pvalues=TRUE)
 @
 \begin{figure}[!ht]
 \begin{minipage}[b]{0.4\textwidth}
@@ -119,7 +125,14 @@ plot(operm.strata)
 
 \item[(3)] 1.5-LOD support intervals for the locations of inferred QTL:\\
 <<1.5-LOD, echo=TRUE>>=
-lodint(out.em, 1, 1.5)
+#For EM method: Chromosome 1
+lodint(out.em, 1, drop=1.5)
+#For H-K method: Chromosome 1, 2, 4, 5
+lodint(out.hk, 1, drop=1.5)
+lodint(out.hk, 2, drop=1.5)
+lodint(out.hk, 4, drop=1.5)
+lodint(out.hk, 5, drop=1.5)
+
 @
 \end{itemize}
 
@@ -145,7 +158,7 @@ plot(out.hk.sub, ylab="LOD score")
 @
 
 <<Plots EM and H-K together, echo=TRUE>>=
-plot(out.em.sub, out.hk.sub, chr=c(1:6),color=c("blue", "red"), ylab="LOD score")
+plot(out.em.sub, out.hk.sub, chr=c(1:6),col=c("blue", "red"), ylab="LOD score")
 @
 
 \begin{figure}[!ht]
@@ -185,6 +198,9 @@ summary(operm.sub, alpha=c(0.20, 0.05))
 plot(operm.sub)
 @
 \noindent
-\textbf{Remark:}The $5\%$ threshold is $2.5$ (versus $2.4$ from the standard permutation test with full data). The $20\%$ threshold is $1.8$ (versus $1.71$ from the permutation test with full data). Thus, in terms of the same standard permutation test procedure, we see that there is not a significant difference of genome-wide LOD thresholds between full data and data excluding non-geonotyped. individuals.  
+\textbf{Remark:}The $5\%$ threshold is $2.5$ (versus $2.4$ from the standard permutation test with full data). The $20\%$ threshold is $1.8$ (versus $1.71$ from the permutation test with full data). Thus, in terms of the same standard permutation test procedure, we see that there is not a significant difference of genome-wide LOD thresholds between full data and data excluding non-geonotyped individuals. Further, there is no significant difference in LOD scores between EM and HK methods.
+
+\subsection*{Part 4}
+
 
 \end{document}
