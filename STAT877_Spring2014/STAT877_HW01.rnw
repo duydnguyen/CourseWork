@@ -1,6 +1,6 @@
-% Remember to change the values of LOD threshold for final submission
-% perform permutations using EM (all gives 1 chromosome)
-% Part 3: put more parts as part 2. Only chromosome 1 significant
+% perform permutations using EM (all gives 1 chromosome). DONE
+% Part 3: put more parts as part 2. Only chromosome 1 significant. DONE
+% NEED to perform EM method for permutation test
 \documentclass[10pt]{article}
 \usepackage[hmargin={0.8in, 0.8in}, vmargin={1in, 1in}]{geometry}
 \usepackage{amsmath}
@@ -40,7 +40,7 @@ hw <- read.cross("csv", file="hw1.csv")
 \subsubsection*{Interval mapping using EM method}
 <<Interval mapping using EM method, echo=TRUE>>=
 #Calculate the conditional genotype probabilities p_ij
-hw <- calc.genoprob(hw, step=1, error.prob=0.001)
+hw <- calc.genoprob(hw, step=1)
 #Interval mapping (EM method)
 out.em <- scanone(hw, method="em")
 #plot the LOD scores
@@ -80,7 +80,7 @@ See figure \ref{fig:*3} for plot.
 \end{minipage}
 \end{figure}
 \noindent
-\textbf{Remark:} Based on the plots of both methods, we see that the region of chromosome $1$ has the largest LOD score. Thus, there is an evidence that chromosome $1$ contains the location of inferred QTL. Further, the LOD scores in H-K methods are larger than those in EM method. 
+\textbf{Remark:} Based on the plots of both methods, we see that the region of chromosome $1$ has the largest LOD score. Thus, there is an evidence that chromosome $1$ contains the location of inferred QTL. We will perform permutation tests to confirm this. Further, the LOD scores in H-K methods are larger than those in EM method. 
 
 \subsubsection*{Permutation tests}
 \begin{itemize}
@@ -91,7 +91,7 @@ operm <- scanone(hw, method="hk", n.perm=1000, verbose=FALSE)
 ## We obtain estimated genome-wide LOD thresholds for significance levels 20% and 5%
 summary(operm, alpha=c(0.20, 0.05))
 plot(operm)
-##Print p-value
+## Significance of identified QTLs,
 summary(out.hk,perms=operm, alpha=0.1, pvalues=TRUE)
 
 @
@@ -105,6 +105,7 @@ strat <- as.numeric(nt > 0)
 operm.strata <- scanone(hw, method="hk", n.perm=1000, perm.strat=strat, verbose=FALSE)
 summary(operm.strata, alpha=c(0.20, 0.05))
 plot(operm.strata)
+## Significance of identified QTL 
 summary(out.hk,perms=operm.strata, alpha=0.1, pvalues=TRUE)
 @
 \begin{figure}[!ht]
@@ -121,7 +122,7 @@ summary(out.hk,perms=operm.strata, alpha=0.1, pvalues=TRUE)
 \end{minipage}
 \end{figure}
 \noindent
-\textbf{Remark:} From the performed tests, we see a difference in the significant threshold when using the stratified permutation test. The $5\%$ threshold is $6.11$ (versus $2.40$ from the traditional permutation test). 
+\textbf{Remark:} From the performed tests, we see a difference in the significant threshold when using the stratified permutation test. The $5\%$ threshold is $6.12$ (versus $2.40$ from the traditional permutation test). In a stratified permutation test, chromosome $1$ is significant under $\alpha=0.1$ under H-K method. While in the standard permutation test, chromosomes $1,2,4,5$ are significant under the same method.  
 
 \item[(3)] 1.5-LOD support intervals for the locations of inferred QTL:\\
 <<1.5-LOD, echo=TRUE>>=
@@ -138,13 +139,14 @@ lodint(out.hk, 5, drop=1.5)
 
 \subsection*{Part 3: How do the results change if you omit the individuals that were not genotyped?}
 <<Data without non-genotyped individuals, echo=TRUE>>=
+# Data without non-genotyped individuals
 hw_sub <- subset(hw, ind=(ntyped(hw) > 0))
 @
 
 \subsubsection*{Interval mapping using EM method}
 <<Interval mapping using EM method, echo=TRUE>>=
 #Calculate the conditional genotype probabilities p_ij
-hw_sub <- calc.genoprob(hw_sub, step=1, error.prob=0.001)
+hw_sub <- calc.genoprob(hw_sub, step=1)
 #Interval mapping (EM method)
 out.em.sub <- scanone(hw_sub, method="em")
 #plot the LOD scores
@@ -191,16 +193,20 @@ plot(out.em.sub, out.hk.sub, chr=c(1:6),col=c("blue", "red"), ylab="LOD score")
 \subsubsection*{Permutation test}
 The standard permutation test:
 <<standard permutation test, echo=TRUE>>=
-## Use scanone to do the permutation test with n.perm=1000
+# Use scanone to do the permutation test with n.perm=1000
 operm.sub <- scanone(hw_sub, method="hk", n.perm=1000, verbose=FALSE)
-## We obtain estimated genome-wide LOD thresholds for significance levels 20% and 5%
+# We obtain estimated genome-wide LOD thresholds for significance levels 20% and 5%
 summary(operm.sub, alpha=c(0.20, 0.05))
 plot(operm.sub)
+# Significance of identified QTLs
+summary(out.hk.sub, perms=operm.sub, alpha=0.1, pvalues=TRUE)
+# 1.5-LOD support intervals for the locations of inferred QTL
+lodint(out.hk.sub, 1, drop=1.5)
 @
 \noindent
-\textbf{Remark:}The $5\%$ threshold is $2.5$ (versus $2.4$ from the standard permutation test with full data). The $20\%$ threshold is $1.8$ (versus $1.71$ from the permutation test with full data). Thus, in terms of the same standard permutation test procedure, we see that there is not a significant difference of genome-wide LOD thresholds between full data and data excluding non-geonotyped individuals. Further, there is no significant difference in LOD scores between EM and HK methods.
+\textbf{Remark:}The $5\%$ threshold is $2.5$ (versus $2.4$ from the standard permutation test with full data). The $20\%$ threshold is $1.85$ (versus $1.72$ from the permutation test with full data). Thus, in terms of the same standard permutation test procedure, we see that there is not a significant difference of genome-wide LOD thresholds between full data and data excluding non-geonotyped individuals. Further, there is no significant difference in LOD scores between EM and HK methods. In this analysis using H-K method, only chromosome $1$ is significant under $\alpha=0.1.$ Previously, with the full data, the H-K method selected chromosomes $1,2,4,5$ as signigicant. 
 
-\subsection*{Part 4}
+\subsection*{Part 4: What do you conclude, regarding the behavior of standard interval mapping vs Haley-Knott regression in the presence of selective genotyping, and regarding the use of an unstratified vs stratified permutation test?}
 
 
 \end{document}
