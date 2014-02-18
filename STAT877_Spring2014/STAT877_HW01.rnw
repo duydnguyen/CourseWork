@@ -251,11 +251,11 @@ lodint(out.hk.sub, 1, drop=1.5)
 \hline
 &EM method&H-K method\\ 
 \hline
-Full data&LOD scores are considerately &LOD scores are considerately \\
-&different than those in H-K&different than those in EM\\
+Full data&LOD scores are considerately &LOD scores are inflated \\
+&smaller than those in H-K&compared to those in EM\\
 \hline
-Selective genotyping&LOD scores are approximately&LOD scores are approximately\\
-&the same as H-K method&the same as EM method\\
+Selective genotyping&LOD scores are approximately&LOD scores are significantly\\
+&the same as EM method in full data&different than those in H-K method in full data.\\
 \hline 
 Unstratified permutation&EM significant QTLs: chromosome $1$&H-K significant QTLs: chromosomes $1,2,4,5$\\
 &LOD thresholds are almost the same&LOD thresholds are significantly different\\
@@ -266,10 +266,13 @@ Stratified permutation&EM significant QTLs: chromosome $1$&H-K significant QTL: 
 &as those in unstratified&than those in unstratified\\
 \hline
 \end{tabular}
+\\
 \textbf{Conclusions:}
 \begin{itemize}
-\item In H-K method, the treatment of missing genotype information is less than ideal. Thus, its approximation of standard (EM) interval mapping can be poor in regions of low genotype information. Such cases are widely spaced or incompletely genotyped markers as in our homework dataset. 
-\item In addition, H-K performance is extremely poor in the case of selective genotyping. 
+\item In H-K method, the treatment of missing genotype information is less than ideal. As we can see in our LOD scores which are inflated in H-K method. Thus, its approximation of standard (EM) interval mapping can be poor in regions of low genotype information. Such cases are widely spaced or incompletely genotyped markers as in our homework dataset. 
+\item In addition, H-K performance is extremely poor in the case of selective genotyping. For instance, in EM method, when moving from full data to selective genotyping, LOD scores do not vary much. In constrast, LODs scores vary significantly in H-K method. 
+\item Moving from stratifed to unstratified permutation tests, EM method selects the same chromosome $1$ for QTL, while H-K method moved from selecting chromosomes $1,2,4,5$ in unstratified test to chromosome $1$ in stratified one. 
+\item In stratified permutation test, both methods give the same QTL. In unstratified one, H-K gives additional chromosomes $2,4,5$ for QTL.
 \end{itemize}
 
 
