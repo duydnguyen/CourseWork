@@ -2,10 +2,8 @@ rm(list=ls(all.names=TRUE))
 rm(list=objects(all.names=TRUE))
 #dev.off()
 
-#### This is HW? ####
-
 #### Initialize Header File ####
-FilePath <- '~/github/STAT850_Spring2014/'
+FilePath <- '~/github/STAT877_Spring2014/qtlproject'
 Filename.Header <- paste('~/RScripts/HeaderFile_HW.R', sep='')
 source(Filename.Header)
 source(paste(FilePath, 'fn_Library.R', sep=''))
@@ -15,4 +13,7 @@ source(paste(FilePath, 'fn_Library.R', sep=''))
 setwd(FilePath)
 Filename <- 'hw.dat'
 Data <- read.table(file=Filename, header=FALSE)
+
+################# Marker Regression #########
+
 
