@@ -1,0 +1,43 @@
+\documentclass[11pt]{article}
+\usepackage[hmargin={0.8in, 0.8in}, vmargin={1in, 1in}]{geometry}
+\usepackage{amsmath}
+\usepackage{amsfonts}
+\usepackage{amssymb}
+\usepackage{verbatim}
+\usepackage{amsmath}                                                                                                                                                                                
+\usepackage{amsthm}                                                                                                                                                                                 
+\SweaveOpts{strip.white=all,keep.source=TRUE}
+\SweaveOpts{include=TRUE,eps=FALSE,pdf=TRUE,width=8}
+\begin{document}
+\SweaveOpts{concordance=TRUE}
+
+\noindent
+\begin{flushleft}
+\textbf{STAT 850 - Homework 3}\\
+\textbf{Duy Nguyen}\\
+\textbf{03-12-2014}
+\end{flushleft}
+
+\subsection*{Question 1: Complete 4f, 4g, 4h from Homework 2}
+
+<<Question 1, echo=FALSE, results=hide>>=
+Trough_00gm <- c(6.7, 7.8, 5.5, 8.4, 7.0, 7.8, 8.6, 7.4, 5.8, 7.0)
+Trough_05gm <- c(9.9, 8.4, 10.4, 9.3, 10.7, 11.9, 7.1, 6.4, 8.6, 10.6)
+Trough_10gm <- c(10.4, 8.1, 10.6, 8.7, 10.7, 9.1, 8.8, 8.1, 7.8, 8.0)
+Trough_15gm <- c(9.3, 9.3, 7.2, 7.8, 9.3, 10.2, 8.7, 8.6, 9.3, 7.2)
+
+Data <- stack(as.data.frame(cbind(Trough_00gm, Trough_05gm, Trough_10gm, Trough_15gm)))
+names(Data) <- c('Hemoglobin', 'Trough')
+Data <- within(data=Data,{
+  Trough <- factor(Trough)
+})
+levels(Data$Trough) <- c('0 gm', '5 gm', '10 gm', '15 gm')
+
+@
+
+\end{document}
+
+
+
+
+
