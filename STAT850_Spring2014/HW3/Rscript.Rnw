@@ -210,6 +210,73 @@ Output
 @
 
 \subsection*{Question 5}
+\begin{figure}[!ht]
+\centering
+\includegraphics[height=9cm,width=9cm]{5-1.png}
+\caption{}\label{fig:}
+\end{figure}
+\begin{figure}[!ht]
+\centering
+\includegraphics[height=9cm,width=9cm]{5-2.png}
+\caption{}\label{fig:}
+\end{figure}
+
+As can be seen in the histogram above, the response variable has a lot of zeroes. From the boxplots, it seems that the variances between treatments are unequal. Thus, homogeneity of variance assumption is violated.  Below is a boxplot of the responses, after square-root transformation. It looks a bit better in terms of equal variance.
+However, treatments 0 and 8 seem to exhibit higher variances.
+\begin{figure}[!ht]
+\centering
+\includegraphics[height=9cm,width=9cm]{5-3.png}
+\caption{}\label{fig:}
+\end{figure}
+
+
+
+\begin{figure}[!ht]
+\centering
+\includegraphics[height=9cm,width=9cm]{5-4.png}
+\caption{Boxplot after removing zeroes}\label{fig:}
+\end{figure}
+
+Below are the means and standard deviations:
+\\
+\begin{tabular}{c c c }               % centered columns (17 columns) 
+\hline\hline                            %inserts double horizontal lines 
+%Case & Method\#1 & Method\#2 & Method\#3 \\ [0.5ex] % inserts table 
+%heading 
+Treatment & Mean & Std. Dev \\
+0 & 1.0000 & NA \\
+1 & 3.0673 & 0.9001 \\
+2 & 1.4500 & 0.5262 \\
+3 & 2.0893 & 1.5145 \\
+4 & 1.6980 & 0.6993 \\
+5 & 2.0206 & 0.8504 \\
+6 & 2.0200 & 0.3870 \\
+7 & 1.2866 & 0.3554 \\
+8 & 3.5079 & 1.1225 \\
+9 & 2.0987 & 0.6272 \\
+10 & 2.4004 & 0.9041 \\
+20 & 1.5486 & 0.9502 \\[1ex]             % [1ex] adds vertical space 
+\hline                                  %inserts single line 
+\end{tabular} \\
+
+Below is the resulf of the overall F-Test, testing the difference between treatments:
+\begin{verbatim}
+            Df Sum Sq Mean Sq F value Pr(>F)  
+Treatment   11  21.91  1.9917   2.627 0.0138 *
+Residuals   37  28.05  0.7581                 
+---
+\end{verbatim}
+
+An excess of zeroes will tend to produce biased estimates. Discarding the zeroes is not 
+the best approach. More information should be acquired regarding those data points. A decision should be made regarding their methods of data collection.
+
+\begin{itemize}
+\item[(a)]
+\end{itemize}
+
+
+
+
 
 \subsection*{Question 6}
 
@@ -241,9 +308,42 @@ Data <- data.frame(GelStrength = c(62.9, 110.3, 60.1, 147.6,
 
 The plots show that we need to transform our data to obtain homogeneity in variance. I used log(GelStrength). The resulting plot looks better.
 
-<<Models, echo=FALSE, results=verbatim>>=
+The first attempt is to fit the model with main effects and all interactions
 
+lm(log(GelStrength) ~ StarchSource * StarchConc * Temp, data=Data)
+
+This results to a perfect fit model with no degree of free for error. Thus, we cannot perform any inference. By Hierachical principal, I assume three-interactions are not significant. 
+I perform the following model:
+
+<<Models, echo=TRUE, results=hide>>=
+Model2.log <- lm(log(GelStrength) ~ StarchSource + StarchConc + Temp + 
+                   StarchSource:StarchConc + StarchConc:Temp + StarchSource:Temp, data=Data)
+anova(Model2.log)
 @
+
+From the anova table, interactions of Temp with other factors are not significant. I performed an F-test to confirm this.
+
+<<echo=TRUE,results=hide>>=
+red = lm(log(GelStrength) ~ StarchSource + StarchConc + Temp + 
+                   StarchSource:StarchConc , data=Data)
+anova(red,Model2.log)
+@
+
+p-value=0.1268. Thus, we can drop interactions of Temp with other factors. I arrive at final model
+
+<<echo=FALSE,results=verbatim>>=
+anova(red)
+@
+
+\includegraphics[height=8cm,width=12cm]{6-3.png}
+
+Residual plot seems fine except a slight decrease in variance as fitted values increase. Again, with few observations, anything can happen. The R-squared is 0.966.
+
+As seen from R output, all three factors and interaction StarchSource:StarchConc are significant. Since there still exists an interaction in our model, it is not conclusive to say that how response changes if we change a level of one factor keeping other factors fixed. 
+
+
+\includegraphics[height=20cm,width=15cm]{6-4.png}
+
 
 \end{document}
 
