@@ -149,21 +149,46 @@ Based on the anova table, we can see that the interaction $N.Level:Irrigation$ i
 
 Second, let consider N.Level as ordered factor and we want to test linear, quadratic, and cubic effects
 
-<<Models_order, echo=TRUE, results=verbatim>>=
+<<Models_order, echo=FALSE, results=verbatim>>=
 Model.order <- lm(BigBluestem_Frac^2 ~ factor(N_Level, ordered=T) * Irrigation, data=Data )
 anova(Model.order)
 @
 
 As before, all effects including interactions are very significant. Thus, it is a little evidence that all the treatments are the same. I also tried the data without transformation. It also yiels the same result.
 \subsubsection*{(c)}
-<<Quad, echo=TRUE,results=verbatim>>=
+<<Quad, echo=FALSE,results=verbatim>>=
 Model3.T <- lm(BigBluestem_Frac^2 ~ factor(N_Level, ordered=T), data=subset(Data, Irritation='N') )
 summary(Model3.T)
 @
 
 Based on this result, we do not see any significant quadratic effect of nitrogen level. 
 \subsubsection*{(d)}
+Based on the results in (b), we conclude that irrigation does have a significant effect on the response.
+
 \subsubsection*{(e)}
+<<Additive_model, echo=FALSE,results=hide>>=
+Data$NewFactor <- factor(paste(Data$N_Level, Data$Irrigation))
+str(Data)
+Anova2.T <- aov(BigBluestem_Frac ~ NewFactor, data=Data )
+Means <- aggregate(x=Data$BigBluestem_Frac, by=list(Data$N_Level, Data$Irrigation), FUN=mean)
+#fit.contrast(model=Anova2.T, coeff=c(5, -1, -1, -1, -1, -1), varname='NewFactor')
+
+@
+By just looking at the mean in each columns of our data, we can see that column 1 (N.Level at level 1 and Irrigation at level N) has the highest mean response $95\%.$ In order to test significant, an F-test is conducted using linear contrasts.
+
+$H_0 : \mu_1 = \frac{\mu2+\mu3+\mu4+\mu5}{5}$
+
+$F_C\sim F_{1,18}$ with $c=(5,-1,-1,-1,-1,-1).$ This gives p-value less than $\alpha=0.05.$ Thus, there is a strong evidence that treatment $1 N$ has highest mean response. 
+
+However, before conducting this F-test and having this conclusion, we need some conditions. To conduct a test for contrast between 6 groups $1N, 1Y, 2N, 3N, 4N, 4Y$, we need to assume that there are not interactions between N.Level and irrigation. Thus, we have 1-way model. 
+
+Let's consider the model in part (b)
+<<echo=FALSE,results=verbatim>>=
+summary(Model.Anova)
+@
+
+The only significant interaction is N.Level4:IrrigationY. If we are willing to make an assumption that this interaction is not significant, we can obtain the above conclusion. 
+\subsection*{Question 4}
 
 \end{document}
 
