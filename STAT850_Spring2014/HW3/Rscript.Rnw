@@ -121,14 +121,16 @@ Data <- data.frame(N_Level=factor(rep(c(1,1,2,3,4,4),c(4,4,4,4,4,4))),
                                       48,58,49,53)
                    )
 Data$BigBluestem_Frac <- Data$BigBluestem_Frac/100
+layout(matrix(c(1,2),nrow=1,ncol=2))
 boxplot(BigBluestem_Frac ~ N_Level*Irrigation, ylab="Fraction of Big Bluestem",
         main="Response",data=Data)
-
+boxplot(BigBluestem_Frac^2 ~ N_Level*Irrigation, ylab="Fraction of Big Bluestem",
+        main="Response^2",data=Data)
 #ggplot(data = Data, aes(x = N_Level, y = BigBluestem_Frac)) +
 #  geom_boxplot(aes(fill = Irrigation), width = 0.8) + theme_bw()
 @
 
-
+Based on the boxplot (response), the variance of the data is somewhat different for different treatment groups. It gets smaller as the response increases. Since the response is proportion, we should apply logit(). However, this does not fit the problem. I tried to square the response. The boxplot shows that this transformation seems to fix the problem. 
 
 \subsubsection*{(b)}
 \subsubsection*{(c)}
