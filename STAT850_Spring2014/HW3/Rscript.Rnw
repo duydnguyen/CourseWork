@@ -110,6 +110,7 @@ Model1.rm <- lm(Corrosion~ factor(Temp_Chr, ordered=T), data=Data2)
 \subsubsection*{(a)}
 
 <<input_data, echo=FALSE, fig=TRUE>>=
+library(ggplot2)
 Data <- data.frame(N_Level=factor(rep(c(1,1,2,3,4,4),c(4,4,4,4,4,4))),
                    Irrigation=factor(rep(c("N","Y","N","N","N","Y"),c(4,4,4,4,4,4))),
                    BigBluestem_Frac=c(97,96,92,95,
@@ -119,7 +120,12 @@ Data <- data.frame(N_Level=factor(rep(c(1,1,2,3,4,4),c(4,4,4,4,4,4))),
                                       52,56,44,50,
                                       48,58,49,53)
                    )
+Data$BigBluestem_Frac <- Data$BigBluestem_Frac/100
+boxplot(BigBluestem_Frac ~ N_Level*Irrigation, ylab="Fraction of Big Bluestem",
+        main="Response",data=Data)
 
+#ggplot(data = Data, aes(x = N_Level, y = BigBluestem_Frac)) +
+#  geom_boxplot(aes(fill = Irrigation), width = 0.8) + theme_bw()
 @
 
 
