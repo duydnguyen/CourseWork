@@ -130,9 +130,31 @@ boxplot(BigBluestem_Frac^2 ~ N_Level*Irrigation, ylab="Fraction of Big Bluestem"
 #  geom_boxplot(aes(fill = Irrigation), width = 0.8) + theme_bw()
 @
 
-Based on the boxplot (response), the variance of the data is somewhat different for different treatment groups. It gets smaller as the response increases. Since the response is proportion, we should apply logit(). However, this does not fit the problem. I tried to square the response. The boxplot shows that this transformation seems to fix the problem. 
+Based on the boxplot (response), the variance of the data is somewhat different for different treatment groups. It gets smaller as the response increases. Since the response is proportion, we should apply logit(). However, this does not fit the problem. I tried to square the response. The boxplot shows that this transformation seems to fix the problem. The Barlett test for 
 
+<<Barlett, echo=TRUE,results=verbatim>>=
+bartlett.test(BigBluestem_Frac^2 ~ factor(paste(N_Level, Irrigation)), data=Data)
+@
+
+Again, with so few replications per group, it is not clear whether there is a violation of homogeneity or not.
 \subsubsection*{(b)}
+First, let consider our usual 2-way ANOVA model.
+
+<<Models, echo=TRUE,results=verbatim>>=
+Model.Anova <- lm(BigBluestem_Frac^2 ~ N_Level * Irrigation ,data=Data)
+anova(Model.Anova)
+@
+
+Based on the anova table, we can see that the interaction $N.Level:Irrigation$ is very significant. Also, we cannot consider this as a 1-way ANOVA model with $6$ treatmens. Therefore, all the treatments are not equivalent. I also tried the data without transformation. It also yiels the same result.
+
+Second, let consider N.Level as ordered factor and we want to test linear, quadratic, and cubic effects
+
+<<Models_order, echo=TRUE, results=verbatim>>=
+Model.order <- lm(BigBluestem_Frac^2 ~ factor(N_Level, ordered=T) * Irrigation, data=Data )
+anova(Model.order)
+@
+
+As before, all effects including interactions are very significant. Thus, it is a little evidence that all the treatments are the same. I also tried the data without transformation. It also yiels the same result.
 \subsubsection*{(c)}
 \subsubsection*{(d)}
 \subsubsection*{(e)}
