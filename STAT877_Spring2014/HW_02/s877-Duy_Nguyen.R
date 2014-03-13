@@ -155,7 +155,7 @@ Sim <-function(N){
   t[1]=0.2
   for(i in 2:N)
   {
-    tnew =rexp(1,rate = 4)  ## can be fixed
+    tnew =rexp(1,rate = 4)  
   
    b = f.pr(tnew)*dexp(t[i-1],rate = tnew)/(f.pr(t[(i-1)])*dexp(tnew,rate = t[i-1]))
    p.accept = min(1,b)
@@ -167,11 +167,10 @@ Sim <-function(N){
 }
 
 t <- Sim(100000)
-t
-## Plots
 
-plot(t[99001:10000],type='l',main=' Trace plot for MCMC method',ylab="t",cex.lab=1.5,
+## Plots
+plot(t[99001:100000],type='l',main=' Trace plot for MCMC method',ylab="t",cex.lab=1.5,
      cex.axis=1.5,cex.main=1.5)
-hist(t[99001:10000],main='Posterior distribution',freq=FALSE, xlab = "t",cex.lab=1.5,
+hist(t[99001:100000],main='Posterior distribution',freq=FALSE, xlab = "t",cex.lab=1.5,
      cex.axis=1.5,cex.main=1.5)
 
