@@ -189,7 +189,24 @@ summary(Model.Anova)
 
 The only significant interaction is N.Level4:IrrigationY. If we are willing to make an assumption that this interaction is not significant, we can obtain the above conclusion. 
 \subsection*{Question 4}
+Let $F_c$ denote the critical value under $H_0.$ Thus, power $=P_{H_a} (F\geq F_c),$ which is under a non-central F. The same result also holds for t-test. Clearly, if the critical values from two tests $F_c^1 < F_c^2,$ then test 1 is more powerful the test 2. 
 
+We have $t=5$ groups and $df_{err}=25$ with $n=30.$ Thus, $df_{tr}=4.$ For Bonferroni,there are $m=10$ possible contrasts. For each contrast, under $H_0$, the critical value $t_c = t_{\alpha/m,n-t}.$ For Scheffe's method, under $H_0, F_c = F_{\alpha,t-1,n-t}(0).$ Comparing the powers $P_{H_a} (T > t_c)$ and $P_{H_a} (F > F_c),$ we conclude that upto $18$ contrasts.
+
+<<output, echo=FALSE,results=verbatim>>=
+Output <- NULL
+M <- 2
+for(M in 15:25){
+  Crit_BF <- qt(p=0.05/(2*M), df=25, lower.tail=FALSE)
+  
+  #Crit_BF.F <- qf(p=0.05/(2*M), df1=1, df2=25, lower.tail=FALSE)
+  
+  Crit_Scheffe <- sqrt(4*qf(p=0.05, df1=4, df2=25, lower.tail=FALSE))
+  Output <- rbind(Output, c(M, Crit_BF, Crit_Scheffe))
+}
+colnames(Output) <- c('Group Size', 'Bonferroni T-crit', 'Scheffe F-crit')
+Output
+@
 \end{document}
 
 
