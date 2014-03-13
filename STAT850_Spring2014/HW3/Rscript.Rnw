@@ -188,6 +188,7 @@ summary(Model.Anova)
 @
 
 The only significant interaction is N.Level4:IrrigationY. If we are willing to make an assumption that this interaction is not significant, we can obtain the above conclusion. 
+
 \subsection*{Question 4}
 Let $F_c$ denote the critical value under $H_0.$ Thus, power $=P_{H_a} (F\geq F_c),$ which is under a non-central F. The same result also holds for t-test. Clearly, if the critical values from two tests $F_c^1 < F_c^2,$ then test 1 is more powerful the test 2. 
 
@@ -207,6 +208,43 @@ for(M in 15:25){
 colnames(Output) <- c('Group Size', 'Bonferroni T-crit', 'Scheffe F-crit')
 Output
 @
+
+\subsection*{Question 5}
+
+\subsection*{Question 6}
+
+<<echo=FALSE, results=hide>>=
+Data <- data.frame(GelStrength = c(62.9, 110.3, 60.1, 147.6, 
+                                    44, 115.6, 57.9, 180.7, 
+                                    43.8, 123.4, 58.2, 183.8, 
+                                    34.4, 53.6, 63, 92), 
+                   StarchSource = factor(rep(c("Bean", "Corn", "Wheat", "Potato"), 
+                                              c(4, 4, 4, 4))), 
+                   StarchConc = factor(rep(c('5 percent', '7 percent', '5 percent', '7 percent'), 4)),
+                   Temp = factor(rep(c(22, 22, 4, 4), 4))
+)
+@
+
+\begin{figure}[!ht]
+\begin{minipage}[b]{0.4\textwidth}
+\centering
+\includegraphics[height=7cm,width=7cm]{6-1.png}
+\caption{Original Data}\label{fig:*1}
+\end{minipage}
+\hfill
+\begin{minipage}[b]{0.4\textwidth}
+\centering
+\includegraphics[height=7cm,width=7cm]{6-2.png}
+\caption{Log Transform}\label{fig:*2}
+\end{minipage}
+\end{figure}
+
+The plots show that we need to transform our data to obtain homogeneity in variance. I used log(GelStrength). The resulting plot looks better.
+
+<<Models, echo=FALSE, results=verbatim>>=
+
+@
+
 \end{document}
 
 
