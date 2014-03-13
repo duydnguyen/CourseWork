@@ -156,6 +156,12 @@ anova(Model.order)
 
 As before, all effects including interactions are very significant. Thus, it is a little evidence that all the treatments are the same. I also tried the data without transformation. It also yiels the same result.
 \subsubsection*{(c)}
+<<Quad, echo=TRUE,results=verbatim>>=
+Model3.T <- lm(BigBluestem_Frac^2 ~ factor(N_Level, ordered=T), data=subset(Data, Irritation='N') )
+summary(Model3.T)
+@
+
+Based on this result, we do not see any significant quadratic effect of nitrogen level. 
 \subsubsection*{(d)}
 \subsubsection*{(e)}
 
