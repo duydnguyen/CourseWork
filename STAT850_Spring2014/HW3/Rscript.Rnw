@@ -32,8 +32,102 @@ Data <- within(data=Data,{
   Trough <- factor(Trough)
 })
 levels(Data$Trough) <- c('0 gm', '5 gm', '10 gm', '15 gm')
+model1 <- aov(Hemoglobin ~ Trough, data=Data)
+@
+\subsubsection*{(f)}
+<<echo=FALSE, results=verbatim>>=
+TukeyHSD(model1, conf.level=.99)
+@
+
+As suspected, this reveals that  there are significant difference in means between treatments 1-2 and treatment 1-3.
+\subsubsection*{(g)}
+Compare the effect of no sulfamerazine on the hemoglobin content of trout blood with the average effect of the other three levels. The overall confidence level of all intervals should be at least 98\%.
+
+If our goal is to control the CI to be above 98\%, we can use a 99\% CI to estimate the difference as constructed above. The reason is that the probability of one or more errors in the Tukey HSD is $0.01$ and the probability of error for this confidence interval is $0.01$, the probability of making an eror in either these twos is $1- P(no errors)= 1 - (1-.01)^2=0.0199.$ This shows that the overall confidence level of all intervals should be at least 98\%.
+
+To construct this F-test, we use the contrast $c=(1,-1/3,-1/3,-1/3).$ This gives an F-value of $15.78 \sim F_{1,36}$ under $H_0:\mu_1 = \frac{\mu_1+\mu_2+\mu_3}{3}. $ The p-value is $0.0003.$ There is a significant evidence that the mean effect of the three non-zero treatments is not the same as the zero level treatment.
+\subsubsection*{(h)}
+The Tukey HSD margin of error is $Error = q(.95,4,4(r - 1)) * \frac{\hat{\sigma}}{\sqrt{r}},$ where $\hat{\sigma}^2=2.43$ can be taken as the upper bound on the 95\% CI. The length of CI is $2Error.$   
+<<echo=TRUE>>=
+r=31
+2*qtukey(.95, 4, 4*(r-1))*sqrt(2.43)/sqrt(r)
+r=32
+2*qtukey(.95, 4, 4*(r-1))*sqrt(2.43)/sqrt(r)
+r=33
+2*qtukey(.95, 4, 4*(r-1))*sqrt(2.43)/sqrt(r)
+r=34
+2*qtukey(.95, 4, 4*(r-1))*sqrt(2.43)/sqrt(r)
+@
+Thus, to ensure that the width of CI is less then $2$, we should select a sample size of at least $33$ observations in each groups.
+
+\subsection*{Question 2}
+<<Q2, echo=FALSE, results=hide, fig=TRUE>>=
+T300 <- c(5.1, 5.2, 5.8, 4.0, 5.5, 4.7, 5.5, 4.3)
+T350 <- c(6.5, 8.2, 2.0, 6.1, 8.0, 4.3, 7.2, 10.6)
+T400 <- c(5.9, 4.1, 6.4, 5.4, 3.7, 5.5, 7.6, 7.5)
+T450 <- c(11.2, 9.8, 13.6, 12.7, 15.1, 8.8, 13.0, 12.7)
+T500 <- c(13.8, 16.1, 18.9, 15.7, 17.0, 15.1, 17.3, 17.0)
+
+Data <- stack(as.data.frame(cbind(T300, T350, T400, T450, T500)))
+colnames(Data) <- c('Corrosion', 'Temp_Chr')
+Data$Temp_Num <- as.numeric(gsub(pattern='T', replacement='', x=Data$Temp_Chr))
+layout(matrix(c(1,2),nrow=1,ncol=2))
+boxplot(Corrosion ~ Temp_Chr,data=Data, xlab="Temp.", ylab="Corrosion", main="Boxplot of 
+        corrosion by Temperature")
+boxplot(log(Corrosion) ~ Temp_Chr,data=Data, xlab="Temp.", ylab="Corrosion", main="Boxplot of 
+        log(corrosion) by Temperature")
+@
+
+Based on the boxplot, we can see that equal variance assumption across 5 groups of temp. is violated. Log transform of corrosion looks a little better. Honestly, I cannot tell the difference. Thus, we need to look at the residual plots after our analysis.
+
+<<Analysis, echo=FALSE, results=verbatim>>=
+Model1 <- lm(Corrosion ~ factor(Temp_Chr, ordered=T), data=Data )
+anova(Model1)
+summary(Model1)
+Model2 <- lm(log(Corrosion) ~ factor(Temp_Chr, ordered=T), data=Data )
+anova(Model2)
+summary(Model2)
+@
+
+Based on our results, we can see that the model without log transform fits better. The followings are residual plots
+
+<<Residual, echo=FALSE, fig=TRUE>>=
+layout(matrix(c(1,2),nrow=1,ncol=2))
+plot(Model1$fitted, Model1$res, xlab="fitted values", ylab="residuals", main="Residual plots for model without log")  
+plot(Model2$fitted, Model2$res, xlab="fitted values", ylab="residuals", main="Residual plots for model with log")  
 
 @
+
+The residual plot of our standard model (without transformation) looks a little better than the other one. For the log model, residuals have a tendency to get smaller. Therefore, I will use my standard model. As is evident from our R summary, all the polynomial coefficients are significant except for the cubic term.    
+
+Based on the standardized residuals, observation $16$ seems to be an outlier (observation 3 in the group with temperature $350$ degrees).
+<<outlier, echo=TRUE, results=verbatim>>=
+Data2=Data[-16,]
+Model1.rm <- lm(Corrosion~ factor(Temp_Chr, ordered=T), data=Data2)
+@
+
+\subsection*{Question 3}
+\subsubsection*{(a)}
+
+<<input_data, echo=FALSE, fig=TRUE>>=
+Data <- data.frame(N_Level=factor(rep(c(1,1,2,3,4,4),c(4,4,4,4,4,4))),
+                   Irrigation=factor(rep(c("N","Y","N","N","N","Y"),c(4,4,4,4,4,4))),
+                   BigBluestem_Frac=c(97,96,92,95,
+                                      83,87,78,81,
+                                      85,84,78,79,
+                                      64,72,63,74,
+                                      52,56,44,50,
+                                      48,58,49,53)
+                   )
+
+@
+
+
+
+\subsubsection*{(b)}
+\subsubsection*{(c)}
+\subsubsection*{(d)}
+\subsubsection*{(e)}
 
 \end{document}
 
