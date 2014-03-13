@@ -61,17 +61,25 @@ if ((d[1]==4)&(d[2]==5))
 return(log.lh)
 }
 
-#try = Eval.Loglh(c(0.2,0.3,0.4,0.1), 3, 4, 0.03, xlist[[1]], xlist[[2]])
-## Compute p given two sequences. The base.freq() does not work since it varies every time I run
-Eval.pi <- function(seq1, seq2){
-  p=c(rep(0,4))
-  total = length(which(seq1 !='-')) + length(which(seq2 !='-'))
-  p[1] <- ( length(which(seq1 =='a')) + length(which(seq2 =='a')) )/ total
-  p[2] <- ( length(which(seq1 =='c')) + length(which(seq2 =='c')) )/ total
-  p[3] <- ( length(which(seq1 =='g')) + length(which(seq2 =='g')) )/ total
-  p[4] <- ( length(which(seq1 =='t')) + length(which(seq2 =='t')) )/ total
-  return(p)  
+## Compute p given the entire data. 
+## The base.freq() does not work since it varies every time I run
+Eval.pi <- function(){
+    # Declare my vector pi p()
+    p=c(rep(0,4))
+    df <- c(xlist[[1]],xlist[[2]],xlist[[3]],xlist[[4]])
+    index = which(df=="-")
+    if (length(index)>0) df = df[-index]
+    p[1]=sum(df=="a")/length(df)
+    p[2]=sum(df=="c")/length(df)
+    p[3]=sum(df=="g")/length(df)
+    p[4]=sum(df=="t")/length(df)
+    return(p)  
 }
+
+# Find p 
+p = Eval.pi()
+
+
 ## BALT86 (HIVstrain) and sm83 (SIV strain) with kappaR=3, kappaY=4
 p = Eval.pi(xlist[[3]], xlist[[1]])
 # time starts backward from 1983?
