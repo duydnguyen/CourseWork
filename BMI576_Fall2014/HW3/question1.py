@@ -57,6 +57,15 @@ def nodeNum_Eval(relations):
     key,value = max(relations.iteritems(), key=lambda x:x[1])
     return value
 
+def inverseDict(Dict):
+    "Inverse a dictionary, also for case of non-unique map. This is used for computing childrens of a given internal node"
+    invDict = {}
+    for k, v in Dict.iteritems():
+        # This creates a list to store nodes of inverse map
+        invDict[v] = invDict.get(v, [])
+        invDict[v].append(k)
+    return invDict
+
 def costEval(score, relations, assign):
     "Evaluate the cost matrix by the weighted parsimony algorithm"
     leaves = []
@@ -72,12 +81,17 @@ def costEval(score, relations, assign):
         Cost[x-1][index[assign[x]]-1] = 0
     # Evaluate Cost matrix for internal nodes
     intNodes = [x for x in range(1,nodeNum+1) if not x in leaves]
-    # for i in intNodes:
-    #     for j in range(3):
-    #         child1 = 
-    #         C[i][j] = 
-        
-    return 0
+    inv_relations = inverseDict(relations)
+    for i in intNodes:
+        for j in range(3):
+            child1, child2 = inv_relations[i][0], inv_relations[i][1]
+            import pdb; pdb.set_trace()
+            min1 = min( Cost[child1 - 1] + score[j])
+            min2 = min( Cost[child2 - 1] + score[j])
+            Cost[i-1][j] = min1 + min2
+            #Cost[i-1][j] = min( Cost[child1 - 1] + score[j]) + min( Cost[child2 - 1] + score[j])  
+    print(Cost)
+    return Cost
 
     
 
@@ -89,4 +103,6 @@ if __name__ == '__main__':
 #    print(read_tree('tree.txt'))
     
     costEval(score, relations, assign)
+
+
 
