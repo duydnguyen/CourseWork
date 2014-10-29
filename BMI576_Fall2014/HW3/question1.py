@@ -8,6 +8,7 @@
 import sys
 import io
 import getopt
+import operator
 
 def read_score(filename):
     "Read score matrix from score.txt"
@@ -51,9 +52,31 @@ def read_assign(filename):
         assign[leaf] = character
     return assign
 
+def nodeNum_Eval(relations):
+    "Evaluate number of nodes for the given tree"
+    key,value = max(relations.iteritems(), key=lambda x:x[1])
+    return value
+
+def costEval(score, relations, assign):
+    "Evaluate the cost matrix by the weighted parsimony algorithm"
+    # Evaluate number of nodes
+    nodeNum = nodeNum_Eval(relations)
+    # Initialize the Cost Matrix where Col1 = 'a', Col2 = 't', Col3 = 'g', Col4 = 'c'
+    index = {'a':1, 't':2, 'g':3, 'c':4}
+    Cost = [[0 for x in range(4)] for y in range(nodeNum)]
+    # Initialize the Cost(leaf)
+    for x in assign:
+        Cost[x-1] = [float("inf"), float("inf"), float("inf"), float("inf")]
+        Cost[x-1][index[assign[x]]-1] = 0
+    return 0
+
+
 if __name__ == '__main__':
-    read_score('score.txt')
-    read_tree('tree.txt')
-    read_assign('assign.txt')
-    print(read_assign('assign.txt'))
+    score = read_score('score.txt')
+    relations = read_tree('tree.txt')
+    assign = read_assign('assign.txt')
+#    print(read_assign('assign.txt'))
+#    print(read_tree('tree.txt'))
+    
+    costEval(score, relations, assign)
 
