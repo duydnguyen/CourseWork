@@ -59,6 +59,7 @@ def nodeNum_Eval(relations):
 
 def costEval(score, relations, assign):
     "Evaluate the cost matrix by the weighted parsimony algorithm"
+    leaves = []
     # Evaluate number of nodes
     nodeNum = nodeNum_Eval(relations)
     # Initialize the Cost Matrix where Col1 = 'a', Col2 = 't', Col3 = 'g', Col4 = 'c'
@@ -66,10 +67,19 @@ def costEval(score, relations, assign):
     Cost = [[0 for x in range(4)] for y in range(nodeNum)]
     # Initialize the Cost(leaf)
     for x in assign:
+        leaves.append(x)
         Cost[x-1] = [float("inf"), float("inf"), float("inf"), float("inf")]
         Cost[x-1][index[assign[x]]-1] = 0
+    # Evaluate Cost matrix for internal nodes
+    intNodes = [x for x in range(1,nodeNum+1) if not x in leaves]
+    # for i in intNodes:
+    #     for j in range(3):
+    #         child1 = 
+    #         C[i][j] = 
+        
     return 0
 
+    
 
 if __name__ == '__main__':
     score = read_score('score.txt')
