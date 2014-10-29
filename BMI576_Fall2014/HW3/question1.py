@@ -66,13 +66,17 @@ def inverseDict(Dict):
         invDict[v].append(k)
     return invDict
 
+def addList(L1, L2):
+    return [x + y for x, y in zip(L1, L2)]
+
+
 def costEval(score, relations, assign):
     "Evaluate the cost matrix by the weighted parsimony algorithm"
     leaves = []
     # Evaluate number of nodes
     nodeNum = nodeNum_Eval(relations)
-    # Initialize the Cost Matrix where Col1 = 'a', Col2 = 't', Col3 = 'g', Col4 = 'c'
-    index = {'a':1, 't':2, 'g':3, 'c':4}
+    # Initialize the Cost Matrix. Ordering as score matrix:  Col1 = 'a', Col2 = 'c', Col3 = 'g', Col4 = 't'
+    index = {'a':1, 'c':2, 'g':3, 't':4}
     Cost = [[0 for x in range(4)] for y in range(nodeNum)]
     # Initialize the Cost(leaf)
     for x in assign:
@@ -85,11 +89,10 @@ def costEval(score, relations, assign):
     for i in intNodes:
         for j in range(3):
             child1, child2 = inv_relations[i][0], inv_relations[i][1]
-            import pdb; pdb.set_trace()
-            min1 = min( Cost[child1 - 1] + score[j])
-            min2 = min( Cost[child2 - 1] + score[j])
+            # import pdb; pdb.set_trace()
+            min1 = min( addList(Cost[child1 - 1], score[j]))
+            min2 = min( addList(Cost[child2 - 1], score[j]))
             Cost[i-1][j] = min1 + min2
-            #Cost[i-1][j] = min( Cost[child1 - 1] + score[j]) + min( Cost[child2 - 1] + score[j])  
     print(Cost)
     return Cost
 
