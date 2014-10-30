@@ -106,9 +106,9 @@ def costEval(score, relations, assign):
     
 
 if __name__ == '__main__':
-    score = read_score('Tests/Q1_Test2/score.txt')
-    relations = read_tree('Tests/Q1_Test2/tree.txt')
-    assign = read_assign('Tests/Q1_Test2/assign.txt')
+    score = read_score('Tests/Q1_Test6/score.txt')
+    relations = read_tree('Tests/Q1_Test6/tree.txt')
+    assign = read_assign('Tests/Q1_Test6/assign.txt')
 #    print(read_assign('assign.txt'))
 #    print(read_tree('tree.txt'))
     
