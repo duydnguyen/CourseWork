@@ -31,6 +31,7 @@ def read_tree(filename):
     parent = 0
     with open(filename, 'r') as file:
         for line in file:
+            #import pdb; pdb.set_trace()
             vals = line.strip().split()
             child = int(vals[0].strip('S'))
             parent = int(vals[1].strip('S'))
@@ -106,13 +107,15 @@ def costEval(score, relations, assign):
     
 
 if __name__ == '__main__':
-    score = read_score('Tests/Q1_Test6/score.txt')
-    relations = read_tree('Tests/Q1_Test6/tree.txt')
-    assign = read_assign('Tests/Q1_Test6/assign.txt')
+    score = read_score('Tests/Q1_Test5/score.txt')
+    relations = read_tree('Tests/Q1_Test5/tree.txt')
+    print(relations)
+    assign = read_assign('Tests/Q1_Test5/assign.txt')
+    print(assign)
 #    print(read_assign('assign.txt'))
 #    print(read_tree('tree.txt'))
     
-    costEval(score, relations, assign)
+#    costEval(score, relations, assign)
 
 
 
