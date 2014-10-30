@@ -87,13 +87,14 @@ def costEval(score, relations, assign):
     intNodes = [x for x in range(1,nodeNum+1) if not x in leaves]
     inv_relations = inverseDict(relations)
     for i in intNodes:
-        for j in range(3):
-            child1, child2 = inv_relations[i][0], inv_relations[i][1]
+        child1, child2 = inv_relations[i][0], inv_relations[i][1]
+        for j in range(4):
             # import pdb; pdb.set_trace()
             min1 = min( addList(Cost[child1 - 1], score[j]))
             min2 = min( addList(Cost[child2 - 1], score[j]))
             Cost[i-1][j] = min1 + min2
     print(Cost)
+    print "Cost of the tree = %s" % min(Cost[nodeNum-1])
     return Cost
 
     
