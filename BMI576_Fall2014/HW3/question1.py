@@ -92,6 +92,12 @@ def costEval(score, relations, assign):
             # import pdb; pdb.set_trace()
             min1 = min( addList(Cost[child1 - 1], score[j]))
             min2 = min( addList(Cost[child2 - 1], score[j]))
+            # # for debugging
+            # print "+++ parent node=%s, child1=%s, child2=%s" % (i, child1, child2)
+            # print("+++ score[j] = ", score[j])
+            # print("+++ Cost[child1 - 1] = ", Cost[child1-1])
+            # print("+++ Cost[child2 - 1] = ", Cost[child2-1])
+            # #
             Cost[i-1][j] = min1 + min2
     print(Cost)
     print "Cost of the tree = %s" % min(Cost[nodeNum-1])
