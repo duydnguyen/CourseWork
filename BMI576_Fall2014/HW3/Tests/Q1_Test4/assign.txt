@@ -1,1 +1,1 @@
-S1=c	S2=a	S3=t
+S1=t	S2=a	S3=c

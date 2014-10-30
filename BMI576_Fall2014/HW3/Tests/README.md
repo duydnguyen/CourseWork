@@ -1,10 +1,10 @@
 Question 1 
 ==========
 
-Test1: OK
+Test1=1.0 OK
 
-Test2: The given solution is wrong?
+Test2=0.2 OK
 
-Test3: OK
+Test3=1.0 OK
 
-Test4: OK
+Test4=1.0 OK
