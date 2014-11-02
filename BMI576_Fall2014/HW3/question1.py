@@ -97,7 +97,7 @@ def relabel_assign(assign, mapping):
 def costEval(score, relations, assign):
     "Evaluate the cost matrix by the weighted parsimony algorithm"
     import pdb; pdb.set_trace()
-    # Initialize
+    ## Initialize, relabeling, and find root of tree
     leaves = []
     relations_new = {}
     assign_new = {}
@@ -110,8 +110,10 @@ def costEval(score, relations, assign):
     relations_new = relabel(relations, mapping)
     # Relabel leaves in assign
     assign_new = relabel_assign(assign, mapping)
+    # root of tree
+    root = list( set(range(1,nodeNum+1)) - set(relations_new.keys()))[0]
 
-    # Initialize the Cost Matrix. Ordering as score matrix:  Col1 = 'a', Col2 = 'c', Col3 = 'g', Col4 = 't'
+    ## Initialize the Cost Matrix. Ordering as score matrix:  Col1 = 'a', Col2 = 'c', Col3 = 'g', Col4 = 't'
     index = {'a':1, 'c':2, 'g':3, 't':4}
     Cost = [[0 for x in range(4)] for y in range(nodeNum)]
     # Initialize the Cost(leaf)
