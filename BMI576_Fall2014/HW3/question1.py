@@ -115,7 +115,7 @@ if __name__ == '__main__':
 #    print(read_assign('assign.txt'))
 #    print(read_tree('tree.txt'))
     
-#    costEval(score, relations, assign)
+    costEval(score, relations, assign)
 
 
 
