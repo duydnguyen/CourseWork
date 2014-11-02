@@ -55,8 +55,8 @@ def read_assign(filename):
 
 def nodeNum_Eval(relations):
     "Evaluate number of nodes for the given tree"
-    key,value = max(relations.iteritems(), key=lambda x:x[1])
-    return value
+    foo = list(set(relations.keys() + relations.values()))
+    return len(foo)
 
 def inverseDict(Dict):
     "Inverse a dictionary, also for case of non-unique map. This is used for computing childrens of a given internal node"
@@ -73,6 +73,7 @@ def addList(L1, L2):
 
 def costEval(score, relations, assign):
     "Evaluate the cost matrix by the weighted parsimony algorithm"
+    import pdb; pdb.set_trace()
     leaves = []
     # Evaluate number of nodes
     nodeNum = nodeNum_Eval(relations)
@@ -112,9 +113,6 @@ if __name__ == '__main__':
     print(relations)
     assign = read_assign('Tests/Q1_Test5/assign.txt')
     print(assign)
-#    print(read_assign('assign.txt'))
-#    print(read_tree('tree.txt'))
-    
     costEval(score, relations, assign)
 
 
