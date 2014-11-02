@@ -96,7 +96,7 @@ def relabel_assign(assign, mapping):
 
 def costEval(score, relations, assign):
     "Evaluate the cost matrix by the weighted parsimony algorithm"
-#    import pdb; pdb.set_trace()
+    import pdb; pdb.set_trace()
     # Initialize
     leaves = []
     relations_new = {}
@@ -142,10 +142,10 @@ def costEval(score, relations, assign):
     
 
 if __name__ == '__main__':
-    score = read_score('Tests/Q1_Test4/score.txt')
-    relations = read_tree('Tests/Q1_Test4/tree.txt')
+    score = read_score('Tests/Q1_Test5/score.txt')
+    relations = read_tree('Tests/Q1_Test5/tree.txt')
     print(relations)
-    assign = read_assign('Tests/Q1_Test4/assign.txt')
+    assign = read_assign('Tests/Q1_Test5/assign.txt')
     print(assign)
     costEval(score, relations, assign)
 
