@@ -115,13 +115,13 @@ def costEval(score, relations, assign):
     index = {'a':1, 'c':2, 'g':3, 't':4}
     Cost = [[0 for x in range(4)] for y in range(nodeNum)]
     # Initialize the Cost(leaf)
-    for x in assign:
+    for x in assign_new:
         leaves.append(x)
         Cost[x-1] = [float("inf"), float("inf"), float("inf"), float("inf")]
-        Cost[x-1][index[assign[x]]-1] = 0
+        Cost[x-1][index[assign_new[x]]-1] = 0
     # Evaluate Cost matrix for internal nodes
     intNodes = [x for x in range(1,nodeNum+1) if not x in leaves]
-    inv_relations = inverseDict(relations)
+    inv_relations = inverseDict(relations_new)
     for i in intNodes:
         child1, child2 = inv_relations[i][0], inv_relations[i][1]
         for j in range(4):
@@ -142,10 +142,10 @@ def costEval(score, relations, assign):
     
 
 if __name__ == '__main__':
-    score = read_score('Tests/Q1_Test5/score.txt')
-    relations = read_tree('Tests/Q1_Test5/tree.txt')
+    score = read_score('Tests/Q1_Test4/score.txt')
+    relations = read_tree('Tests/Q1_Test4/tree.txt')
     print(relations)
-    assign = read_assign('Tests/Q1_Test5/assign.txt')
+    assign = read_assign('Tests/Q1_Test4/assign.txt')
     print(assign)
     costEval(score, relations, assign)
 
