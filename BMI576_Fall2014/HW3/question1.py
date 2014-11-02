@@ -70,13 +70,47 @@ def inverseDict(Dict):
 def addList(L1, L2):
     return [x + y for x, y in zip(L1, L2)]
 
+def mapEval(relations):
+    "Create the mapping from node_unique (map key) to {1,..., nodeNum} (map value)"
+    node_unique = list(set(relations.keys() + relations.values()))        
+    mapping = {}
+    index = 1
+    for x in node_unique:
+        mapping[x] = index
+        index += 1 
+    return mapping
+
+def relabel(relations, mapping):
+    "Relabel nodes in var relations to avoid the non-consecutive labeling case."
+    relations_new = {}
+    for k, v in relations.iteritems():
+        relations_new[mapping[k]] = mapping[v]
+    return relations_new
+
+def relabel_assign(assign, mapping):
+    "Relabel leaf nodes in var assign"
+    assign_new = {}
+    for k, v in assign.iteritems():
+        assign_new.update({mapping[k]:v})
+    return assign_new
 
 def costEval(score, relations, assign):
     "Evaluate the cost matrix by the weighted parsimony algorithm"
-    import pdb; pdb.set_trace()
+#    import pdb; pdb.set_trace()
+    # Initialize
     leaves = []
+    relations_new = {}
+    assign_new = {}
+    mapping = {}
     # Evaluate number of nodes
     nodeNum = nodeNum_Eval(relations)
+    # Create the mapping for relabeling
+    mapping = mapEval(relations)
+    # Relabel nodes in relations
+    relations_new = relabel(relations, mapping)
+    # Relabel leaves in assign
+    assign_new = relabel_assign(assign, mapping)
+
     # Initialize the Cost Matrix. Ordering as score matrix:  Col1 = 'a', Col2 = 'c', Col3 = 'g', Col4 = 't'
     index = {'a':1, 'c':2, 'g':3, 't':4}
     Cost = [[0 for x in range(4)] for y in range(nodeNum)]
