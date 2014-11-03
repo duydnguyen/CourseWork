@@ -255,9 +255,9 @@ if __name__ == '__main__':
     store = []
     # index = keep track of index in variable store
     index = 0 
-    score = read_score('Tests/Q1_Test5/score.txt')
-    relations = read_tree('Tests/Q1_Test5/tree.txt')
-    assign = read_assign('Tests/Q1_Test5/assign.txt')
+    score = read_score('Tests/Q1_Test1/score.txt')
+    relations = read_tree('Tests/Q1_Test1/tree.txt')
+    assign = read_assign('Tests/Q1_Test1/assign.txt')
     # compute inv_relations
     mapping = mapEval(relations)
     relations_new = relabel(relations, mapping)
@@ -268,7 +268,7 @@ if __name__ == '__main__':
     tree.printBfsLevels()
     root = store[0]
     # Main Function: Compute Cost matrix
-    costEval(score, relations, assign, store, root)
+#    costEval(score, relations, assign, store, root)
 
 
 
