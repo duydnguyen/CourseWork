@@ -193,6 +193,13 @@ x
       if nextLevel:
           node.printBfsLevels(nextLevel)
 
+def sort_IntNodes(store, leaves):
+    "Sort intNodes from Bottom level to top level"
+    intNodes = store
+    for x in leaves:
+        intNodes.remove(x)
+    return intNodes[::-1]
+
 def costEval(score, relations, assign, store):
     "Evaluate the cost matrix by the weighted parsimony algorithm"
     import pdb; pdb.set_trace()
@@ -221,13 +228,14 @@ def costEval(score, relations, assign, store):
         leaves.append(x)
         Cost[x-1] = [float("inf"), float("inf"), float("inf"), float("inf")]
         Cost[x-1][index[assign_new[x]]-1] = 0
-    # Evaluate Cost matrix for internal nodes
-    intNodes = [x for x in range(1,nodeNum+1) if not x in leaves]
+    ### Evaluate Cost matrix for internal nodes
+    intNodes = sort_IntNodes(store, leaves)
     inv_relations = inverseDict(relations_new)
+    # start i from bottom of intNodes
     for i in intNodes:
         child1, child2 = inv_relations[i][0], inv_relations[i][1]
         for j in range(4):
-           # import pdb; pdb.set_trace()
+            #import pdb; pdb.set_trace()
             min1 = min( addList(Cost[child1 - 1], score[j]))
             min2 = min( addList(Cost[child2 - 1], score[j]))
             # # for debugging
