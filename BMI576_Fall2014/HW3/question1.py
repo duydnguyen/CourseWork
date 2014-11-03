@@ -94,14 +94,114 @@ def relabel_assign(assign, mapping):
         assign_new.update({mapping[k]:v})
     return assign_new
 
-def costEval(score, relations, assign):
+def dictToTree(inv_relations):
+    """convert inv_relations to Tree representation whose format is used in class BinTree
+    inv_relations = {1:[2,5], 2:[3,4]}
+    treeRep = [(1,2,5), (2,3,4)]
+    """
+    treeRep = []
+    ii = 0
+    for i in range(len(inv_relations)):
+        parent = inv_relations.items()[i][0]
+        children = inv_relations.items()[i][1]
+        if len(children) == 2:
+            child1,child2 = children[0], children[1]
+        else:
+            child1,child2 = children[0], None
+        treeRep.insert(ii, (parent, child1, child2))
+        ii += 1
+    return treeRep
+
+class BinTree:
+  """Node in a binary tree
+##       1
+##     2     3
+##   4   5  6  7
+##  8
+  treeRep = [(1,2,3),(2,4,5),(3,6,7),(4,8,None)]
+  tree= BinTree.createTree(treeRep)
+  tree.printBfsLevels()
+>>>
+1 
+
+2 3 
+
+4 5 6 7 
+x
+  """
+  def __init__(self,val,leftChild=None,rightChild=None,root=None):
+    self.val=val
+    self.leftChild=leftChild
+    self.rightChild=rightChild
+    self.root=root
+    if not leftChild and not rightChild:
+      self.isExternal=True
+
+  def getChildren(self,node):
+    children=[]
+    if node.isExternal:
+      return []
+    if node.leftChild:
+      children.append(node.leftChild)
+    if node.rightChild:
+      children.append(node.rightChild)
+    return children
+
+  @staticmethod
+  def createTree(tupleList):
+    "Creates a Binary tree Object from a given Tuple List"
+    Nodes={}
+    root=None
+    for item in treeRep:
+      if not root:
+        root=BinTree(item[0])
+        root.isExternal=False
+        Nodes[item[0]]=root
+        root.root=root
+        root.leftChild=BinTree(item[1],root=root)
+        Nodes[item[1]]=root.leftChild
+        root.rightChild=BinTree(item[2],root=root)
+        Nodes[item[2]]=root.rightChild
+      else:
+        CurrentParent=Nodes[item[0]]
+        CurrentParent.isExternal=False
+        CurrentParent.leftChild=BinTree(item[1],root=root)
+        Nodes[item[1]]=CurrentParent.leftChild
+        CurrentParent.rightChild=BinTree(item[2],root=root)
+        Nodes[item[2]]=CurrentParent.rightChild
+    root.nodeDict=Nodes
+    return root
+
+  def printBfsLevels(self, levels=None):
+      """  
+      order nodes in tree from top to bottom and save it in variable store
+      treeRep = [(1,2,5),(2,3,4)]
+      tree = BinTree.createTree(treeRep)
+      tree.printBfsLevels()
+      
+"""
+      global store
+      global index
+      if levels==None:
+          levels=[self]
+      nextLevel=[]
+      for node in levels:
+          store.insert(index, node.val)
+          index += 1
+      for node in levels:
+          nextLevel.extend(node.getChildren(node))
+      if nextLevel:
+          node.printBfsLevels(nextLevel)
+
+def costEval(score, relations, assign, store):
     "Evaluate the cost matrix by the weighted parsimony algorithm"
     import pdb; pdb.set_trace()
-    ## Initialize, relabeling, and find root of tree
+    ### Initialize, relabeling, and find root of tree
     leaves = []
     relations_new = {}
     assign_new = {}
     mapping = {}
+    nodeLevel = []
     # Evaluate number of nodes
     nodeNum = nodeNum_Eval(relations)
     # Create the mapping for relabeling
@@ -112,8 +212,8 @@ def costEval(score, relations, assign):
     assign_new = relabel_assign(assign, mapping)
     # root of tree
     root = list( set(range(1,nodeNum+1)) - set(relations_new.keys()))[0]
-
-    ## Initialize the Cost Matrix. Ordering as score matrix:  Col1 = 'a', Col2 = 'c', Col3 = 'g', Col4 = 't'
+    
+    ### Initialize the Cost Matrix. Ordering as score matrix:  Col1 = 'a', Col2 = 'c', Col3 = 'g', Col4 = 't'
     index = {'a':1, 'c':2, 'g':3, 't':4}
     Cost = [[0 for x in range(4)] for y in range(nodeNum)]
     # Initialize the Cost(leaf)
@@ -127,7 +227,7 @@ def costEval(score, relations, assign):
     for i in intNodes:
         child1, child2 = inv_relations[i][0], inv_relations[i][1]
         for j in range(4):
-            # import pdb; pdb.set_trace()
+           # import pdb; pdb.set_trace()
             min1 = min( addList(Cost[child1 - 1], score[j]))
             min2 = min( addList(Cost[child2 - 1], score[j]))
             # # for debugging
@@ -144,12 +244,23 @@ def costEval(score, relations, assign):
     
 
 if __name__ == '__main__':
+    # store = level of nodes in tree from top to bottom
+    store = []
+    # index = keep track of index in variable store
+    index = 0 
     score = read_score('Tests/Q1_Test5/score.txt')
     relations = read_tree('Tests/Q1_Test5/tree.txt')
-    print(relations)
     assign = read_assign('Tests/Q1_Test5/assign.txt')
-    print(assign)
-    costEval(score, relations, assign)
+    # compute inv_relations
+    mapping = mapEval(relations)
+    relations_new = relabel(relations, mapping)
+    inv_relations = inverseDict(relations_new)
+    # Compute level of tree's nodes and save it in variable store
+    treeRep = dictToTree(inv_relations)
+    tree = BinTree.createTree(treeRep)
+    tree.printBfsLevels()
+    # Main Function: Compute Cost matrix
+    costEval(score, relations, assign, store)
 
 
 
