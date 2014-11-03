@@ -200,9 +200,8 @@ def sort_IntNodes(store, leaves):
         intNodes.remove(x)
     return intNodes[::-1]
 
-def costEval(score, relations, assign, store):
+def costEval(score, relations, assign, store, root):
     "Evaluate the cost matrix by the weighted parsimony algorithm"
-    import pdb; pdb.set_trace()
     ### Initialize, relabeling, and find root of tree
     leaves = []
     relations_new = {}
@@ -246,7 +245,7 @@ def costEval(score, relations, assign, store):
             # #
             Cost[i-1][j] = min1 + min2
     print(Cost)
-    print "Cost of the tree = %s" % min(Cost[nodeNum-1])
+    print "Cost of the tree = %s" % min(Cost[root-1])
     return Cost
 
     
@@ -267,8 +266,9 @@ if __name__ == '__main__':
     treeRep = dictToTree(inv_relations)
     tree = BinTree.createTree(treeRep)
     tree.printBfsLevels()
+    root = store[0]
     # Main Function: Compute Cost matrix
-    costEval(score, relations, assign, store)
+    costEval(score, relations, assign, store, root)
 
 
 
