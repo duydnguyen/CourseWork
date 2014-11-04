@@ -94,13 +94,24 @@ def relabel_assign(assign, mapping):
         assign_new.update({mapping[k]:v})
     return assign_new
 
-def dictToTree(inv_relations):
+def dictToTree(inv_relations, root):
     """convert inv_relations to Tree representation whose format is used in class BinTree
-    inv_relations = {1:[2,5], 2:[3,4]}
+    inv_relations = {1:[2,5], 2:[3,4]} must start with root
     treeRep = [(1,2,5), (2,3,4)]
     """
     treeRep = []
     ii = 0
+    ## root case
+    children = inv_relations[root]
+    if len(children) == 2:
+        child1,child2 = children[0], children[1]
+    else:
+        child1,child2 = children[0], None
+    treeRep.insert(ii, (root, child1, child2))
+    ii +=1
+    # Delete the key = root    
+    inv_relations.pop(root, None)
+
     for i in range(len(inv_relations)):
         parent = inv_relations.items()[i][0]
         children = inv_relations.items()[i][1]
@@ -111,6 +122,7 @@ def dictToTree(inv_relations):
         treeRep.insert(ii, (parent, child1, child2))
         ii += 1
     return treeRep
+
 
 class BinTree:
   """Node in a binary tree
@@ -287,12 +299,12 @@ if __name__ == '__main__':
     nodeNum = nodeNum_Eval(relations)
     root = findRoot(inv_relations, nodeNum)
     # Compute level of tree's nodes and save it in variable store
-#    treeRep = dictToTree(inv_relations)
-#    tree = BinTree.createTree(treeRep)
-#    tree.printBfsLevels()
-#    root = store[0]
+    treeRep = dictToTree(inv_relations, root)
+    tree = BinTree.createTree(treeRep)
+    tree.printBfsLevels()
+    root = store[0]
     # Main Function: Compute Cost matrix
-#    costEval(score, relations, assign, store, root)
+    costEval(score, relations, assign, store, root)
 
 
 
