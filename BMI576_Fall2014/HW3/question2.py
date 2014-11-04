@@ -212,53 +212,8 @@ def sort_IntNodes(store, leaves):
         intNodes.remove(x)
     return intNodes[::-1]
 
-def costEval(score, relations, assign, store, root):
-    "Evaluate the cost matrix by the weighted parsimony algorithm"
-    ### Initialize, relabeling, and find root of tree
-    leaves = []
-    relations_new = {}
-    assign_new = {}
-    mapping = {}
-    nodeLevel = []
-    # Evaluate number of nodes
-    nodeNum = nodeNum_Eval(relations)
-    # Create the mapping for relabeling
-    mapping = mapEval(relations)
-    # Relabel nodes in relations
-    relations_new = relabel(relations, mapping)
-    # Relabel leaves in assign
-    assign_new = relabel_assign(assign, mapping)
-    # root of tree
-    root = list( set(range(1,nodeNum+1)) - set(relations_new.keys()))[0]
-    
-    ### Initialize the Cost Matrix. Ordering as score matrix:  Col1 = 'a', Col2 = 'c', Col3 = 'g', Col4 = 't'
-    index = {'a':1, 'c':2, 'g':3, 't':4}
-    Cost = [[0 for x in range(4)] for y in range(nodeNum)]
-    # Initialize the Cost(leaf)
-    for x in assign_new:
-        leaves.append(x)
-        Cost[x-1] = [float("inf"), float("inf"), float("inf"), float("inf")]
-        Cost[x-1][index[assign_new[x]]-1] = 0
-    ### Evaluate Cost matrix for internal nodes
-    intNodes = sort_IntNodes(store, leaves)
-    inv_relations = inverseDict(relations_new)
-    # start i from bottom of intNodes
-    for i in intNodes:
-        child1, child2 = inv_relations[i][0], inv_relations[i][1]
-        for j in range(4):
-            #import pdb; pdb.set_trace()
-            min1 = min( addList(Cost[child1 - 1], score[j]))
-            min2 = min( addList(Cost[child2 - 1], score[j]))
-            # # for debugging
-            # print "+++ parent node=%s, child1=%s, child2=%s" % (i, child1, child2)
-            # print("+++ score[j] = ", score[j])
-            # print("+++ Cost[child1 - 1] = ", Cost[child1-1])
-            # print("+++ Cost[child2 - 1] = ", Cost[child2-1])
-            # #
-            Cost[i-1][j] = min1 + min2
-    print(Cost)
-    print "Cost of the tree = %s" % min(Cost[root-1])
-    return Cost
+def likelihoodEval():
+    pass
 
 def findRoot(inv_relations, nodeNum):
     "find root of the given tree"
@@ -280,8 +235,6 @@ def findRoot(inv_relations, nodeNum):
     root = list(set(range(1,nodeNum+1)) - set(childSet_unlist) )[0]
     return root
 
-
-
 if __name__ == '__main__':
     # store = level of nodes in tree from top to bottom
     store = []
@@ -289,9 +242,9 @@ if __name__ == '__main__':
     index = 0
     # Initialize root
     root = 0
-    score = read_score('Tests/Q1_Test5/score.txt')
-    relations = read_tree('Tests/Q1_Test5/tree.txt')
-    assign = read_assign('Tests/Q1_Test5/assign.txt')
+    score = read_score('Tests/Q2_Test1/score_dna_2.txt')
+    relations = read_tree('Tests/Q2_Test1/tree_3.txt')
+    assign = read_assign('Tests/Q2_Test1/assign_dna_2.txt')
     # compute inv_relations
     mapping = mapEval(relations)
     relations_new = relabel(relations, mapping)
@@ -302,9 +255,3 @@ if __name__ == '__main__':
     treeRep = dictToTree(inv_relations, root)
     tree = BinTree.createTree(treeRep)
     tree.printBfsLevels()
-    root = store[0]
-    # Main Function: Compute Cost matrix
-    costEval(score, relations, assign, store, root)
-
-
-
