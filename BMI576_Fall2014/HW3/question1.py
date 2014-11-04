@@ -127,7 +127,7 @@ class BinTree:
 2 3 
 
 4 5 6 7 
-x
+
   """
   def __init__(self,val,leftChild=None,rightChild=None,root=None):
     self.val=val
@@ -248,13 +248,35 @@ def costEval(score, relations, assign, store, root):
     print "Cost of the tree = %s" % min(Cost[root-1])
     return Cost
 
-    
+def findRoot(inv_relations, nodeNum):
+    "find root of the given tree"
+    ii = 0
+    root = -1
+    childSet_unlist = []
+    childSet = inv_relations.values()
+    parentSet = inv_relations.keys()
+    for i in range(len(childSet)):
+        if len(childSet[i])==2:
+            x1, x2 = childSet[i][0], childSet[i][1]
+            childSet_unlist.insert(ii, x1)
+            ii += 1
+            childSet_unlist.insert(ii, x2)
+            ii += 1
+        else:
+            childSet_unlist.insert(ii, childSet[i][0])
+            ii += 1
+    root = list(set(range(1,nodeNum+1)) - set(childSet_unlist) )[0]
+    return root
+
+
 
 if __name__ == '__main__':
     # store = level of nodes in tree from top to bottom
     store = []
     # index = keep track of index in variable store
-    index = 0 
+    index = 0
+    # Initialize root
+    root = 0
     score = read_score('Tests/Q1_Test1/score.txt')
     relations = read_tree('Tests/Q1_Test1/tree.txt')
     assign = read_assign('Tests/Q1_Test1/assign.txt')
@@ -262,11 +284,13 @@ if __name__ == '__main__':
     mapping = mapEval(relations)
     relations_new = relabel(relations, mapping)
     inv_relations = inverseDict(relations_new)
+    nodeNum = nodeNum_Eval(relations)
+    root = findRoot(inv_relations, nodeNum)
     # Compute level of tree's nodes and save it in variable store
-    treeRep = dictToTree(inv_relations)
-    tree = BinTree.createTree(treeRep)
-    tree.printBfsLevels()
-    root = store[0]
+#    treeRep = dictToTree(inv_relations)
+#    tree = BinTree.createTree(treeRep)
+#    tree.printBfsLevels()
+#    root = store[0]
     # Main Function: Compute Cost matrix
 #    costEval(score, relations, assign, store, root)
 

@@ -89,6 +89,12 @@ if __name__ == '__main__':
     store = []
     index = 0
     level = []
-    treeRep = [(1,2,5),(2,3,4)]
+# root MUST BE the first entry
+#    treeRep = [(1,2,5),(2,3,4)]
+#    treeRep = [(4,1,2),(5,3,4)]
+#    treeRep = [(5,3,4),(4,1,2)] WORK
+#    treeRep = [(1,2,5),(2,3,4)] WORK
+#    treeRep = [(1,2,5),(2,3,4), (3,6,None)] #WORK
+#    treeRep = [(2,3,4), (3,6,None),(1,2,5)] #FAIL
     tree = BinTree.createTree(treeRep)
     tree.printBfsLevels()
