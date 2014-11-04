@@ -290,7 +290,14 @@ def main(argv):
     File_tree = args[0]
     File_score = args[1]
     File_assign = args[2]
+    return [File_tree, File_score, File_assign]
+    
 
+if __name__ == '__main__':
+    Files = main(sys.argv[1:])
+    File_tree = Files[0]
+    File_score = Files[1]
+    File_assign = Files[2]
     ### Error Handlings
     ### Main ###
     # store = level of nodes in tree from top to bottom
@@ -318,8 +325,4 @@ def main(argv):
     finalCost = costEval(score, relations, assign, store, root)
     print "Score of tree is %s" % finalCost
 
-    
-
-if __name__ == '__main__':
-    main(sys.argv[1:])
 
