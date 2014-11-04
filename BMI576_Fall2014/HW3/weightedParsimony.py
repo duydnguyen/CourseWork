@@ -98,8 +98,7 @@ def relabel_assign(assign, mapping):
 def dictToTree(inv_relations, root):
     """convert inv_relations to Tree representation whose format is used in class BinTree
     inv_relations = {1:[2,5], 2:[3,4]} must start with root
-    treeRep = [(1,2,5), (2,3,4)]
-    """
+    treeRep = [(1,2,5), (2,3,4)]"""
     treeRep = []
     ii = 0
     ## root case
@@ -139,9 +138,7 @@ class BinTree:
 
 2 3 
 
-4 5 6 7 
-
-  """
+4 5 6 7."""
   def __init__(self,val,leftChild=None,rightChild=None,root=None):
     self.val=val
     self.leftChild=leftChild
@@ -190,9 +187,7 @@ class BinTree:
       order nodes in tree from top to bottom and save it in variable store
       treeRep = [(1,2,5),(2,3,4)]
       tree = BinTree.createTree(treeRep)
-      tree.printBfsLevels()
-      
-"""
+      tree.printBfsLevels()."""
       global store
       global index
       if levels==None:
@@ -324,5 +319,3 @@ if __name__ == '__main__':
     finalCost = 0
     finalCost = costEval(score, relations, assign, store, root)
     print "Score of tree is %s" % finalCost
-
-
