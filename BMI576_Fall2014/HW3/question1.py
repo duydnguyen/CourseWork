@@ -289,9 +289,9 @@ if __name__ == '__main__':
     index = 0
     # Initialize root
     root = 0
-    score = read_score('Tests/Q1_Test1/score.txt')
-    relations = read_tree('Tests/Q1_Test1/tree.txt')
-    assign = read_assign('Tests/Q1_Test1/assign.txt')
+    score = read_score('Tests/Q1_Test5/score.txt')
+    relations = read_tree('Tests/Q1_Test5/tree.txt')
+    assign = read_assign('Tests/Q1_Test5/assign.txt')
     # compute inv_relations
     mapping = mapEval(relations)
     relations_new = relabel(relations, mapping)
