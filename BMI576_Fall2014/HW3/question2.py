@@ -1,7 +1,7 @@
 #!/user/bin/env python
 # Author: Duy Nguyen
-# Solution to question 1,  homework 3
-# Weighted parsimony Algorithm
+# Solution to question 2,  homework 3
+# Felsenstein's Algorithm
 # You should be able to run the program as of the following commands
 
 
@@ -69,6 +69,9 @@ def inverseDict(Dict):
 
 def addList(L1, L2):
     return [x + y for x, y in zip(L1, L2)]
+
+def multList(L1, L2):
+    return [x*y for x, y in zip(L1, L2)]
 
 def mapEval(relations):
     "Create the mapping from node_unique (map key) to {1,..., nodeNum} (map value)"
@@ -235,6 +238,60 @@ def findRoot(inv_relations, nodeNum):
     root = list(set(range(1,nodeNum+1)) - set(childSet_unlist) )[0]
     return root
 
+def costEval(score, relations, assign, store, root):
+    "Evaluate the cost/likelihood matrix by the weighted parsimony algorithm"
+    ### Initialize, relabeling, and find root of tree
+    leaves = []
+    relations_new = {}
+    assign_new = {}
+    mapping = {}
+    nodeLevel = []
+    # Evaluate number of nodes
+    nodeNum = nodeNum_Eval(relations)
+    # Create the mapping for relabeling
+    mapping = mapEval(relations)
+    # Relabel nodes in relations
+    relations_new = relabel(relations, mapping)
+    # Relabel leaves in assign
+    assign_new = relabel_assign(assign, mapping)
+    # root of tree
+    root = list( set(range(1,nodeNum+1)) - set(relations_new.keys()))[0]
+    
+    ### Initialize the Cost Matrix. Ordering as score matrix:  Col1 = 'a', Col2 = 'c', Col3 = 'g', Col4 = 't'
+    index = {'a':1, 'c':2, 'g':3, 't':4}
+    Cost = [[0 for x in range(4)] for y in range(nodeNum)]
+    # Initialize the Cost(leaf)
+    for x in assign_new:
+        leaves.append(x)
+        Cost[x-1] = [0, 0, 0, 0]
+        Cost[x-1][index[assign_new[x]]-1] = 1
+    ### Evaluate Cost matrix for internal nodes
+    intNodes = sort_IntNodes(store, leaves)
+    inv_relations = inverseDict(relations_new)
+    # start i from bottom of intNodes
+    for i in intNodes:
+        child1, child2 = inv_relations[i][0], inv_relations[i][1]
+        for j in range(4):
+            #import pdb; pdb.set_trace()
+            sum1 = sum( multList(score[j], Cost[child1 - 1]))
+            sum2 = sum( multList(score[j], Cost[child2 - 1]))
+            Cost[i-1][j] = sum1 * sum2
+            # # for debugging
+            # print "+++ parent node=%s, child1=%s, child2=%s" % (i, child1, child2)
+            # print("+++ score[j] = ", score[j])
+            # print("+++ Cost[child1 - 1] = ", Cost[child1-1])
+            # print("+++ Cost[child2 - 1] = ", Cost[child2-1])
+            # #
+            #Cost[i-1][j] = min1 + min2
+    print(Cost)
+    prob = 0.25 * sum(Cost[root-1])
+    print "Cost of the tree = %s" % prob 
+    return prob
+
+
+
+
+
 if __name__ == '__main__':
     # store = level of nodes in tree from top to bottom
     store = []
@@ -242,9 +299,9 @@ if __name__ == '__main__':
     index = 0
     # Initialize root
     root = 0
-    score = read_score('Tests/Q2_Test1/score_dna_2.txt')
-    relations = read_tree('Tests/Q2_Test1/tree_3.txt')
-    assign = read_assign('Tests/Q2_Test1/assign_dna_2.txt')
+    score = read_score('Tests/Q2_Test2/score_dna_2.txt')
+    relations = read_tree('Tests/Q2_Test2/tree_3.txt')
+    assign = read_assign('Tests/Q2_Test2/assign_dna_2.txt')
     # compute inv_relations
     mapping = mapEval(relations)
     relations_new = relabel(relations, mapping)
@@ -255,3 +312,6 @@ if __name__ == '__main__':
     treeRep = dictToTree(inv_relations, root)
     tree = BinTree.createTree(treeRep)
     tree.printBfsLevels()
+    root = store[0]
+    # Main Function: Compute Cost matrix
+    costEval(score, relations, assign, store, root)
