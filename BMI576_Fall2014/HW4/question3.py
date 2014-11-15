@@ -104,7 +104,7 @@ def print_Viterbi(v, ptr, seqLen, numStates, Viterbi_prob, pi_T):
     "Print Viterbi probabilities"
     for t in range(1, seqLen+1):
         for k in range(1, numStates-1):
-            print "Viterbi for state %s time %s : %s" % (k,t, v[k][t])
+            print "Viterbi for state %s time %s : %s maxstate %s" % (k,t, v[k][t], ptr[k-1][t-1])
     print "Viterbi probability: %s" % (Viterbi_prob)
     
     return 0
@@ -166,13 +166,19 @@ def evalViterbi(transitions, emission, begin_state, end_state, sequence):
 
     
 if __name__ == '__main__':
-    transitions = read_transitions('Tests/transition3.txt')
+    transitions = read_transitions('Tests/transition1.txt')
     numStates = len(transitions)
-    emissions = read_emissions('Tests/emission3.txt', numStates)
+    emissions = read_emissions('Tests/emission1.txt', numStates)
+    # Used for tests 1 and 2
     begin_state = 0
     end_state = 5
 #    sequence = 'TAG' # used for test 2
-    sequence = 'GCTT' # used for test 1 and 3
+    sequence = 'GCTT' # used for test 1
+
+    #used for test 3
+    #begin_state = 0
+    #end_state = 3
+    #sequence = 'GCTT'
 
     v = evalViterbi(transitions, emissions, begin_state, end_state, sequence)
     
