@@ -104,9 +104,9 @@ def evalViterbi(transitions, emission, begin_state, end_state, sequence):
     return 0 
     
 if __name__ == '__main__':
-    transitions = read_transitions('transition2.txt')
+    transitions = read_transitions('Tests/transition2.txt')
     numStates = len(transitions)
-    emissions = read_emissions('emission2.txt', numStates)
+    emissions = read_emissions('Tests/emission2.txt', numStates)
     begin_state = 0
     end_state = 5
     sequence = 'TAG'
