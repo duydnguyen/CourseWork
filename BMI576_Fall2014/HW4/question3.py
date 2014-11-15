@@ -97,7 +97,7 @@ def find_Argmax(a_l, v_l):
             lst.append(a_l[i] * v_l[i])
         else:
             lst.append(-10000)
-    print(lst)
+    #print(lst)
     return lst.index(max(lst))
 
 def evalViterbi(transitions, emission, begin_state, end_state, sequence):
@@ -112,7 +112,7 @@ def evalViterbi(transitions, emission, begin_state, end_state, sequence):
     v = Initilize_V(numStates, seqLen)
     ptr = Initilize_ptr(numStates, seqLen)
     ## Main 
-    import pdb; pdb.set_trace()
+    #import pdb; pdb.set_trace()
     for t in range(1, seqLen+1):
         x_t = index[sequence[t-1]]
         # only handle case when states are not begin state; does not compute end state 
@@ -122,7 +122,7 @@ def evalViterbi(transitions, emission, begin_state, end_state, sequence):
             evalMax = max(lst)
             #ptr[k-1][t-1] = lst.index(max(lst))
             ptr[k-1][t-1] = find_Argmax(trans_t[k], trans_v[t-1])
-            #print(ptr)
+            print(ptr)
             emiss = emissions[k][x_t-1]
             v[k][t] = emiss * evalMax
         # End state: Termination step
