@@ -166,13 +166,13 @@ def evalViterbi(transitions, emission, begin_state, end_state, sequence):
 
     
 if __name__ == '__main__':
-    transitions = read_transitions('Tests/transition2.txt')
+    transitions = read_transitions('Tests/transition1.txt')
     numStates = len(transitions)
-    emissions = read_emissions('Tests/emission2.txt', numStates)
+    emissions = read_emissions('Tests/emission1.txt', numStates)
     begin_state = 0
     end_state = 5
-    sequence = 'TAG'
-#    sequence = 'GCTT'
+#    sequence = 'TAG'
+    sequence = 'GCTT'
 
     v = evalViterbi(transitions, emissions, begin_state, end_state, sequence)
     
