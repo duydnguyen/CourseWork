@@ -100,17 +100,26 @@ def evalViterbi(transitions, emission, begin_state, end_state, sequence):
             evalMax = max(multList(trans_t[k], trans_v[t-1]))
             emiss = emissions[k][x_t-1]
             v[k][t] = emiss * evalMax
+        # End state: Termination step
+        trans_v = transpose_List(v)
+        evalMax = max(multList(trans_t[end_state], trans_v[seqLen]))
+        v[end_state][seqLen] = evalMax
     print(v)
-    return 0 
+    return v 
+
+
+
     
 if __name__ == '__main__':
-    transitions = read_transitions('Tests/transition2.txt')
+    transitions = read_transitions('Tests/transition1.txt')
     numStates = len(transitions)
-    emissions = read_emissions('Tests/emission2.txt', numStates)
+    emissions = read_emissions('Tests/emission1.txt', numStates)
     begin_state = 0
     end_state = 5
-    sequence = 'TAG'
-    evalViterbi(transitions, emissions, begin_state, end_state, sequence)
+#    sequence = 'TAG'
+    sequence = 'GCTT'
+
+    v = evalViterbi(transitions, emissions, begin_state, end_state, sequence)
     
 
     
