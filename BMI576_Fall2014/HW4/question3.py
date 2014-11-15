@@ -100,6 +100,32 @@ def find_Argmax(a_l, v_l):
     #print(lst)
     return lst.index(max(lst))
 
+def print_Viterbi(v, ptr, seqLen, numStates, Viterbi_prob, pi_T):
+    "Print Viterbi probabilities"
+    for t in range(1, seqLen+1):
+        for k in range(1, numStates-1):
+            print "Viterbi for state %s time %s : %s" % (k,t, v[k][t])
+    print "Viterbi probability: %s" % (Viterbi_prob)
+    
+    return 0
+
+def print_path(ptr, seqLen, pi_T, sequence):
+    "print Viterbi path"
+    #import pdb; pdb.set_trace()
+    pi = []
+    pi.append(pi_T)
+    for t in range(1, seqLen):
+        index_pi = seqLen - t
+        pi.append( ptr[ pi[t-1] -1 ][ index_pi ]  )
+    # Print path:
+    print "Viterbi path:"
+    print "0"
+    for k in range(len(pi)):
+#        print pi[len(pi)- 1 - k] "-> %s " % sequence[k]
+        print "%s -> %s " % (pi[len(pi)- 1 - k] ,sequence[k])       
+
+    return 0
+
 def evalViterbi(transitions, emission, begin_state, end_state, sequence):
     "Viterbi algorithm"
     ### NEED to handle case sequence not capitalized
@@ -122,14 +148,18 @@ def evalViterbi(transitions, emission, begin_state, end_state, sequence):
             evalMax = max(lst)
             #ptr[k-1][t-1] = lst.index(max(lst))
             ptr[k-1][t-1] = find_Argmax(trans_t[k], trans_v[t-1])
-            print(ptr)
+            #print(ptr)
             emiss = emissions[k][x_t-1]
             v[k][t] = emiss * evalMax
-        # End state: Termination step
-        trans_v = transpose_List(v)
-        evalMax = max(multList(trans_t[end_state], trans_v[seqLen]))
-        v[end_state][seqLen] = evalMax
-    print(v)
+    # End state: Termination step
+    trans_v = transpose_List(v)
+    evalMax = max(multList(trans_t[end_state], trans_v[seqLen]))
+    # pi_T
+    pi_T = find_Argmax(trans_t[end_state], trans_v[seqLen])
+    v[end_state][seqLen] = evalMax
+    #print(v)
+    print_Viterbi(v, ptr, seqLen, numStates, v[end_state][seqLen], pi_T)
+    print_path(ptr, seqLen, pi_T, sequence)
     return v 
 
 
