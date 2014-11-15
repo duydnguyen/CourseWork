@@ -77,8 +77,28 @@ def Initilize_V(numStates, seqLen):
         v[i][0] = 0
     return v
 
+def Initilize_ptr(numStates, seqLen):
+    "Initilize matrix pointer ptr with dim: row = numStates-2 (internal states), column = t (seq. position) "
+    ptr = []
+    ptr = [[-1 for x in range(seqLen)] for y in range(numStates-2)]
+    return ptr
+                  
+
+
 def transpose_List(l):
     return  [list(i) for i in zip(*l)]
+
+def find_Argmax(a_l, v_l):
+    "find argmax for pointer ptr"
+    #vals = [x for x in a_l if x!= -1]
+    lst = []
+    for i in range(len(a_l)):
+        if a_l[i] != -1:
+            lst.append(a_l[i] * v_l[i])
+        else:
+            lst.append(-10000)
+    print(lst)
+    return lst.index(max(lst))
 
 def evalViterbi(transitions, emission, begin_state, end_state, sequence):
     "Viterbi algorithm"
@@ -90,14 +110,19 @@ def evalViterbi(transitions, emission, begin_state, end_state, sequence):
     trans_t = transpose_List(transitions)
     # Initialize matrix v
     v = Initilize_V(numStates, seqLen)
+    ptr = Initilize_ptr(numStates, seqLen)
     ## Main 
-#    import pdb; pdb.set_trace()
+    import pdb; pdb.set_trace()
     for t in range(1, seqLen+1):
         x_t = index[sequence[t-1]]
         # only handle case when states are not begin state; does not compute end state 
         for k in range(1, numStates-1):
             trans_v = transpose_List(v)
-            evalMax = max(multList(trans_t[k], trans_v[t-1]))
+            lst = multList(trans_t[k], trans_v[t-1])
+            evalMax = max(lst)
+            #ptr[k-1][t-1] = lst.index(max(lst))
+            ptr[k-1][t-1] = find_Argmax(trans_t[k], trans_v[t-1])
+            #print(ptr)
             emiss = emissions[k][x_t-1]
             v[k][t] = emiss * evalMax
         # End state: Termination step
@@ -111,13 +136,13 @@ def evalViterbi(transitions, emission, begin_state, end_state, sequence):
 
     
 if __name__ == '__main__':
-    transitions = read_transitions('Tests/transition1.txt')
+    transitions = read_transitions('Tests/transition2.txt')
     numStates = len(transitions)
-    emissions = read_emissions('Tests/emission1.txt', numStates)
+    emissions = read_emissions('Tests/emission2.txt', numStates)
     begin_state = 0
     end_state = 5
-#    sequence = 'TAG'
-    sequence = 'GCTT'
+    sequence = 'TAG'
+#    sequence = 'GCTT'
 
     v = evalViterbi(transitions, emissions, begin_state, end_state, sequence)
     
