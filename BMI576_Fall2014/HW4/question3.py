@@ -170,17 +170,17 @@ if __name__ == '__main__':
     numStates = len(transitions)
     emissions = read_emissions('Tests/emission1.txt', numStates)
     # Used for tests 1 and 2
-    begin_state = 0
-    end_state = 5
+#    begin_state = 0
+#    end_state = 5
 #    sequence = 'TAG' # used for test 2
-    sequence = 'GCTT' # used for test 1
+#    sequence = 'GCTT' # used for test 1
 
     #used for test 3
-    #begin_state = 0
-    #end_state = 3
-    #sequence = 'GCTT'
+    begin_state = 0
+    end_state = 3
+    sequence = 'GCTT'
 
     v = evalViterbi(transitions, emissions, begin_state, end_state, sequence)
-    
+
 
     
