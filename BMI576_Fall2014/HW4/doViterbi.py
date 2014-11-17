@@ -42,7 +42,7 @@ def read_transitions(filename):
 
 def read_emissions(filename, numStates):
     "Read emission probabilities from emissions.txt with order A, C, G, Tx"
-    ### NEED to fix the case when states are not in consecutive orders; capital/noncapital A, C, G, T
+    ### NEED to fix the case when states are not in consecutive orders
     ### map state 0 -> begin, state numState -> end
     emissions = {}
     index = {'A':1, 'C':2, 'G':3, 'T':4}
@@ -171,21 +171,25 @@ def main(argv):
         usage()
         sys.exit(2)
     
+    ## Error handlings:
+    if len(args) < 5:
+        sys.exit('There should be a total of 5 arguments, at least one missing')
+    if len(args) > 5:
+        sys.exit('There should be a total of 5 arguments, there is at least one extra argument')
+
     File_transitions = args[0]
     File_emissions = args[1]
     begin_state = int(args[2])
+    if begin_state < 0:
+        sys.exit('Wrong begin state')
+
     end_state = int(args[3])
-    sequence = args[4]
+    sequence = args[4].upper()
     
-    ## Error handlings:
-
-
-
     return [File_transitions, File_emissions, begin_state, end_state, sequence]
     
 if __name__ == '__main__':
     inputs = main(sys.argv[1:])
-    #print(inputs)
     File_transitions = inputs[0]
     File_emissions = inputs[1]
     begin_state = inputs[2]
@@ -193,6 +197,8 @@ if __name__ == '__main__':
     sequence = inputs[4]
     transitions = read_transitions(File_transitions)
     numStates = len(transitions)
+    if int(end_state) >= numStates:
+        sys.exit('There are only ' + str(numStates - 1) + ' states. end_state argument cannot exceed ' + str(numStates - 1))
     emissions = read_emissions(File_emissions, numStates)
     v = evalViterbi(transitions, emissions, begin_state, end_state, sequence)
 

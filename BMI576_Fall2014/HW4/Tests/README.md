@@ -1,4 +1,4 @@
-1. Test 1
+1. Test 1 PASSED
 =========
 
 python doViterbi.py Tests/transition1.txt Tests/emission1.txt 0 5 GCTT
@@ -29,7 +29,7 @@ Viterbi path:
 3 -> T
 
 
-2. Test 2 
+2. Test 2 PASSED
 =========
 
 python doViterbi.py Tests/transition2.txt Tests/emission2.txt 0 5 TAG
@@ -54,7 +54,7 @@ Viterbi path:
 2 -> A
 4 -> G
 
-3. Test 3
+3. Test 3 PASSED
 =========
 
 python doViterbi.py Tests/transition3.txt Tests/emission3.txt 0 3 GCTT
