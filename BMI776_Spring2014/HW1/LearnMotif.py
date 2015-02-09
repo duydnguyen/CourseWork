@@ -9,7 +9,7 @@ import sys
 import io
 import getopt
 import numpy as np
-
+import doctest
 
 def read_sequences(filename):
     " Read sequences from file test01.txt "
@@ -45,7 +45,16 @@ def eval_product(list):
     return p
 
 def eval_prob_Zp(seq_x, pos_j, lengthW, lengthL, PWD):
-    " Compute the P(X_i  | Z_ij = 1, p)"
+    """ Compute the P(X_i  | Z_ij = 1, p); pos_j is the real index, not python index (i.e. start with 0)
+
+    >>> eval_prob_Zp('GCTGTAG', 3, 3, 7, [[0.25, 0.1, 0.5, 0.2], [0.25, 0.4, 0.2, 0.1], [0.25, 0.3, 0.1, 0.6], [0.25, 0.2, 0.2, 0.1]])
+    7.812500000000002e-06
+    >>> eval_prob_Zp('GCTGTAG', 1, 3, 7, [[0.25, 0.1, 0.5, 0.2], [0.25, 0.4, 0.2, 0.1], [0.25, 0.3, 0.1, 0.6], [0.25, 0.2, 0.2, 0.1]])
+    2.34375e-05
+    >>> eval_prob_Zp('GCTGTAG', 2, 3, 7, [[0.25, 0.1, 0.5, 0.2], [0.25, 0.4, 0.2, 0.1], [0.25, 0.3, 0.1, 0.6], [0.25, 0.2, 0.2, 0.1]])
+    0.00018750000000000003
+
+    """
     index = {'A':0, 'C':1, 'G':2, 'T':3}
     #seq_x = sequences[index_seq][0]
     # Backgroud probability vector p0
@@ -73,21 +82,51 @@ def eval_prob_Zp(seq_x, pos_j, lengthW, lengthL, PWD):
         after *= p_c0
     return before * motif * after    
 
+def init_mat(nrow, ncol):
+    " Initialize nrow-by-ncol matrix with 0"
+    return  [[0 for x in range(ncol)] for y in range(nrow)]  
+    
+def normalize(list):
+    " Normalize a list"
+    tot = sum(list)
+    for i in range(len(list)):
+        list[i] = float(list[i]) / tot
+    return list
+
+def E_step(sequences, lengthN, lengthW, lengthL, PWD):
+    """ Perform the E-step to estimate matrix Z(t). Z(t) must have row sum to 1.
+    
+    """
+    matZ = init_mat(lengthN, lengthL - lengthW + 1)
+    for i in range(lengthN):
+        seq_x = sequences[i][0]
+        for j in range(1, lengthL - lengthW + 2):
+            #import pdb; pdb.set_trace()
+            matZ[i][j-1]=  eval_prob_Zp(seq_x, j, lengthW, lengthL, PWD)
+        matZ[i] = normalize(matZ[i])
+    return matZ    
 
 if __name__ == '__main__':
     sequences = []
     lengthW = 3
     lengthL = 7
-    # create  the probability weight matrix filled with 0: rows' orders = a, c, g, t
-    PWD = [[0 for x in range(lengthW + 1)] for y in range(4)]    
-    # Initialize PWD
+    ## Create  the probability weight matrix filled with 0: rows' orders = a, c, g, t
+    PWD = init_mat(lengthW + 1, 4)
+    ## Initialize PWD
     #PWD = init_PWD(lengthW)
     PWD = [[0.25, 0.1, 0.5, 0.2], [0.25, 0.4, 0.2, 0.1], [0.25, 0.3, 0.1, 0.6], [0.25, 0.2, 0.2, 0.1]]
-
     sequences = read_sequences('Data/test01.txt')
-    seq_x = sequences[0][0]
-    foo = eval_prob_Zp('GCTGTAG', 3, lengthW, lengthL, PWD)
-    print foo
+    ## number of DNA sequences
+    lengthN = len(sequences)
+    ## Create  the Z matrix of latent variables for motif positions filled with 0: 
+    matZ = init_mat(lengthN, lengthL - lengthW + 1)
+    matZ = E_step(sequences, lengthN, lengthW, lengthL, PWD)
+    print matZ
+    #seq_x = sequences[0][0]
+    #foo = eval_prob_Zp('GCTGTAG', 5, lengthW, lengthL, PWD)
+    #print foo
+    #doctest.testmod()
+    
     
 
 
