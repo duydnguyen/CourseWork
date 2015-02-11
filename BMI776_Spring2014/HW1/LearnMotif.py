@@ -106,6 +106,54 @@ def E_step(sequences, lengthN, lengthW, lengthL, PWD):
         matZ[i] = normalize(matZ[i])
     return matZ    
 
+def find_index(seq_x, char, index_k, lengthW, lengthL ):
+    """ Given seq X, find the set of indices j <= L-W+1 such that X_{j+1-1} = char
+    note that j indexed in python (start at 0, not 1)
+    >>> find_index('ACAGCA', 'A', 1, 3, 6)
+    [0, 2]
+    >>> find_index('ACAGCA', 'C', 1, 3, 6)
+    [1]
+    >>> find_index('ACAGCA', 'G', 1, 3, 6)
+    [3]
+    >>> find_index('ACAGCA', 'T', 1, 3, 6)
+    []
+    >>> find_index('AGGCAG', 'A', 1, 3, 6)
+    [0]
+    >>> find_index('ACAGCA', 'C', 1, 2, 6)
+    [1, 4]
+    >>> find_index('ACAGCA', 'C', 3, 3, 6)
+    [2]
+    
+    """
+    #>>> find_index('ACAGCA', 'C', 4, 3, 6)
+    seq = seq_x[0:(lengthL - lengthW + 1)]
+    index_j = []
+    for j in range(len(seq)):
+        if seq_x[j + index_k - 1] == char:
+            index_j.append(j)
+    return index_j
+                   
+
+def eval_n_ck(sequences, lengthN, lengthW, lengthL, matZ):
+    """ Evaluate matrix matN = [ n_ck ] where n_ck = number of the char 'c' occuring at position k over all seqs  
+
+    """
+    matN = init_mat(lengthW + 1, 4)
+    
+    k = 1
+    for i in range(lengthN):
+        seq_x = sequences[i][0]
+        for j in range(1, lengthL - lengthW + 2):
+            k = 1
+            
+
+    return matN 
+
+def M_step():
+    """ Perform the M-step to estimate matrix PWD
+    """
+    return 0
+
 if __name__ == '__main__':
     sequences = []
     lengthW = 3
@@ -115,17 +163,36 @@ if __name__ == '__main__':
     ## Initialize PWD
     #PWD = init_PWD(lengthW)
     PWD = [[0.25, 0.1, 0.5, 0.2], [0.25, 0.4, 0.2, 0.1], [0.25, 0.3, 0.1, 0.6], [0.25, 0.2, 0.2, 0.1]]
-    sequences = read_sequences('Data/test01.txt')
+    #sequences = read_sequences('Data/test01.txt')
     ## number of DNA sequences
     lengthN = len(sequences)
     ## Create  the Z matrix of latent variables for motif positions filled with 0: 
     matZ = init_mat(lengthN, lengthL - lengthW + 1)
-    matZ = E_step(sequences, lengthN, lengthW, lengthL, PWD)
-    print matZ
+    #matZ = E_step(sequences, lengthN, lengthW, lengthL, PWD)
+    #print matZ
     #seq_x = sequences[0][0]
     #foo = eval_prob_Zp('GCTGTAG', 5, lengthW, lengthL, PWD)
     #print foo
     #doctest.testmod()
+
+    ### THIS IS FOR eval_n_ck()
+    sequences = [['ACAGCA'], ['AGGCAG'], ['TCAGTC']]
+    matZ = [[0.1, 0.7, 0.1, 0.1], [0.4, 0.1, 0.1, 0.4], [0.2, 0.6, 0.1, 0.1]]
+    matN = eval_n_ck(sequences, 3, 3, 6, matZ)
+    doctest.testmod()
+    print matN
+
+
+
+
+
+
+
+
+
+
+
+
     
     
 
