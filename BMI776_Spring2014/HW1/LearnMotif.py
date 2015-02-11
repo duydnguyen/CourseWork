@@ -215,7 +215,7 @@ def M_step(sequences, lengthN, lengthW, lengthL, matZ):
     [[0.30597014925373134, 0.25, 0.391304347826087, 0.21739130434782608], [0.2611940298507463, 0.39705882352941174, 0.21739130434782608, 0.18840579710144928], [0.20895522388059704, 0.20588235294117643, 0.24637681159420288, 0.4492753623188406], [0.2238805970149254, 0.14705882352941174, 0.14492753623188406, 0.14492753623188406]]
 
     """
-    matP = init_mat(lengthW + 1, 4)
+    matP = init_mat(4, lengthW + 1)
     matN = eval_n_ck(sequences, lengthN, lengthW, lengthL, matZ)
     # index k for column
     for k in range(lengthW + 1):
@@ -227,33 +227,58 @@ def M_step(sequences, lengthN, lengthW, lengthL, matZ):
     return matP
 
 if __name__ == '__main__':
+    # sequences = []
+    # lengthW = 3
+    # lengthL = 7
+    # ## Create  the probability weight matrix filled with 0: rows' orders = a, c, g, t
+    # PWD = init_mat(4, lengthW + 1)
+    # ## Initialize PWD
+    # #PWD = init_PWD(lengthW)
+    # PWD = [[0.25, 0.1, 0.5, 0.2], [0.25, 0.4, 0.2, 0.1], [0.25, 0.3, 0.1, 0.6], [0.25, 0.2, 0.2, 0.1]]
+    # #sequences = read_sequences('Data/test01.txt')
+    # ## number of DNA sequences
+    # lengthN = len(sequences)
+    # ## Create  the Z matrix of latent variables for motif positions filled with 0: 
+    # matZ = init_mat(lengthN, lengthL - lengthW + 1)
+    # #matZ = E_step(sequences, lengthN, lengthW, lengthL, PWD)
+    # #print matZ
+    # #seq_x = sequences[0][0]
+    # #foo = eval_prob_Zp('GCTGTAG', 5, lengthW, lengthL, PWD)
+    # #print foo
+    # #sequences = [['ACAGCA'], ['AGGCAG'], ['TCAGTC']]
+    # #matZ = [[0.1, 0.7, 0.1, 0.1], [0.4, 0.1, 0.1, 0.4], [0.2, 0.6, 0.1, 0.1]]    
+    # #M_step(sequences, 3, 3, 6, matZ)
+    # #doctest.testmod()
+
+    # sequences = []
+    # sequences = read_sequences('Data/test01.txt')
+    # lengthW = 3
+    # lengthL = 7
+    # lengthN = len(sequences)
+    # #PWD = [[0.25, 0.1, 0.5, 0.2], [0.25, 0.4, 0.2, 0.1], [0.25, 0.3, 0.1, 0.6], [0.25, 0.2, 0.2, 0.1]]
+    # PWD = init_PWD(lengthW)
+    # matZ = E_step(sequences, lengthN, lengthW, lengthL, PWD)
+    # matP = M_step(sequences, lengthN, lengthW, lengthL, matZ)
+
+    # for i in range(50):
+    #     matZ = E_step(sequences, lengthN, lengthW, lengthL, matP)
+    #     matP = M_step(sequences, lengthN, lengthW, lengthL, matZ)
+    #     print matP[0]
+
     sequences = []
-    lengthW = 3
-    lengthL = 7
-    ## Create  the probability weight matrix filled with 0: rows' orders = a, c, g, t
-    PWD = init_mat(4, lengthW + 1)
-    ## Initialize PWD
-    #PWD = init_PWD(lengthW)
-    PWD = [[0.25, 0.1, 0.5, 0.2], [0.25, 0.4, 0.2, 0.1], [0.25, 0.3, 0.1, 0.6], [0.25, 0.2, 0.2, 0.1]]
-    #sequences = read_sequences('Data/test01.txt')
-    ## number of DNA sequences
+    sequences = read_sequences('Data/hw1_hidden_motif.txt')
+    lengthW = 14
+    lengthL = 200
     lengthN = len(sequences)
-    ## Create  the Z matrix of latent variables for motif positions filled with 0: 
-    matZ = init_mat(lengthN, lengthL - lengthW + 1)
-    #matZ = E_step(sequences, lengthN, lengthW, lengthL, PWD)
-    #print matZ
-    #seq_x = sequences[0][0]
-    #foo = eval_prob_Zp('GCTGTAG', 5, lengthW, lengthL, PWD)
-    #print foo
-    sequences = [['ACAGCA'], ['AGGCAG'], ['TCAGTC']]
-    matZ = [[0.1, 0.7, 0.1, 0.1], [0.4, 0.1, 0.1, 0.4], [0.2, 0.6, 0.1, 0.1]]    
-    #M_step(sequences, 3, 3, 6, matZ)
-    #doctest.testmod()
+    #PWD = [[0.25, 0.1, 0.5, 0.2], [0.25, 0.4, 0.2, 0.1], [0.25, 0.3, 0.1, 0.6], [0.25, 0.2, 0.2, 0.1]]
+    PWD = init_PWD(lengthW)
+    matZ = E_step(sequences, lengthN, lengthW, lengthL, PWD)
+    matP = M_step(sequences, lengthN, lengthW, lengthL, matZ)
 
-
-
-
-
+    for i in range(50):
+        matZ = E_step(sequences, lengthN, lengthW, lengthL, matP)
+        matP = M_step(sequences, lengthN, lengthW, lengthL, matZ)
+        print matP[0]
 
 
 
