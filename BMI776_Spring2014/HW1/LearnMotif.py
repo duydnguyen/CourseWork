@@ -160,32 +160,78 @@ def find_index(seq_x, char, index_k, lengthW, lengthL ):
     return index_j
                    
 
+def total_char(seq_x, char):
+    " Given seq X, count the total # of c's"
+    total = 0
+    for i in range(len(seq_x)):
+        if seq_x[i] == char:
+            total += 1
+    return total
+    
+
 def eval_n_ck(sequences, lengthN, lengthW, lengthL, matZ):
     """ Evaluate matrix matN = [ n_ck ] where n_ck = number of the char 'c' occuring at position k over all seqs  
 
+    >>> eval_n_ck([['ACAGCA'], ['AGGCAG'], ['TCAGTC']], 3, 3, 6, [[0.1, 0.7, 0.1, 0.1], [0.4, 0.1, 0.1, 0.4], [0.2, 0.6, 0.1, 0.1]])
+    [[3.0999999999999996, 0.7000000000000001, 1.7000000000000002, 0.5], [2.5, 1.7000000000000002, 0.5, 0.30000000000000004], [1.7999999999999998, 0.4, 0.7, 2.1], [2, 0, 0, 0]]
+
     """
-    matN = init_mat(lengthW + 1, 4)
-    
-    k = 1
-    for i in range(lengthN):
-        seq_x = sequences[i][0]
-        for j in range(1, lengthL - lengthW + 2):
-            k = 1
-            
+    # matN is a 4-by-(W + 1) matrix
+    matN = init_mat(4, lengthW + 1)
+    index = {'A':0, 'C':1, 'G':2, 'T':3}
+    dic = {0:'A', 1:'C', 2:'G', 3:'T'}
+    # index i: 0->A, 1->C, 2->G, 3->T
+    # import pdb; pdb.set_trace()
+    ## CASE k > 0
+    for i in range(3):
+        # k in {1, ..., W}; k = 0 will compute later
+        for k in range(1, lengthW + 1):
+            for seq_index in range(lengthN):
+                seq_x = sequences[seq_index][0]
+                char = dic[i]
+                index_j = find_index(seq_x, char, k, lengthW, lengthL)
+                for jj in index_j:
+                    matN[i][k] += matZ[seq_index][jj-1]
+
+    ## CASE K = 0
+    # Compute n_c = total of char c in the data set
+    n_c = []
+    # index i for {A, C, G, T}
+    for i in range(4):
+        char = dic[i]
+        total = 0
+        for seq_index in range(lengthN):
+            seq_x = sequences[seq_index][0]
+            total += total_char(seq_x, char)
+        n_c.append(total)
+        matN[i][0] = n_c[i] - sum(matN[i])
 
     return matN 
 
-def M_step():
+def M_step(sequences, lengthN, lengthW, lengthL, matZ):
     """ Perform the M-step to estimate matrix PWD
+    
+    >>> M_step([['ACAGCA'], ['AGGCAG'], ['TCAGTC']], 3, 3, 6, [[0.1, 0.7, 0.1, 0.1], [0.4, 0.1, 0.1, 0.4], [0.2, 0.6, 0.1, 0.1]])
+    [[0.30597014925373134, 0.25, 0.391304347826087, 0.21739130434782608], [0.2611940298507463, 0.39705882352941174, 0.21739130434782608, 0.18840579710144928], [0.20895522388059704, 0.20588235294117643, 0.24637681159420288, 0.4492753623188406], [0.2238805970149254, 0.14705882352941174, 0.14492753623188406, 0.14492753623188406]]
+
     """
-    return 0
+    matP = init_mat(lengthW + 1, 4)
+    matN = eval_n_ck(sequences, lengthN, lengthW, lengthL, matZ)
+    # index k for column
+    for k in range(lengthW + 1):
+        vec = get_column(matN, k)
+        total = sum(vec)
+        # index i for row
+        for i in range(4):
+            matP[i][k] = float(vec[i] + 1)/ (total + 4 )
+    return matP
 
 if __name__ == '__main__':
     sequences = []
     lengthW = 3
     lengthL = 7
     ## Create  the probability weight matrix filled with 0: rows' orders = a, c, g, t
-    PWD = init_mat(lengthW + 1, 4)
+    PWD = init_mat(4, lengthW + 1)
     ## Initialize PWD
     #PWD = init_PWD(lengthW)
     PWD = [[0.25, 0.1, 0.5, 0.2], [0.25, 0.4, 0.2, 0.1], [0.25, 0.3, 0.1, 0.6], [0.25, 0.2, 0.2, 0.1]]
@@ -199,14 +245,10 @@ if __name__ == '__main__':
     #seq_x = sequences[0][0]
     #foo = eval_prob_Zp('GCTGTAG', 5, lengthW, lengthL, PWD)
     #print foo
-    #doctest.testmod()
-
-    ### THIS IS FOR eval_n_ck()
     sequences = [['ACAGCA'], ['AGGCAG'], ['TCAGTC']]
-    matZ = [[0.1, 0.7, 0.1, 0.1], [0.4, 0.1, 0.1, 0.4], [0.2, 0.6, 0.1, 0.1]]
-    matN = eval_n_ck(sequences, 3, 3, 6, matZ)
-    doctest.testmod()
-    print matN
+    matZ = [[0.1, 0.7, 0.1, 0.1], [0.4, 0.1, 0.1, 0.4], [0.2, 0.6, 0.1, 0.1]]    
+    #M_step(sequences, 3, 3, 6, matZ)
+    #doctest.testmod()
 
 
 
