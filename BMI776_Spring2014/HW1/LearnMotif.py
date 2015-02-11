@@ -108,28 +108,54 @@ def E_step(sequences, lengthN, lengthW, lengthL, PWD):
 
 def find_index(seq_x, char, index_k, lengthW, lengthL ):
     """ Given seq X, find the set of indices j <= L-W+1 such that X_{j+1-1} = char
-    note that j indexed in python (start at 0, not 1)
+    note that j indexed in MEME (start at 1, not 0)
+    j in {1, 2, ..., L-W+1}; k in {1,2,..., W}
+
     >>> find_index('ACAGCA', 'A', 1, 3, 6)
-    [0, 2]
-    >>> find_index('ACAGCA', 'C', 1, 3, 6)
-    [1]
-    >>> find_index('ACAGCA', 'G', 1, 3, 6)
-    [3]
-    >>> find_index('ACAGCA', 'T', 1, 3, 6)
-    []
+    [1, 3]
     >>> find_index('AGGCAG', 'A', 1, 3, 6)
-    [0]
-    >>> find_index('ACAGCA', 'C', 1, 2, 6)
-    [1, 4]
-    >>> find_index('ACAGCA', 'C', 3, 3, 6)
-    [2]
+    [1]
+    >>> find_index('TCAGTC', 'A', 1, 3, 6)
+    [3]
     
+    >>> find_index('ACAGCA', 'A', 2, 3, 6)
+    [2]
+    >>> find_index('AGGCAG', 'A', 2, 3, 6)
+    [4]
+    >>> find_index('TCAGTC', 'A', 2, 3, 6)
+    [2]
+
+    >>> find_index('ACAGCA', 'A', 3, 3, 6)
+    [1, 4]
+    >>> find_index('AGGCAG', 'A', 3, 3, 6)
+    [3]
+    >>> find_index('TCAGTC', 'A', 3, 3, 6)
+    [1]
+
+    >>> find_index('ACAGCA', 'C', 1, 3, 6)
+    [2]
+    >>> find_index('AGGCAG', 'C', 1, 3, 6)
+    [4]
+    >>> find_index('TCAGTC', 'C', 1, 3, 6)
+    [2]
+
+    >>> find_index('ACAGCA', 'C', 2, 3, 6)
+    [1, 4]
+    >>> find_index('AGGCAG', 'C', 2, 3, 6)
+    [3]
+    >>> find_index('TCAGTC', 'C', 2, 3, 6)
+    [1]
+
+    >>> find_index('ACAGCA', 'C', 3, 3, 6)
+    [3]
+    >>> find_index('AGGCAG', 'C', 3, 3, 6)
+    [2]
+    >>> find_index('TCAGTC', 'C', 3, 3, 6)
+    [4]
     """
-    #>>> find_index('ACAGCA', 'C', 4, 3, 6)
-    seq = seq_x[0:(lengthL - lengthW + 1)]
     index_j = []
-    for j in range(len(seq)):
-        if seq_x[j + index_k - 1] == char:
+    for j in range(1, lengthL - lengthW + 1 + 1):
+        if seq_x[j + index_k - 1 - 1] == char:
             index_j.append(j)
     return index_j
                    
