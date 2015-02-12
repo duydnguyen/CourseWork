@@ -10,6 +10,7 @@ import io
 import getopt
 import numpy as np
 import doctest
+from math import log
 
 def read_sequences(filename):
     " Read sequences from file test01.txt "
@@ -45,7 +46,7 @@ def eval_product(list):
     return p
 
 def eval_prob_Zp(seq_x, pos_j, lengthW, lengthL, PWD):
-    """ Compute the P(X_i  | Z_ij = 1, p); pos_j is the real index, not python index (i.e. start with 0)
+    """ Compute the P(X_i  | Z_ij = 1, p); pos_j is the real index, not python index (i.e. in python , start with 0)
 
     >>> eval_prob_Zp('GCTGTAG', 3, 3, 7, [[0.25, 0.1, 0.5, 0.2], [0.25, 0.4, 0.2, 0.1], [0.25, 0.3, 0.1, 0.6], [0.25, 0.2, 0.2, 0.1]])
     7.812500000000002e-06
@@ -226,6 +227,21 @@ def M_step(sequences, lengthN, lengthW, lengthL, matZ):
             matP[i][k] = float(vec[i] + 1)/ (total + 4 )
     return matP
 
+def eval_LogL(sequences, lengthN, lengthW, lengthL, matP):
+    "Given the PWD matrix matP, evaluate the log-likelihood log P(D | p)"
+    logL = 0
+    #eval_prob_Zp('GCTGTAG', 2, 3, 7, [[0.25, 0.1, 0.5, 0.2], [0.25, 0.4, 0.2, 0.1], [0.25, 0.3, 0.1, 0.6], [0.25, 0.2, 0.2, 0.1]])
+    #import pdb; pdb.set_trace()
+    prod= 1
+    for i in range(lengthN):
+        seq_x = sequences[i][0]
+        sum_P_i = 0 
+        for j in range(1, lengthL - lengthW + 2):
+            sum_P_i += eval_product_Zp(seq_x, j, lengthW, lengthL, matP)
+        prod *= sum_P_i    
+    logL = -n*log(lengthL - lengthW + 1) + log(prod)
+    return logL
+
 if __name__ == '__main__':
     # sequences = []
     # lengthW = 3
@@ -273,12 +289,13 @@ if __name__ == '__main__':
     #PWD = [[0.25, 0.1, 0.5, 0.2], [0.25, 0.4, 0.2, 0.1], [0.25, 0.3, 0.1, 0.6], [0.25, 0.2, 0.2, 0.1]]
     PWD = init_PWD(lengthW)
     matZ = E_step(sequences, lengthN, lengthW, lengthL, PWD)
+    #matN = eval_n_ck(sequences, lengthN, lengthW, lengthL, matZ)
     matP = M_step(sequences, lengthN, lengthW, lengthL, matZ)
 
-    for i in range(50):
-        matZ = E_step(sequences, lengthN, lengthW, lengthL, matP)
-        matP = M_step(sequences, lengthN, lengthW, lengthL, matZ)
-        print matP[0]
+    # for i in range(2):
+    #     matZ = E_step(sequences, lengthN, lengthW, lengthL, matP)
+    #     matP = M_step(sequences, lengthN, lengthW, lengthL, matZ)
+    #     print matP[0]
 
 
 
