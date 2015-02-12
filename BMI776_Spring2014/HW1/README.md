@@ -16,6 +16,6 @@ of the motif model to learn, *model_file* is the name of a file to which you wil
 + The input ***sequences_file*** will contain the DNA sequences, with one sequence per
 line.
 
-The output positions file should simply contain a list of the best position for
+The output ***positions_file*** should simply contain a list of the best position for
 the motif in each sequence, one position per line. The ***model_file*** should contain a tab-delimited profile matrix (PWD matrix), with the background frequencies in the first
 column.
