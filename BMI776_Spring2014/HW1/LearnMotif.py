@@ -38,6 +38,24 @@ def init_PWD(lengthW):
         mat[3][i] = 1 - sum(col)   
     return mat
 
+def init_PWD_seed(lengthW, seed):
+    " Initialize PWD matrix from the random number with the given seed "
+    mat = [[0 for x in range(lengthW+1)] for y in range(4)]    
+    np.random.seed(seed)
+    prob_main = np.random.randint(1, 100, 4 * (lengthW + 1))
+    #import pdb; pdb.set_trace()
+    for i in range(lengthW + 1):
+        start = 4 * i 
+        end = start + 4
+        prob = prob_main[start:end]
+        tot = sum(prob)
+        for j in range(3):
+           mat[j][i] = round(float(prob[j]) / tot, 3)
+        col = [row[i] for row in mat]
+        mat[3][i] = 1 - sum(col)   
+    return mat
+
+
 def eval_product(list):
     " Compute the product of a list"
     p = 1
@@ -269,55 +287,79 @@ if __name__ == '__main__':
     # #M_step(sequences, 3, 3, 6, matZ)
     # #doctest.testmod()
 
-    # sequences = []
-    # sequences = read_sequences('Data/test01.txt')
-    # lengthW = 3
-    # lengthL = 7
-    # lengthN = len(sequences)
-    # #PWD = [[0.25, 0.1, 0.5, 0.2], [0.25, 0.4, 0.2, 0.1], [0.25, 0.3, 0.1, 0.6], [0.25, 0.2, 0.2, 0.1]]
-    # PWD = init_PWD(lengthW)
-    # matZ = E_step(sequences, lengthN, lengthW, lengthL, PWD)
-    # matP = M_step(sequences, lengthN, lengthW, lengthL, matZ)
-
-    # for i in range(50):
-    #     matZ = E_step(sequences, lengthN, lengthW, lengthL, matP)
-    #     matP = M_step(sequences, lengthN, lengthW, lengthL, matZ)
-    #     print matP[0]
-
+   
     sequences = []
     sequences = read_sequences('Data/hw1_hidden_motif.txt')
     lengthW = 14
     lengthL = 200
     lengthN = len(sequences)
-    #PWD = [[0.25, 0.1, 0.5, 0.2], [0.25, 0.4, 0.2, 0.1], [0.25, 0.3, 0.1, 0.6], [0.25, 0.2, 0.2, 0.1]]
 
-    ### Initilize PWD matrix
-    PWD = init_PWD(lengthW)
-    ### Run first iteration
-    matZ = E_step(sequences, lengthN, lengthW, lengthL, PWD)
-    matP = M_step(sequences, lengthN, lengthW, lengthL, matZ)
-    logL_prev = eval_LogL(sequences, lengthN, lengthW, lengthL, matP)
-    ### index for interation
-    t = 0
-    mat_t = 1000
-    ### Cut-off threshold for log-likelihood
-    epsilon = 0.001
-    check = False # False if change in logL >= epsilon
-    while ( (t <= mat_t) and (check == False) ):
-        t += 1
-        # E-step: re-estimate Z(t)
-        matZ = E_step(sequences, lengthN, lengthW, lengthL, matP)
-        # M-step: re-estimate P(t)
+    ### seed =  number of starting points
+    seed = 100
+    logL_seed = float('-inf')
+    best_seed = -1
+    matZ_best = []
+    matP_best = []
+    for s in range(seed):
+        print '+++ seed = ' + str(s)
+        ### Initilize PWD matrix
+        PWD = init_PWD_seed(lengthW, seed = s )
+        ### Run first iteration
+        matZ = E_step(sequences, lengthN, lengthW, lengthL, PWD)
         matP = M_step(sequences, lengthN, lengthW, lengthL, matZ)
-        # Compute the log likelihood log P(D| p)
-        logL = eval_LogL(sequences, lengthN, lengthW, lengthL, matP)
-        # Check for change in logL < epsilon
-        if abs(logL - logL_prev) < epsilon:
-            check = True
-        else:
-            logL_prev = logL
-            print logL 
-    print logL
+        logL_prev = eval_LogL(sequences, lengthN, lengthW, lengthL, matP)
+        ### index for interation
+        t = 0
+        max_t = 1000
+        ### Cut-off threshold for log-likelihood
+        epsilon = 0.001
+        check = False # False if change in logL >= epsilon
+        while ( (t <= max_t) and (check == False) ):
+            t += 1
+            # E-step: re-estimate Z(t)
+            matZ = E_step(sequences, lengthN, lengthW, lengthL, matP)
+            # M-step: re-estimate P(t)
+            matP = M_step(sequences, lengthN, lengthW, lengthL, matZ)
+            # Compute the log likelihood log P(D| p)
+            logL = eval_LogL(sequences, lengthN, lengthW, lengthL, matP)
+            # Check for change in logL < epsilon
+            if abs(logL - logL_prev) < epsilon:
+                check = True
+                print logL
+                # This stores the best logL_seed = best logL with all seeds considered so far
+                if logL > logL_seed:
+                    logL_seed = logL
+                    best_seed = s
+                    matZ_best = matZ
+                    matP_best = matP
+                    print '+++ current best seed = ' + str(best_seed)
+            else:
+                logL_prev = logL
+                #print logL 
+        
+
+    ## Print the optimal logL
+    print '+++ Optimal logL' + str(logL_seed)
+    print '+++ Best seed = ' + str(best_seed)
+
+
+
+
+
+    # #run individual seed
+    # sequences = []
+    # sequences = read_sequences('Data/hw1_hidden_motif.txt')
+    # lengthW = 14
+    # lengthL = 200
+    # lengthN = len(sequences)
+    # matP = init_PWD_seed(lengthW, 10)
+    # # E-step: re-estimate Z(t)
+    # matZ = E_step(sequences, lengthN, lengthW, lengthL, matP)
+    # # M-step: re-estimate P(t)
+    # matP = M_step(sequences, lengthN, lengthW, lengthL, matZ)
+    # # Compute the log likelihood log P(D| p)
+    # logL = eval_LogL(sequences, lengthN, lengthW, lengthL, matP)
+    # print logL
             
 
 
