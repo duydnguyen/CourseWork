@@ -125,6 +125,27 @@ def E_step(sequences, lengthN, lengthW, lengthL, PWD):
         matZ[i] = normalize(matZ[i])
     return matZ    
 
+def E_step_update(sequences, lengthN, lengthW, lengthL, PWD):
+    """ Perform the E-step to estimate matrix Z(t). Z(t) must have row sum to 1.
+    This function returns matrix matZ for Z(t) and also the log-likelihood logP(D|matP(t-1))
+    """
+    logL = 0
+    tot_log = 0
+    matZ = init_mat(lengthN, lengthL - lengthW + 1)
+    for i in range(lengthN):
+        seq_x = sequences[i][0]
+        sum_P = 0
+        for j in range(1, lengthL - lengthW + 2):
+            #import pdb; pdb.set_trace()
+            matZ[i][j-1]=  eval_prob_Zp(seq_x, j, lengthW, lengthL, PWD)
+            sum_P += eval_prob_Zp(seq_x, j, lengthW, lengthL, PWD)
+        matZ[i] = normalize(matZ[i])
+        sum_P = log(sum_P)
+        tot_log += sum_P
+    logL = -lengthN * log(lengthL - lengthW + 1) + tot_log
+    return matZ, logL    
+
+
 def find_index(seq_x, char, index_k, lengthW, lengthL ):
     """ Given seq X, find the set of indices j <= L-W+1 such that X_{j+1-1} = char
     note that j indexed in MEME (start at 1, not 0)
@@ -246,10 +267,8 @@ def M_step(sequences, lengthN, lengthW, lengthL, matZ):
     return matP
 
 def eval_LogL(sequences, lengthN, lengthW, lengthL, matP):
-    "Given the PWD matrix matP, evaluate the log-likelihood log P(D | p)"
+    "Given the PWD matrix matP, evaluate the log-likelihood log P(D | matP(t))"
     logL = 0
-    #eval_prob_Zp('GCTGTAG', 2, 3, 7, [[0.25, 0.1, 0.5, 0.2], [0.25, 0.4, 0.2, 0.1], [0.25, 0.3, 0.1, 0.6], [0.25, 0.2, 0.2, 0.1]])
-    #import pdb; pdb.set_trace()
     tot_log = 0
     for i in range(lengthN):
         #import pdb; pdb.set_trace()    
@@ -295,44 +314,48 @@ if __name__ == '__main__':
     lengthN = len(sequences)
 
     ### seed =  number of starting points
-    seed = 100
+    seed = 10000
     logL_seed = float('-inf')
     best_seed = -1
     matZ_best = []
     matP_best = []
     for s in range(seed):
+        print '++++++++++++++++++++++++++++++++++++++++++++++++++'
         print '+++ seed = ' + str(s)
         ### Initilize PWD matrix
-        PWD = init_PWD_seed(lengthW, seed = s )
-        ### Run first iteration
-        matZ = E_step(sequences, lengthN, lengthW, lengthL, PWD)
+        matP = init_PWD_seed(lengthW, seed = s )
+        ### Run first iteration: logL_prev from matP(t-1)
+        matZ, logL_prev = E_step_update(sequences, lengthN, lengthW, lengthL, matP)
         matP = M_step(sequences, lengthN, lengthW, lengthL, matZ)
-        logL_prev = eval_LogL(sequences, lengthN, lengthW, lengthL, matP)
+        #logL_prev = eval_LogL(sequences, lengthN, lengthW, lengthL, matP)
         ### index for interation
         t = 0
-        max_t = 1000
+        max_t = 10000
         ### Cut-off threshold for log-likelihood
         epsilon = 0.001
         check = False # False if change in logL >= epsilon
         while ( (t <= max_t) and (check == False) ):
             t += 1
-            # E-step: re-estimate Z(t)
-            matZ = E_step(sequences, lengthN, lengthW, lengthL, matP)
-            # M-step: re-estimate P(t)
+            # E-step: re-estimate Z(t), and compute logL from the new matP(t)
+            matZ, logL = E_step_update(sequences, lengthN, lengthW, lengthL, matP)
+            # M-step: re-estimate matP(t+1)
             matP = M_step(sequences, lengthN, lengthW, lengthL, matZ)
-            # Compute the log likelihood log P(D| p)
-            logL = eval_LogL(sequences, lengthN, lengthW, lengthL, matP)
+            
+            ## Compute the log likelihood log P(D| p)
+            #logL = eval_LogL(sequences, lengthN, lengthW, lengthL, matP)
+            
             # Check for change in logL < epsilon
             if abs(logL - logL_prev) < epsilon:
                 check = True
                 print logL
+                print '++++++ current best seed = ' + str(best_seed)
                 # This stores the best logL_seed = best logL with all seeds considered so far
                 if logL > logL_seed:
                     logL_seed = logL
                     best_seed = s
                     matZ_best = matZ
                     matP_best = matP
-                    print '+++ current best seed = ' + str(best_seed)
+                    print '++++++ current best seed = ' + str(best_seed)
             else:
                 logL_prev = logL
                 #print logL 
@@ -341,6 +364,10 @@ if __name__ == '__main__':
     ## Print the optimal logL
     print '+++ Optimal logL' + str(logL_seed)
     print '+++ Best seed = ' + str(best_seed)
+
+    # get the best starting pos for seq 1
+    #matZ_best[0].index(max(matZ_best[0]))
+
 
 
 
