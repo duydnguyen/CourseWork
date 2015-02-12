@@ -321,17 +321,19 @@ if __name__ == '__main__':
     lengthW = 14
     lengthL = 200
     lengthN = len(sequences)
-
     ### seed =  number of starting points
-    seed = 10
+    tot_seed = 5
+    count_seed = 0
     logL_seed = float('-inf')
     best_seed = -1
     matZ_best = []
     matP_best = []
-    for s in range(seed):
+    while (count_seed < tot_seed):
+        count_seed += 1
         print '++++++++++++++++++++++++++++++++++++++++++++++++++'
-        print '+++ seed = ' + str(s)
+        print '+++ starting point number = ' + str(count_seed)
         ### Initilize PWD matrix
+        s = 2 * (count_seed - 1) + 1 
         matP = init_PWD_seed(lengthW, seed = s )
         ### Run first iteration: logL_prev from matP(t-1)
         matZ, logL_prev = E_step_update(sequences, lengthN, lengthW, lengthL, matP)
@@ -369,4 +371,4 @@ if __name__ == '__main__':
     ## Output: model_file which contains PWD matrix
     output_model(lengthW, matP_best, model_file)
     ## Output: positions_file which contains the best motif starting positions for each sequence
-    output_positions(lengthN, matZ, positions_file)
+    output_positions(lengthN, matZ_best, positions_file)
