@@ -283,30 +283,6 @@ def eval_LogL(sequences, lengthN, lengthW, lengthL, matP):
     return logL
 
 if __name__ == '__main__':
-    # sequences = []
-    # lengthW = 3
-    # lengthL = 7
-    # ## Create  the probability weight matrix filled with 0: rows' orders = a, c, g, t
-    # PWD = init_mat(4, lengthW + 1)
-    # ## Initialize PWD
-    # #PWD = init_PWD(lengthW)
-    # PWD = [[0.25, 0.1, 0.5, 0.2], [0.25, 0.4, 0.2, 0.1], [0.25, 0.3, 0.1, 0.6], [0.25, 0.2, 0.2, 0.1]]
-    # #sequences = read_sequences('Data/test01.txt')
-    # ## number of DNA sequences
-    # lengthN = len(sequences)
-    # ## Create  the Z matrix of latent variables for motif positions filled with 0: 
-    # matZ = init_mat(lengthN, lengthL - lengthW + 1)
-    # #matZ = E_step(sequences, lengthN, lengthW, lengthL, PWD)
-    # #print matZ
-    # #seq_x = sequences[0][0]
-    # #foo = eval_prob_Zp('GCTGTAG', 5, lengthW, lengthL, PWD)
-    # #print foo
-    # #sequences = [['ACAGCA'], ['AGGCAG'], ['TCAGTC']]
-    # #matZ = [[0.1, 0.7, 0.1, 0.1], [0.4, 0.1, 0.1, 0.4], [0.2, 0.6, 0.1, 0.1]]    
-    # #M_step(sequences, 3, 3, 6, matZ)
-    # #doctest.testmod()
-
-   
     sequences = []
     sequences = read_sequences('Data/hw1_hidden_motif.txt')
     lengthW = 14
@@ -327,7 +303,6 @@ if __name__ == '__main__':
         ### Run first iteration: logL_prev from matP(t-1)
         matZ, logL_prev = E_step_update(sequences, lengthN, lengthW, lengthL, matP)
         matP = M_step(sequences, lengthN, lengthW, lengthL, matZ)
-        #logL_prev = eval_LogL(sequences, lengthN, lengthW, lengthL, matP)
         ### index for interation
         t = 0
         max_t = 10000
@@ -340,10 +315,6 @@ if __name__ == '__main__':
             matZ, logL = E_step_update(sequences, lengthN, lengthW, lengthL, matP)
             # M-step: re-estimate matP(t+1)
             matP = M_step(sequences, lengthN, lengthW, lengthL, matZ)
-            
-            ## Compute the log likelihood log P(D| p)
-            #logL = eval_LogL(sequences, lengthN, lengthW, lengthL, matP)
-            
             # Check for change in logL < epsilon
             if abs(logL - logL_prev) < epsilon:
                 check = True
@@ -358,9 +329,6 @@ if __name__ == '__main__':
                     print '++++++ current best seed = ' + str(best_seed)
             else:
                 logL_prev = logL
-                #print logL 
-        
-
     ## Print the optimal logL
     print '+++ Optimal logL' + str(logL_seed)
     print '+++ Best seed = ' + str(best_seed)
@@ -373,21 +341,6 @@ if __name__ == '__main__':
 
 
 
-    # #run individual seed
-    # sequences = []
-    # sequences = read_sequences('Data/hw1_hidden_motif.txt')
-    # lengthW = 14
-    # lengthL = 200
-    # lengthN = len(sequences)
-    # matP = init_PWD_seed(lengthW, 10)
-    # # E-step: re-estimate Z(t)
-    # matZ = E_step(sequences, lengthN, lengthW, lengthL, matP)
-    # # M-step: re-estimate P(t)
-    # matP = M_step(sequences, lengthN, lengthW, lengthL, matZ)
-    # # Compute the log likelihood log P(D| p)
-    # logL = eval_LogL(sequences, lengthN, lengthW, lengthL, matP)
-    # print logL
-            
 
 
 

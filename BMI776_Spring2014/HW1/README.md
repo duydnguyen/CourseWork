@@ -10,12 +10,12 @@ and learns an OOPS motif model for a motif of width W.
 
 `python LearnMotif.py sequences_file width model_file positions_file`
 
-where *sequences_file* is the file containing the input sequences, *width* is the width
-of the motif model to learn, *model_file* is the name of a file to which you will output the learned motif model, and *positions_file* is the name of a file to which you will output the predicted location of the motif in each sequences.
+where ***sequences_file*** is the file containing the input sequences, ***width*** is the width
+of the motif model to learn, *model_file* is the name of a file to which you will output the learned motif model, and ***positions_file*** is the name of a file to which you will output the predicted location of the motif in each sequences.
 
-+ The input *sequences_file* will contain the DNA sequences, with one sequence per
++ The input ***sequences_file*** will contain the DNA sequences, with one sequence per
 line.
 
 The output positions file should simply contain a list of the best position for
-the motif in each sequence, one position per line. The *model_file* should contain a tab-delimited profile matrix (PWD matrix), with the background frequencies in the first
+the motif in each sequence, one position per line. The ***model_file*** should contain a tab-delimited profile matrix (PWD matrix), with the background frequencies in the first
 column.
