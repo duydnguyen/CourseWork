@@ -282,16 +282,39 @@ def eval_LogL(sequences, lengthN, lengthW, lengthL, matP):
     logL = -lengthN * log(lengthL - lengthW + 1) + tot_log
     return logL
 
+def output_model(lengthW, matP, model_file):
+    " Write the PWD matrix matP to file "
+    f = open(model_file, 'w')
+    for row in range(4):
+        for col in range(lengthW + 1):
+            f.write(str(matP[row][col])+'\t')
+        f.write('\n')
+    f.close()
 
-def find_site(seq_index):
+def find_site(seq_index, matZ_best):
+    " Output best motif starting position given the sequence (real index, i.e. starts at 1)"
     val = max(matZ_best[seq_index-1])
     for i in range(len(matZ_best[0])):
         if ( matZ_best[seq_index-1][i] < val + 0.1 ) and ( matZ_best[seq_index-1][i] > val - 0.1 ):
             return i
 
+def output_positions(lengthN, matZ, positions_file):
+    " Write positions_file which contains the best motif starting positions for each sequence "
+    f = open(positions_file, 'w')
+    for row in range(4):
+        for col in range(lengthW + 1):
+            f.write(str(matP[row][col])+'\t')
+        f.write('\n')
+    
+    for i in range(1, lengthN + 1):
+        pos = find_site(i, matZ)
+        f.write('Sequence ' + str(i) + ' starts at ' + str(pos) + '\n')
+    f.close()
 if __name__ == '__main__':
 
     ################################################################################### MAIN E-M ALG. #####################################################
+    model_file = 'model_file_1seed'
+    positions_file = 'positions_file_1seed'
     sequences = []
     sequences = read_sequences('Data/hw1_hidden_motif.txt')
     lengthW = 14
@@ -304,7 +327,7 @@ if __name__ == '__main__':
     best_seed = -1
     matZ_best = []
     matP_best = []
-    for s in range(2271,2272):
+    for s in range(8503,8504):
         print '++++++++++++++++++++++++++++++++++++++++++++++++++'
         print '+++ seed = ' + str(s)
         ### Initilize PWD matrix
@@ -350,14 +373,12 @@ if __name__ == '__main__':
     print '+++ Optimal logL' + str(logL_seed)
     print '+++ Best seed = ' + str(best_seed)
 
-    # get the best starting positions
-    for i in range(1,11):
-        pos = find_site(i)
-        print 'Sequence ' + str(i) + ' starts at ' + str(pos)
+ ## Output: model_file which contains PWD matrix
+    output_model(lengthW, matP_best, model_file)
+    ## Output: positions_file which contains the best motif starting positions for each sequence
+    output_positions(lengthN, matZ_best, positions_file)
 
-    # get prob of char for each position on motif
-    #pos = 1
-    #get_column(matP_best, pos)
+
 
 
 
