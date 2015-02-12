@@ -232,14 +232,17 @@ def eval_LogL(sequences, lengthN, lengthW, lengthL, matP):
     logL = 0
     #eval_prob_Zp('GCTGTAG', 2, 3, 7, [[0.25, 0.1, 0.5, 0.2], [0.25, 0.4, 0.2, 0.1], [0.25, 0.3, 0.1, 0.6], [0.25, 0.2, 0.2, 0.1]])
     #import pdb; pdb.set_trace()
-    prod= 1
+    tot_log = 0
     for i in range(lengthN):
+        #import pdb; pdb.set_trace()    
         seq_x = sequences[i][0]
-        sum_P_i = 0 
+        sum_P = 0 
         for j in range(1, lengthL - lengthW + 2):
-            sum_P_i += eval_product_Zp(seq_x, j, lengthW, lengthL, matP)
-        prod *= sum_P_i    
-    logL = -n*log(lengthL - lengthW + 1) + log(prod)
+            sum_P += eval_prob_Zp(seq_x, j, lengthW, lengthL, matP)
+        sum_P = log(sum_P)
+        tot_log += sum_P    
+    #import pdb; pdb.set_trace()    
+    logL = -lengthN * log(lengthL - lengthW + 1) + tot_log
     return logL
 
 if __name__ == '__main__':
@@ -291,6 +294,8 @@ if __name__ == '__main__':
     matZ = E_step(sequences, lengthN, lengthW, lengthL, PWD)
     #matN = eval_n_ck(sequences, lengthN, lengthW, lengthL, matZ)
     matP = M_step(sequences, lengthN, lengthW, lengthL, matZ)
+    logL = eval_LogL(sequences, lengthN, lengthW, lengthL, matP)
+    print logL
 
     # for i in range(2):
     #     matZ = E_step(sequences, lengthN, lengthW, lengthL, matP)
