@@ -290,17 +290,35 @@ if __name__ == '__main__':
     lengthL = 200
     lengthN = len(sequences)
     #PWD = [[0.25, 0.1, 0.5, 0.2], [0.25, 0.4, 0.2, 0.1], [0.25, 0.3, 0.1, 0.6], [0.25, 0.2, 0.2, 0.1]]
-    PWD = init_PWD(lengthW)
-    matZ = E_step(sequences, lengthN, lengthW, lengthL, PWD)
-    #matN = eval_n_ck(sequences, lengthN, lengthW, lengthL, matZ)
-    matP = M_step(sequences, lengthN, lengthW, lengthL, matZ)
-    logL = eval_LogL(sequences, lengthN, lengthW, lengthL, matP)
-    print logL
 
-    # for i in range(2):
-    #     matZ = E_step(sequences, lengthN, lengthW, lengthL, matP)
-    #     matP = M_step(sequences, lengthN, lengthW, lengthL, matZ)
-    #     print matP[0]
+    ### Initilize PWD matrix
+    PWD = init_PWD(lengthW)
+    ### Run first iteration
+    matZ = E_step(sequences, lengthN, lengthW, lengthL, PWD)
+    matP = M_step(sequences, lengthN, lengthW, lengthL, matZ)
+    logL_prev = eval_LogL(sequences, lengthN, lengthW, lengthL, matP)
+    ### index for interation
+    t = 0
+    mat_t = 1000
+    ### Cut-off threshold for log-likelihood
+    epsilon = 0.001
+    check = False # False if change in logL >= epsilon
+    while ( (t <= mat_t) and (check == False) ):
+        t += 1
+        # E-step: re-estimate Z(t)
+        matZ = E_step(sequences, lengthN, lengthW, lengthL, matP)
+        # M-step: re-estimate P(t)
+        matP = M_step(sequences, lengthN, lengthW, lengthL, matZ)
+        # Compute the log likelihood log P(D| p)
+        logL = eval_LogL(sequences, lengthN, lengthW, lengthL, matP)
+        # Check for change in logL < epsilon
+        if abs(logL - logL_prev) < epsilon:
+            check = True
+        else:
+            logL_prev = logL
+            print logL 
+    print logL
+            
 
 
 
