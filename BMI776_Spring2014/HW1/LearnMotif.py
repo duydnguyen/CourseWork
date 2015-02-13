@@ -330,8 +330,8 @@ if __name__ == '__main__':
     matP_best = []
     while (count_seed < tot_seed):
         count_seed += 1
-        print '++++++++++++++++++++++++++++++++++++++++++++++++++'
-        print '+++ starting point number = ' + str(count_seed)
+        print '*****************************'
+        print '+++ Starting point number = ' + str(count_seed)
         ### Initilize PWD matrix
         s = 2 * (count_seed - 1) + 1 
         matP = init_PWD_seed(lengthW, seed = s )
@@ -354,14 +354,14 @@ if __name__ == '__main__':
             if abs(logL - logL_prev) < epsilon:
                 check = True
                 print logL
-                print '++++++ current best seed = ' + str(best_seed)
+                print '++++++++ Current best seed = ' + str(best_seed) + ' with logL = ' + str(logL_seed)
                 # This stores the best logL_seed = best logL with all seeds considered so far
                 if logL > logL_seed:
                     logL_seed = logL
                     best_seed = s
                     matZ_best = matZ
                     matP_best = matP
-                    print '++++++ current best seed = ' + str(best_seed)
+                    print '++++++++ Current best seed = ' + str(best_seed) 
             else:
                 logL_prev = logL
     ## Print the optimal logL
