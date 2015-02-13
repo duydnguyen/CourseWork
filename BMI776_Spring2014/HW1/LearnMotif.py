@@ -42,7 +42,7 @@ def init_PWD_seed(lengthW, seed):
     " Initialize PWD matrix from the random number with the given seed "
     mat = [[0 for x in range(lengthW+1)] for y in range(4)]    
     np.random.seed(seed)
-    prob_main = np.random.randint(1, 100, 4 * (lengthW + 1))
+    prob_main = np.random.randint(1, 10000, 4 * (lengthW + 1))
     #import pdb; pdb.set_trace()
     for i in range(lengthW + 1):
         start = 4 * i 
