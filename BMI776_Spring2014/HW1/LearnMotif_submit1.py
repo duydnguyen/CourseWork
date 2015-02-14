@@ -303,14 +303,15 @@ def find_site(seq_index, matZ_best):
 def output_positions(lengthN, matZ, positions_file):
     " Write positions_file which contains the best motif starting positions for each sequence "
     f = open(positions_file, 'w')
-    for row in range(4):
-        for col in range(lengthW + 1):
-            f.write(str(matP[row][col])+'\t')
-        f.write('\n')
+    ## Print matrix Z
+    # for row in range(4):
+    #     for col in range(lengthW + 1):
+    #         f.write(str(matP[row][col])+'\t')
+    #     f.write('\n')
     
     for i in range(1, lengthN + 1):
         pos = find_site(i, matZ)
-        f.write('Sequence ' + str(i) + ' starts at ' + str(pos) + '\n')
+        f.write('Best position for the motif in sequence ' + str(i) + ' starts at ' + str(pos) + '\n')
     f.close()
     
 def main(argv):
@@ -396,7 +397,7 @@ if __name__ == '__main__':
             if abs(logL - logL_prev) < epsilon:
                 check = True
                 print logL
-                print '++++++++ Current best seed = ' + str(best_seed) + ' with logL = ' + str(logL_seed)
+                print '++++++++ Current best seed = ' + str(best_seed) + ' with log Likelihood = ' + str(logL_seed)
                 # This stores the best logL_seed = best logL with all seeds considered so far
                 if logL > logL_seed:
                     logL_seed = logL
