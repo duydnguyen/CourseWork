@@ -1,7 +1,7 @@
 LearnMotif: Implemetation of MEME OOPS algorithm.
 ==================================================
 
-0. For a better view (Markdown) of this file, please go to `https://github.com/duydnguyen/CourseWork/tree/master/BMI776_Spring2014/HW1`
+0. For a better view of this file in Markdown, please go to `https://github.com/duydnguyen/CourseWork/tree/master/BMI776_Spring2014/HW1`
 
 1.  LearnMotif takes as input a set of DNA sequences and a width W, 
 and learns an OOPS motif model for a motif of width W.
