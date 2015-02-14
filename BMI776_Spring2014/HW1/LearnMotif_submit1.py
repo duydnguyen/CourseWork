@@ -332,9 +332,9 @@ def main(argv):
     width = int(args[1])
     model_file = args[2]
     positions_file = args[3]
-    num_seed = args[4]
-    max_iteration = args[5]
-    epsilon = args[6]
+    num_seed = int(args[4])
+    max_iteration = int(args[5])
+    epsilon = float(args[6])
     return [sequences_file, width, model_file, positions_file, num_seed, max_iteration, epsilon]
     
 if __name__ == '__main__':
@@ -354,8 +354,7 @@ if __name__ == '__main__':
     ### Evaluate length of a sequence (lengthL) and number of sequences (lengthN)
     lengthL = len(sequences[0][0])
     lengthN = len(sequences)
-
-
+    
     #model_file = 'model_file'
     #positions_file = 'positions_file'
     #sequences = []
@@ -364,7 +363,7 @@ if __name__ == '__main__':
     #lengthL = 200
     #lengthN = len(sequences)
     ### seed =  number of starting points
-    tot_seed = 5
+    tot_seed = tot_seed
     count_seed = 0
     logL_seed = float('-inf')
     best_seed = -1
