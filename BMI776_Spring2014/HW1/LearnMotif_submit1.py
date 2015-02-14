@@ -356,13 +356,13 @@ if __name__ == '__main__':
     lengthN = len(sequences)
 
 
-    model_file = 'model_file'
-    positions_file = 'positions_file'
-    sequences = []
-    sequences = read_sequences('Data/hw1_hidden_motif.txt')
-    lengthW = 14
-    lengthL = 200
-    lengthN = len(sequences)
+    #model_file = 'model_file'
+    #positions_file = 'positions_file'
+    #sequences = []
+    #sequences = read_sequences('Data/hw1_hidden_motif.txt')
+    #lengthW = 14
+    #lengthL = 200
+    #lengthN = len(sequences)
     ### seed =  number of starting points
     tot_seed = 5
     count_seed = 0
