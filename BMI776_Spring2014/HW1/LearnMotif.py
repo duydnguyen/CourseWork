@@ -330,6 +330,7 @@ if __name__ == '__main__':
     matP_best = []
     while (count_seed < tot_seed):
         count_seed += 1
+        print '\n'
         print '*****************************'
         print '+++ Starting point number = ' + str(count_seed)
         ### Initilize PWD matrix
