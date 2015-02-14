@@ -8,14 +8,25 @@ and learns an OOPS motif model for a motif of width W.
 
 + The command line to run LearnMotif should be
 
-`python LearnMotif.py sequences_file width model_file positions_file`
+'python LearnMotif.py sequences file width model file positions file num_seed max_iteration epsilon'
 
-where ***sequences_file*** is the file containing the input sequences, ***width*** is the width
-of the motif model to learn, *model_file* is the name of a file to which you will output the learned motif model, and ***positions_file*** is the name of a file to which you will output the predicted location of the motif in each sequences.
 
-+ The input ***sequences_file*** will contain the DNA sequences, with one sequence per
-line.
+++ ***sequences_file*** is the file containing the input sequences. This file contains the DNA sequences, with one sequence per line.
 
-The output ***positions_file*** should simply contain a list of the best position for
-the motif in each sequence, one position per line. The ***model_file*** should contain a tab-delimited profile matrix (PWD matrix), with the background frequencies in the first
+++ ***width*** is the width of the motif model to learn
+
+++ ***model_file*** is the name of a file to which you will output the learned motif model. This file contains a tab-delimited profile matrix (PWD matrix), with the background frequencies in the first
 column.
+
+++ ***positions_file*** is the name of a file to which you will output the predicted location of the motif in each sequences. This file simply contains a list of the best position for
+the motif in each sequence, one position per line. 
+
+++ ***num_seed*** is the maximum number of seeds allowed. Each value of seed corresponds to a different starting point (i.e., different PWD matrix)
+
+++ ***max_iteration*** is the maximum number of iterations allowed in the E-M algorithm.
+
+++ ***epsilon*** is the cut-off for change in Log Likelihood
+ 
++ To run question 2, the sequence_file = ***hw1_hidden_motif.txt*** should be in the same path as file ***LearnMotif.py***. For ***num_seed*** = 100, ***max_iteration*** = 10000, ***epsilon*** = 0.001, simply run the following command line
+
+`python LearnMotif.py hw1_hidden_motif.txt 14 model_file positions_file 10 10000 0.001'
