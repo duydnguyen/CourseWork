@@ -313,8 +313,8 @@ def output_positions(lengthN, matZ, positions_file):
 if __name__ == '__main__':
 
     ################################################################################### MAIN E-M ALG. #####################################################
-    model_file = 'model_file_1seed'
-    positions_file = 'positions_file_1seed'
+    model_file = 'model_file_question2'
+    positions_file = 'positions_question2'
     sequences = []
     sequences = read_sequences('Data/hw1_hidden_motif.txt')
     lengthW = 14
