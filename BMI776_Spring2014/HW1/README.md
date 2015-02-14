@@ -8,7 +8,7 @@ and learns an OOPS motif model for a motif of width W.
 
 * The command line to run LearnMotif should be
 
-'python LearnMotif.py sequences file width model file positions file num_seed max_iteration epsilon'
+``python LearnMotif.py sequences file width model file positions file num_seed max_iteration epsilon``
 
 
 + ***sequences_file*** is the file containing the input sequences. This file contains the DNA sequences, with one sequence per line.
@@ -29,4 +29,4 @@ the motif in each sequence, one position per line.
  
 * To run question 2, the sequence_file = ***hw1_hidden_motif.txt*** should be in the same path as file ***LearnMotif.py***. For ***num_seed*** = 100, ***max_iteration*** = 10000, ***epsilon*** = 0.001, simply run the following command line
 
-`python LearnMotif.py hw1_hidden_motif.txt 14 model_file positions_file 10 10000 0.001'
+``python LearnMotif.py hw1_hidden_motif.txt 14 model_file positions_file 10 10000 0.001``
