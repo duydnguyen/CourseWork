@@ -138,16 +138,11 @@ def eval_Matches(col_i, col_j, char):
     >>> eval_Matches('GTTTGCTA', 'TTGTTGCC', 'C')
     [0, 2]
     """
-    #col_i = 'GTTTGCTA'
-    #col_j = 'TTGTTGCC'
-    #import pdb; pdb.set_trace()
-    #char = 'T'
     pos = find_Indices(col_j, char)
     combined = []
     for i in range(len(pos)):
         s = col_i[pos[i]] + col_j[pos[i]]
         combined.append(s)
-    #matches =  [i for i, j in enumerate(foo) if j == 'AA']
     # eval the number of matches
     matches = 0
     check = [True for i in range(len(combined))]
@@ -163,13 +158,18 @@ def eval_Matches(col_i, col_j, char):
 
 def eval_ChiSq(sequences, index_i, index_j):
     """ Eval a 4-by-2 contigency table, then compute the Chi_Square statistics
+    >>> eval_ChiSq( [['GAGGTAAAC'],['TCCGTAAGT'],['CAGGTTGGA'],['ACAGTCAGT'],['TAGGTCATT'],['TAGGTACTG'],['ATGGTAACT'],['CAGGTATAC'],['TGTGTGAGT'],['AAGGTAAGT']], 0, 1)
+    [[4, 2], [0, 2], [0, 1], [0, 1]]
     """
+    index = {0:'A', 1:'C', 2:'G', 3:'T'}
     table =  [[0 for x in range(2)] for y in range(4)]    
-    #sequences = [['GAGGTAAAC'],['TCCGTAAGT'],['CAGGTTGGA'],['ACAGTCAGT'],['TAGGTCATT'],['TAGGTACTG'],['ATGGTAACT'],['CAGGTATAC'],['TGTGTGAGT'],['AAGGTAAGT']]
     col_i = extract_col(sequences, index_i )
     col_j = extract_col(sequences, index_j )
-    eval_Matches(col_i, col_j, 'A')
-    return 0
+    #eval_Matches(col_i, col_j, 'A')
+    for i in range(4):
+        char = index[i]
+        table[i] = eval_Matches(col_i, col_j, char)
+    return table
 
 def find_MDD_subtree(T, P):
     " Find the tree using the Maximal Dependence Decomposition (MDD) algorithm"
@@ -181,7 +181,8 @@ def find_MDD_subtree(T, P):
         # Determine the consensus based C_i
         C_i = col_i.index(max(col_i))
         # Calculate dependence S_i between C_i and other positions 
-        eval_ChiSq(T, 1, 2)
+        #eval_ChiSq(T, 1, 2)
+   
     return 0
 
 if __name__ == '__main__':
