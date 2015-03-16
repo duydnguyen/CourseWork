@@ -13,7 +13,7 @@ pwm_predict
 
 * The command line to run *pwm_predict* should be
 
-`python pwm_predict.py train_real train_false test test.scores``
+``python pwm_predict.py train_real train_false test test.scores``
 
 + ***train_real*** is the file containing a set of positive train examples.
 
