@@ -133,6 +133,16 @@ def evalScore(sequences, PWM_positive, PWM_negative):
         scores.append(log(prob_positive) - log(prob_negative))
     return scores
 
+def main(argv):
+    """ Take arguments from the following command
+    python pwm_predict.py train_real train_false test test.scores
+    """
+    try:
+        opts, args = getopt.getopt(argv, "hg:d", ["help", "grammar="])
+    except getopt.GetoptError:
+        usage()
+        sys.exit(2)
+    
 if __name__ == '__main__':
     
     ### input data
