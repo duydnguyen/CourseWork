@@ -45,7 +45,6 @@ def count_Char(letter, sequence):
     4
     """
     count = 0
-
     for i in range(len(sequence)):
          if (sequence[i] == letter):
              count += 1
@@ -110,6 +109,81 @@ def evalScore(sequences, PWM_positive, PWM_negative):
         scores.append(log(prob_positive) - log(prob_negative))
     return scores
 
+def find_Indices(sequence, char):
+    """Given a sequence and a character in {A, C, G, T}, output the position of char in the seq
+    >>> find_Indices('TTAAAATA', 'A')
+    [2, 3, 4, 5, 7]
+
+    >>> find_Indices('TTGTTGCC', 'T')
+    [0, 1, 3, 4]
+    """
+    pos = []
+    index = sequence.find(char)
+    while (index != -1):
+        pos.append(index)
+        index = sequence.find(char, index + 1)
+    return pos
+
+def eval_Matches(col_i, col_j, char):
+    """ Given a char in {A,C,G,T}, evaluate matches/non-matches between two sequence columns
+    >>> eval_Matches('GTTTGCTA', 'TTAAAATA', 'A')
+    [2, 3]
+
+    >>> eval_Matches('GTTTGCTA', 'TTAAAATA', 'T')
+    [2, 1]
+
+    >>> eval_Matches('GTTTGCTA', 'TTGTTGCC', 'T')
+    [4, 0]
+
+    >>> eval_Matches('GTTTGCTA', 'TTGTTGCC', 'C')
+    [0, 2]
+    """
+    #col_i = 'GTTTGCTA'
+    #col_j = 'TTGTTGCC'
+    #import pdb; pdb.set_trace()
+    #char = 'T'
+    pos = find_Indices(col_j, char)
+    combined = []
+    for i in range(len(pos)):
+        s = col_i[pos[i]] + col_j[pos[i]]
+        combined.append(s)
+    #matches =  [i for i, j in enumerate(foo) if j == 'AA']
+    # eval the number of matches
+    matches = 0
+    check = [True for i in range(len(combined))]
+    for k in range(len(combined)):
+        match_indices = [i for i, j in enumerate(combined) if j == combined[k] ]
+        if (len(match_indices) > 1):
+            for i in match_indices:
+                if check[i]:
+                    matches += 1
+                    check[i] = False
+    non_matches = len(pos) - matches
+    return [matches, non_matches]
+
+def eval_ChiSq(sequences, index_i, index_j):
+    """ Eval a 4-by-2 contigency table, then compute the Chi_Square statistics
+    """
+    table =  [[0 for x in range(2)] for y in range(4)]    
+    #sequences = [['GAGGTAAAC'],['TCCGTAAGT'],['CAGGTTGGA'],['ACAGTCAGT'],['TAGGTCATT'],['TAGGTACTG'],['ATGGTAACT'],['CAGGTATAC'],['TGTGTGAGT'],['AAGGTAAGT']]
+    col_i = extract_col(sequences, index_i )
+    col_j = extract_col(sequences, index_j )
+    eval_Matches(col_i, col_j, 'A')
+    return 0
+
+def find_MDD_subtree(T, P):
+    " Find the tree using the Maximal Dependence Decomposition (MDD) algorithm"
+    index = {0:'A', 1:'C', 2:'G', 3:'T'}
+    for i in P:
+        PFM = learnPFM(T)
+        PWM = learnPWM(PFM)
+        col_i = get_column(PWM, i)
+        # Determine the consensus based C_i
+        C_i = col_i.index(max(col_i))
+        # Calculate dependence S_i between C_i and other positions 
+        eval_ChiSq(T, 1, 2)
+    return 0
+
 if __name__ == '__main__':
     
     ### input data
@@ -123,13 +197,25 @@ if __name__ == '__main__':
     PWM_positive = []
     PWM_negative = []
     ### Learn PWM_positive
-    PFM_positive = learnPFM(sequences_real)
-    PWM_positive = learnPWM(PFM_positive)
+    #PFM_positive = learnPFM(sequences_real)
+    #PWM_positive = learnPWM(PFM_positive)
     #doctest.testmod()
     ### Learn PWM_negative
-    PFM_negative = learnPFM(sequences_false)
-    PWM_negative = learnPWM(PFM_negative)
+    #PFM_negative = learnPFM(sequences_false)
+    #PWM_negative = learnPWM(PFM_negative)
+
+    #####  MDD algorithm #####
+    ### Init T, P
+    T = sequences_real
+    ncol = len(T[0][0])
+    P = range(ncol)
+    ### Built MDD Tree
+    tree = find_MDD_subtree(T, P)
+    doctest.testmod()
+
+
+
     print 'complied :D'
-   
+    
 
     
