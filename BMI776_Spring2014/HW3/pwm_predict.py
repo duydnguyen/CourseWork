@@ -142,14 +142,28 @@ def main(argv):
     except getopt.GetoptError:
         usage()
         sys.exit(2)
-    
+    train_real_file = args[0]
+    train_false_file = args[1]
+    test_file = args[2]
+    test_scores = args[3]
+    return [train_real_file, train_false_file, test_file, test_scores]
+
+def output_scores(scores, test_scores):
+    " Write scores of sequences in test_file  file test_scores "
+    f = open(test_scores, 'w')
+    for i in range(len(scores)):
+        f.write(str(scores[i]) + '\n')
+    f.close()
+
 if __name__ == '__main__':
     
     ### input data
-    train_real_file = 'Data/hw3_train_real'
-    train_false_file = 'Data/hw3_train_false'
-    #test_file = 'Data/hw3_test_real'
-    test_file = 'Data/hw3_test_false'
+    inputs = main(sys.argv[1:])
+    train_real_file = inputs[0]
+    train_false_file = inputs[1]
+    test_file = inputs[2]
+    test_scores = inputs[3]
+    #test_file = 'hw3_test_false'
     sequences_real = read_sequences(train_real_file)
     sequences_false = read_sequences(train_false_file)
     sequences_test = read_sequences(test_file)
@@ -165,10 +179,10 @@ if __name__ == '__main__':
     ### Compute score(sequence) for sequence in test_file
     scores = []
     scores = evalScore(sequences_test, PWM_positive, PWM_negative )
-    print scores[:10]
-#PFM =  [[3, 6, 1, 0, 0, 6, 7, 2, 1], [2, 2, 1, 0, 0, 2, 1, 1, 2], [1, 1, 7, 10, 0, 1, 1, 5, 1], [4, 1, 1, 0, 10, 1, 1, 2, 6]]
+    ### Output scores to file test_scores
+    output_scores(scores, test_scores)
 
-    print 'complied :D'
+
    
 
     
