@@ -3,7 +3,7 @@
 # BMI/CS_776, Homework 3, Question 1
 # PWM Models
 # You should be able to run the program as of the following command
-# python ???
+# python pwm_predict.py train_real train_false test test.scores
 
 import sys
 import io
