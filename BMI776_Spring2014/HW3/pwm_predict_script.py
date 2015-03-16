@@ -96,41 +96,6 @@ def learnPWM(PFM):
             mat[i][col] = seq_col_normalized[i]
     return mat
 
-# def eval_prob_Zp(seq_x, pos_j, lengthW, lengthL, PWD):
-#     """ Compute the P(X_i  | Z_ij = 1, p); pos_j is the real index, not python index (i.e. in python , start with 0)
-#     >>> eval_prob_Zp('GCTGTAG', 3, 3, 7, [[0.25, 0.1, 0.5, 0.2], [0.25, 0.4, 0.2, 0.1], [0.25, 0.3, 0.1, 0.6], [0.25, 0.2, 0.2, 0.1]])
-#     7.812500000000002e-06
-#     >>> eval_prob_Zp('GCTGTAG', 1, 3, 7, [[0.25, 0.1, 0.5, 0.2], [0.25, 0.4, 0.2, 0.1], [0.25, 0.3, 0.1, 0.6], [0.25, 0.2, 0.2, 0.1]])
-#     2.34375e-05
-#     >>> eval_prob_Zp('GCTGTAG', 2, 3, 7, [[0.25, 0.1, 0.5, 0.2], [0.25, 0.4, 0.2, 0.1], [0.25, 0.3, 0.1, 0.6], [0.25, 0.2, 0.2, 0.1]])
-#     0.00018750000000000003
-#     """
-#     index = {'A':0, 'C':1, 'G':2, 'T':3}
-#     #seq_x = sequences[index_seq][0]
-#     # Backgroud probability vector p0
-#     p0 = get_column(PWD, 0)
-#     # Compute 'before motif'
-#     before = 1
-#     if (pos_j > 1):
-#         # Warning: k is 1 unit less than the 'real' position
-#         for k in range(pos_j - 1):
-#             p_c0 = p0[index[ seq_x[k] ] ]
-#             before *= p_c0
-#     if (pos_j < 1):
-#         print "Starting position of the motif cannot be < 1"
-#     # Compute 'motif'            
-#     motif = 1
-#     for k in range(pos_j - 1, pos_j + lengthW - 1):
-#         col_k = get_column(PWD, k + 1 - pos_j + 1)
-#         index_k = index[seq_x[k] ]
-#         motif *= col_k[index_k]
-#     # Compute 'after motif'            
-#     #import pdb; pdb.set_trace()
-#     after = 1
-#     for k in range(pos_j + lengthW - 1, lengthL):
-#         p_c0 = p0[index[ seq_x[k] ] ]
-#         after *= p_c0
-#     return before * motif * after    
 
 def eval_prob_Zp(seq_x, pos_j, lengthW, lengthL, PWD):
     """ Compute the P(X_i  | Z_ij = 1, p); pos_j is the real index, not python index (i.e. in python , start with 0)
