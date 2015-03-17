@@ -211,6 +211,7 @@ def eval_Si(sequences, index_i, C_i):
         
 def eval_Si_store(T, P, PWM):
     ' Eval Si_store[i] for all i in P'
+    index = {0:'A', 1:'C', 2:'G', 3:'T'}
     Si_store = []
     Si_store_full = []
     ncol = len(T[0][0])
@@ -224,9 +225,9 @@ def eval_Si_store(T, P, PWM):
         Si_store.append(eval_Si(T, i, C_i))
         Si_store_full.append(eval_Si(T, i, C_i))
     
-    print '+++ Si_store = % s' % Si_store 
+    #print '+++ Si_store = % s' % Si_store 
     diff =  [x for x in range(ncol) if x not in set(P)]
-    print '+++ diff = % s' % diff
+    #print '+++ diff = % s' % diff
     Si_store =  [item for i,item in enumerate(Si_store) if i not in diff]
     maxS = max(Si_store)
     # find i_max in full P i.e., range(9)
@@ -252,6 +253,7 @@ def find_MDD_subtree(T, P):
     global Tree
     global Nodes
     global Store
+    ncol = len(T[0][0])
     index = {0:'A', 1:'C', 2:'G', 3:'T'}
     negate_index = {'G':'H', 'A':'B', 'T':'V', 'C':'D'}
     cutoff_seq = 399
@@ -259,8 +261,10 @@ def find_MDD_subtree(T, P):
     ## Compute PWM given current T and P
     PFM = learnPFM(T)
     PWM = learnPWM(PFM)
-    print '+++ PWM = % s' % PWM 
     print '+++ current P = % s' % P
+    print '+++ current len(T) = % s' % len(T)
+    print '+++ current Nodes = % s' % Nodes
+
     ### STEP 1
     Si_store = []
     Si_store, maxS, i_max = eval_Si_store(T, P, PWM)
@@ -275,19 +279,25 @@ def find_MDD_subtree(T, P):
         C_i = index[col_i.index(max(col_i))]
         ## Partition set of sequences T in to D_i+ and D_i-
         Di_plus, Di_minus = split_Sequences(T, i_max, C_i)
-        print '+++ Di_plus = % s ' % Di_plus[:5]
+        print '+++ len(Di_plus) = % s ' % len(Di_plus)
+        print '+++ len(Di_minus) = % s ' % len(Di_minus)
         ## Build Tree
         Tree.append([Nodes, Nodes+1, Nodes +2])
         Store[Nodes + 1] = [i_max, C_i]
         Store[Nodes + 2] = [i_max, negate_index[C_i] ]
-        Nodes += 3
+        Nodes += 2
         print '+++ Nodes = % s' % Nodes
         print '+++ Store = % s' % Store
         ## left subtree
         #import pdb; pdb.set_trace()
-        del P[i_max]
+        diff = [i_max]
+        # remove i_max element for P
+        P = [item for i,item in enumerate(P) if i not in diff]
+        print '++++++++ RUNNING LEFT SUBTREE'
         find_MDD_subtree(Di_plus, P)
-        #find_MDD_subtree(Di_minus, P)
+         ## right subtree
+        print '++++++++ RUNNING RIGHT SUBTREE'
+        find_MDD_subtree(Di_minus, P)
     
     return 0
 
@@ -313,7 +323,8 @@ if __name__ == '__main__':
 
     #####  MDD algorithm #####
     ### Init T, P
-    T = sequences_real
+    #T = sequences_real
+    T = sequences_false
     ncol = len(T[0][0])
     P = range(ncol)
     Tree = []
