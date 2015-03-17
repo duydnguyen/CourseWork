@@ -156,6 +156,13 @@ def eval_Matches(col_i, col_j, char):
     non_matches = len(pos) - matches
     return [matches, non_matches]
 
+def eval_Matches_consensus(col_i, col_j, char, C_i):
+    """ Given a char in {A,C,G,T} and consensus base C_i, evaluate matches/non-matches between two sequence columns
+    """
+    
+    return [matches, non_matches]
+
+
 def eval_ChiSq(table):
     """ Given a 4-by-2 contigency table, evaluate the Chi Square Statistics
     >>> eval_ChiSq([[4, 2], [0, 2], [0, 1], [0, 1]])
