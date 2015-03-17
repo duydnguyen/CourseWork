@@ -253,6 +253,7 @@ def find_MDD_subtree(T, P):
     global Tree
     global Nodes
     global Store
+    global Parent
     ncol = len(T[0][0])
     index = {0:'A', 1:'C', 2:'G', 3:'T'}
     negate_index = {'G':'H', 'A':'B', 'T':'V', 'C':'D'}
@@ -282,9 +283,10 @@ def find_MDD_subtree(T, P):
         print '+++ len(Di_plus) = % s ' % len(Di_plus)
         print '+++ len(Di_minus) = % s ' % len(Di_minus)
         ## Build Tree
-        Tree.append([Nodes, Nodes+1, Nodes +2])
+        #Tree.append([Nodes, Nodes+1, Nodes +2])
         Store[Nodes + 1] = [i_max, C_i]
         Store[Nodes + 2] = [i_max, negate_index[C_i] ]
+        Tree.append([Parent, Nodes+1, Nodes +2])
         Nodes += 2
         print '+++ Nodes = % s' % Nodes
         print '+++ Store = % s' % Store
@@ -294,8 +296,10 @@ def find_MDD_subtree(T, P):
         # remove i_max element for P
         P = [item for i,item in enumerate(P) if i not in diff]
         print '++++++++ RUNNING LEFT SUBTREE'
+        Parent = Nodes - 1
         find_MDD_subtree(Di_plus, P)
-         ## right subtree
+        ## right subtree
+        Parent = Nodes 
         print '++++++++ RUNNING RIGHT SUBTREE'
         find_MDD_subtree(Di_minus, P)
     
@@ -330,6 +334,7 @@ if __name__ == '__main__':
     Tree = []
     Nodes = 1 
     Store = {}
+    Parent = 1
     ### Built MDD Tree
     find_MDD_subtree(T, P)
     print Store
