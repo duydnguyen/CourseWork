@@ -178,11 +178,14 @@ def eval_ChiSq(table):
                 Chi += float(table[i][j] - table_expected[i][j] ) ** 2 / table_expected[i][j]
     return Chi
 
-def eval_Table(sequences, index_i, index_j):
+def eval_Table(sequences, index_i, index_j, C_i):
     """ Given set of sequences and indices i, j , eval a 4-by-2 contigency table
-    >>> eval_Table( [['GAGGTAAAC'],['TCCGTAAGT'],['CAGGTTGGA'],['ACAGTCAGT'],['TAGGTCATT'],['TAGGTACTG'],['ATGGTAACT'],['CAGGTATAC'],['TGTGTGAGT'],['AAGGTAAGT']], 0, 1)
-    [[4, 2], [0, 2], [0, 1], [0, 1]]
+    
+    >>> eval_Table( [['GAGGTAAAC'],['TCCGTAAGT'],['CAGGTTGGA'],['ACAGTCAGT'],['TAGGTCATT'],['TAGGTACTG'],['ATGGTAACT'],['CAGGTATAC'],['TGTGTGAGT'],['AAGGTAAGT']], 0, 1, 'T')
+    [[2, 4], [1, 1], [1, 0], [0, 1]]
+    
     """
+    
     index = {0:'A', 1:'C', 2:'G', 3:'T'}
     table =  [[0 for x in range(2)] for y in range(4)]    
     col_i = extract_col(sequences, index_i )
@@ -190,11 +193,11 @@ def eval_Table(sequences, index_i, index_j):
 
     for i in range(4):
         char = index[i]
-        table[i] = eval_Matches(col_i, col_j, char)
+        table[i] = eval_Matches_consensus(col_i, col_j, char, C_i)
     return table
 
-def eval_Si(sequences, index_i):
-    " Given set of sequences and index i, compute S_i = \sum_{j\neq i} ChiSq(C_i, x_j) "
+def eval_Si(sequences, index_i, C_i):
+    " Given set of sequences, index i and consensus base C_i, compute S_i = \sum_{j\neq i} ChiSq(C_i, x_j) "
     index = {0:'A', 1:'C', 2:'G', 3:'T'}
     ncol = len(sequences[0][0])
     table =  [[0 for x in range(2)] for y in range(4)]    
@@ -202,7 +205,7 @@ def eval_Si(sequences, index_i):
     Si = 0
     for j in range(ncol):
         if (j != index_i):
-            table = eval_Table(sequences, index_i, j)
+            table = eval_Table(sequences, index_i, j, C_i)
             Si += eval_ChiSq(table) 
     return Si
         
@@ -216,11 +219,11 @@ def find_MDD_subtree(T, P):
         col_i = get_column(PWM, i)
         #print 'print col_i %s' % col_i
         # Determine the consensus based C_i: get the nucleotide with max probability in col_i
-        C_i = col_i.index(max(col_i))
+        C_i = index[col_i.index(max(col_i))]
         #print 'print C_i %s' % C_i
         # Calculate dependence S_i between C_i and other positions 
-        #Si = eval_Si(T, C_i)
-        #print Si
+        Si = eval_Si(T, i, C_i)
+        print Si
 
     return 0
 
@@ -252,7 +255,6 @@ if __name__ == '__main__':
     ### Built MDD Tree
     tree = find_MDD_subtree(T, P)
     
-    eval_ChiSq([[4, 2], [0, 2], [0, 1], [0, 1]])
 
 
     doctest.testmod()
