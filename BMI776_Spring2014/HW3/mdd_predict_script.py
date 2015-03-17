@@ -156,19 +156,40 @@ def eval_Matches(col_i, col_j, char):
     non_matches = len(pos) - matches
     return [matches, non_matches]
 
-def eval_ChiSq(sequences, index_i, index_j):
-    """ Eval a 4-by-2 contigency table, then compute the Chi_Square statistics
-    >>> eval_ChiSq( [['GAGGTAAAC'],['TCCGTAAGT'],['CAGGTTGGA'],['ACAGTCAGT'],['TAGGTCATT'],['TAGGTACTG'],['ATGGTAACT'],['CAGGTATAC'],['TGTGTGAGT'],['AAGGTAAGT']], 0, 1)
+def eval_ChiSq(table):
+    """ Given a 4-by-2 contigency table, evaluate the Chi Square Statistics
+    >>> eval_ChiSq([[4, 2], [0, 2], [0, 1], [0, 1]])
+    4.444444444444445
+    """
+    Chi = 0
+    table_expected = [[0 for x in range(2)] for y in range(4)] 
+    Row = []
+    Col = []
+    ## Compute the expected number of counts E_ij
+    for i in range(4):
+        Row.append(sum(table[i]))
+    for j in range(2):
+        Col.append(sum(get_column(table, j)))
+    N = sum(Row)
+    for i in range(4):
+        for j in range(2):
+            table_expected[i][j] = float(Row[i] * Col[j]) / N
+            Chi += float(table[i][j] - table_expected[i][j] ) ** 2 / table_expected[i][j]
+    return Chi
+def eval_Table(sequences, index_i, index_j):
+    """ Given set of sequences and indices i, j , eval a 4-by-2 contigency table
+    >>> eval_Table( [['GAGGTAAAC'],['TCCGTAAGT'],['CAGGTTGGA'],['ACAGTCAGT'],['TAGGTCATT'],['TAGGTACTG'],['ATGGTAACT'],['CAGGTATAC'],['TGTGTGAGT'],['AAGGTAAGT']], 0, 1)
     [[4, 2], [0, 2], [0, 1], [0, 1]]
     """
     index = {0:'A', 1:'C', 2:'G', 3:'T'}
     table =  [[0 for x in range(2)] for y in range(4)]    
     col_i = extract_col(sequences, index_i )
     col_j = extract_col(sequences, index_j )
-    #eval_Matches(col_i, col_j, 'A')
+
     for i in range(4):
         char = index[i]
         table[i] = eval_Matches(col_i, col_j, char)
+
     return table
 
 def find_MDD_subtree(T, P):
@@ -181,7 +202,8 @@ def find_MDD_subtree(T, P):
         # Determine the consensus based C_i
         C_i = col_i.index(max(col_i))
         # Calculate dependence S_i between C_i and other positions 
-        #eval_ChiSq(T, 1, 2)
+
+
    
     return 0
 
@@ -212,8 +234,12 @@ if __name__ == '__main__':
     P = range(ncol)
     ### Built MDD Tree
     tree = find_MDD_subtree(T, P)
-    doctest.testmod()
+    
+    eval_ChiSq([[4, 2], [0, 2], [0, 1], [0, 1]])
 
+
+    doctest.testmod()
+    
 
 
     print 'complied :D'
