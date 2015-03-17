@@ -209,6 +209,33 @@ def eval_Si(sequences, index_i, C_i):
             Si += eval_ChiSq(table) 
     return Si
         
+def eval_Si_store(T, P):
+    ' Eval Si_store[i] for all i in P'
+    Si_store = []
+    for i in P:
+        PFM = learnPFM(T)
+        PWM = learnPWM(PFM)
+        col_i = get_column(PWM, i)
+        # Determine the consensus base C_i: get the nucleotide with max probability in col_i
+        C_i = index[col_i.index(max(col_i))]
+        #consensus.append(C_i)
+        # Calculate dependence S_i between C_i and other positions 
+        Si_store.append(eval_Si(T, i, C_i))
+
+    return Si_store
+
+def split_Sequences(T, i_max, C_i):
+    "Split sequences in to D_i+ and D_i- by consensus base C_i in MMD algorithm"
+    Di_plus = []
+    Di_minus = []
+    for k in range(len(T)):
+        seq = T[k][0]
+        if (seq[i_max] == C_i):
+            Di_plus.append(seq)
+        else:
+            Di_minus.append(seq)
+    
+    return Di_plus, Di_minus
 
 def find_MDD_subtree(T, P):
     " Find the tree using the Maximal Dependence Decomposition (MDD) algorithm"
@@ -219,18 +246,11 @@ def find_MDD_subtree(T, P):
     negate_index = {'G':'H', 'A':'B', 'T':'V', 'C':'D'}
     cutoff_seq = 399
     cutoff_ChiSq = 16.3
+
     Si_store = []
-    consensus = []
-    for i in P:
-        PFM = learnPFM(T)
-        PWM = learnPWM(PFM)
-        col_i = get_column(PWM, i)
-        # Determine the consensus base C_i: get the nucleotide with max probability in col_i
-        C_i = index[col_i.index(max(col_i))]
-        consensus.append(C_i)
-        # Calculate dependence S_i between C_i and other positions 
-        Si_store.append(eval_Si(T, i, C_i))
+    Si_store = eval_Si_store(T, P)
     maxS = max(Si_store)
+
     if (len(T) > cutoff_seq) and (maxS > cutoff_ChiSq):
         ## Choose the value i such that S_i is maximal
         i_max = Si_store.index(maxS)
@@ -239,24 +259,18 @@ def find_MDD_subtree(T, P):
         col_i = get_column(PWM, i_max)
         C_i = index[col_i.index(max(col_i))]
         ## Partition set of sequences T in to D_i+ and D_i-
-        # D_i+ contains sequences in T with base C_i at position i_max
-        Di_plus = []
-        Di_minus = []
-        for k in range(len(T)):
-            seq = T[k][0]
-            if (seq[i_max] == C_i):
-                Di_plus.append(seq)
-            else:
-                Di_minus.append(seq)
+        Di_plus, Di_minus = split_Sequences(T, i_max, C_i)
         ## Build Tree
-        import pdb; pdb.set_trace()
         Tree.append([Nodes, Nodes+1, Nodes +2])
         Store[Nodes + 1] = [i_max, C_i]
         Store[Nodes + 2] = [i_max, negate_index[C_i] ]
         Nodes += 3
+        print '+++ Nodes = % s' % Nodes
+        print '+++ Store = % s' % Store
         ## left subtree
+        #import pdb; pdb.set_trace()
         del P[i_max]
-        #find_MDD_subtree(Di_plus, P)
+        find_MDD_subtree(Di_plus, P)
     
     return 0
 
