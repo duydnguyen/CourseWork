@@ -209,20 +209,29 @@ def eval_Si(sequences, index_i, C_i):
             Si += eval_ChiSq(table) 
     return Si
         
-def eval_Si_store(T, P):
+def eval_Si_store(T, P, PWM):
     ' Eval Si_store[i] for all i in P'
     Si_store = []
-    for i in P:
-        PFM = learnPFM(T)
-        PWM = learnPWM(PFM)
+    Si_store_full = []
+    ncol = len(T[0][0])
+    for i in range(ncol):
+        #PFM = learnPFM(T)
         col_i = get_column(PWM, i)
         # Determine the consensus base C_i: get the nucleotide with max probability in col_i
         C_i = index[col_i.index(max(col_i))]
         #consensus.append(C_i)
         # Calculate dependence S_i between C_i and other positions 
         Si_store.append(eval_Si(T, i, C_i))
-
-    return Si_store
+        Si_store_full.append(eval_Si(T, i, C_i))
+    
+    print '+++ Si_store = % s' % Si_store 
+    diff =  [x for x in range(ncol) if x not in set(P)]
+    print '+++ diff = % s' % diff
+    Si_store =  [item for i,item in enumerate(Si_store) if i not in diff]
+    maxS = max(Si_store)
+    # find i_max in full P i.e., range(9)
+    i_max = Si_store_full.index(maxS)
+    return Si_store_full, maxS, i_max
 
 def split_Sequences(T, i_max, C_i):
     "Split sequences in to D_i+ and D_i- by consensus base C_i in MMD algorithm"
@@ -231,14 +240,15 @@ def split_Sequences(T, i_max, C_i):
     for k in range(len(T)):
         seq = T[k][0]
         if (seq[i_max] == C_i):
-            Di_plus.append(seq)
+            Di_plus.append([seq])
         else:
-            Di_minus.append(seq)
+            Di_minus.append([seq])
     
     return Di_plus, Di_minus
 
 def find_MDD_subtree(T, P):
     " Find the tree using the Maximal Dependence Decomposition (MDD) algorithm"
+    print '~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~'
     global Tree
     global Nodes
     global Store
@@ -246,20 +256,26 @@ def find_MDD_subtree(T, P):
     negate_index = {'G':'H', 'A':'B', 'T':'V', 'C':'D'}
     cutoff_seq = 399
     cutoff_ChiSq = 16.3
-
+    ## Compute PWM given current T and P
+    PFM = learnPFM(T)
+    PWM = learnPWM(PFM)
+    print '+++ PWM = % s' % PWM 
+    print '+++ current P = % s' % P
+    ### STEP 1
     Si_store = []
-    Si_store = eval_Si_store(T, P)
-    maxS = max(Si_store)
-
+    Si_store, maxS, i_max = eval_Si_store(T, P, PWM)
+    ### STEP 2
     if (len(T) > cutoff_seq) and (maxS > cutoff_ChiSq):
         ## Choose the value i such that S_i is maximal
-        i_max = Si_store.index(maxS)
+        #i_max = Si_store.index(maxS)
+        
         ## Make a node with consensus base C_i as the test
         # and create a single-column PWM col_i for position i
         col_i = get_column(PWM, i_max)
         C_i = index[col_i.index(max(col_i))]
         ## Partition set of sequences T in to D_i+ and D_i-
         Di_plus, Di_minus = split_Sequences(T, i_max, C_i)
+        print '+++ Di_plus = % s ' % Di_plus[:5]
         ## Build Tree
         Tree.append([Nodes, Nodes+1, Nodes +2])
         Store[Nodes + 1] = [i_max, C_i]
@@ -271,6 +287,7 @@ def find_MDD_subtree(T, P):
         #import pdb; pdb.set_trace()
         del P[i_max]
         find_MDD_subtree(Di_plus, P)
+        #find_MDD_subtree(Di_minus, P)
     
     return 0
 
