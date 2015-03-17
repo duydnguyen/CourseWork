@@ -124,19 +124,19 @@ def find_Indices(sequence, char):
         index = sequence.find(char, index + 1)
     return pos
 
-def eval_Matches(col_i, col_j, char):
-    """ Given a char in {A,C,G,T}, evaluate matches/non-matches between two sequence columns
-    >>> eval_Matches('GTTTGCTA', 'TTAAAATA', 'A')
+def eval_Matches_consensus(col_i, col_j, char, C_i):
+    """ Given a char in {A,C,G,T} and consensus base C_i, evaluate matches/non-matches between two sequence columns
+    >>> eval_Matches_consensus('GTTTGCTA', 'TTAAAATA', 'A', 'T')
     [2, 3]
 
-    >>> eval_Matches('GTTTGCTA', 'TTAAAATA', 'T')
+    >>> eval_Matches_consensus('GTTTGCTA', 'TTAAAATA', 'T', 'T')
     [2, 1]
 
-    >>> eval_Matches('GTTTGCTA', 'TTGTTGCC', 'T')
-    [4, 0]
+    >>> eval_Matches_consensus('GTTTGCTA', 'TTGTTGCC', 'T', 'T')
+    [2, 2]
 
-    >>> eval_Matches('GTTTGCTA', 'TTGTTGCC', 'C')
-    [0, 2]
+    >>> eval_Matches_consensus('GTTTGCTA', 'TTGTTGCC', 'C', 'T')
+    [1, 1]
     """
     pos = find_Indices(col_j, char)
     combined = []
@@ -145,21 +145,11 @@ def eval_Matches(col_i, col_j, char):
         combined.append(s)
     # eval the number of matches
     matches = 0
-    check = [True for i in range(len(combined))]
-    for k in range(len(combined)):
-        match_indices = [i for i, j in enumerate(combined) if j == combined[k] ]
-        if (len(match_indices) > 1):
-            for i in match_indices:
-                if check[i]:
-                    matches += 1
-                    check[i] = False
+    #check = [False for i in range(len(combined))]
+    pos_Ci = find_Indices(col_i, C_i)
+    pos_common = set(pos) & set(pos_Ci)
+    matches = len(pos_common)
     non_matches = len(pos) - matches
-    return [matches, non_matches]
-
-def eval_Matches_consensus(col_i, col_j, char, C_i):
-    """ Given a char in {A,C,G,T} and consensus base C_i, evaluate matches/non-matches between two sequence columns
-    """
-    
     return [matches, non_matches]
 
 
@@ -229,8 +219,8 @@ def find_MDD_subtree(T, P):
         C_i = col_i.index(max(col_i))
         #print 'print C_i %s' % C_i
         # Calculate dependence S_i between C_i and other positions 
-        Si = eval_Si(T, C_i)
-        print Si
+        #Si = eval_Si(T, C_i)
+        #print Si
 
     return 0
 
