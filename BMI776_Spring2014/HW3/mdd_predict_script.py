@@ -214,8 +214,9 @@ def find_MDD_subtree(T, P):
     " Find the tree using the Maximal Dependence Decomposition (MDD) algorithm"
     global Tree
     global Nodes
-    global tree_index
+    global Store
     index = {0:'A', 1:'C', 2:'G', 3:'T'}
+    negate_index = {'G':'H', 'A':'B', 'T':'V', 'C':'D'}
     cutoff_seq = 399
     cutoff_ChiSq = 16.3
     Si_store = []
@@ -248,9 +249,15 @@ def find_MDD_subtree(T, P):
             else:
                 Di_minus.append(seq)
         ## Build Tree
-        #Tree[nodes_index].append([Nodes, Nodes+1, Nodes +2])
-        
-
+        import pdb; pdb.set_trace()
+        Tree.append([Nodes, Nodes+1, Nodes +2])
+        Store[Nodes + 1] = [i_max, C_i]
+        Store[Nodes + 2] = [i_max, negate_index[C_i] ]
+        Nodes += 3
+        ## left subtree
+        del P[i_max]
+        #find_MDD_subtree(Di_plus, P)
+    
     return 0
 
 if __name__ == '__main__':
@@ -280,13 +287,14 @@ if __name__ == '__main__':
     P = range(ncol)
     Tree = []
     Nodes = 1 
-    tree_index = 1
+    Store = {}
     ### Built MDD Tree
     find_MDD_subtree(T, P)
-    
+    print Store
+    print Tree
 
 
-    doctest.testmod()
+    #doctest.testmod()
     
 
 
