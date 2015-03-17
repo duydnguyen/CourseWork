@@ -212,6 +212,9 @@ def eval_Si(sequences, index_i, C_i):
 
 def find_MDD_subtree(T, P):
     " Find the tree using the Maximal Dependence Decomposition (MDD) algorithm"
+    global Tree
+    global Nodes
+    global tree_index
     index = {0:'A', 1:'C', 2:'G', 3:'T'}
     cutoff_seq = 399
     cutoff_ChiSq = 16.3
@@ -244,7 +247,9 @@ def find_MDD_subtree(T, P):
                 Di_plus.append(seq)
             else:
                 Di_minus.append(seq)
-
+        ## Build Tree
+        #Tree[nodes_index].append([Nodes, Nodes+1, Nodes +2])
+        
 
     return 0
 
@@ -273,8 +278,11 @@ if __name__ == '__main__':
     T = sequences_real
     ncol = len(T[0][0])
     P = range(ncol)
+    Tree = []
+    Nodes = 1 
+    tree_index = 1
     ### Built MDD Tree
-    tree = find_MDD_subtree(T, P)
+    find_MDD_subtree(T, P)
     
 
 
