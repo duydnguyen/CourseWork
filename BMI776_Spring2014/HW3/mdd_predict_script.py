@@ -213,17 +213,38 @@ def eval_Si(sequences, index_i, C_i):
 def find_MDD_subtree(T, P):
     " Find the tree using the Maximal Dependence Decomposition (MDD) algorithm"
     index = {0:'A', 1:'C', 2:'G', 3:'T'}
+    cutoff_seq = 399
+    cutoff_ChiSq = 16.3
+    Si_store = []
+    consensus = []
     for i in P:
         PFM = learnPFM(T)
         PWM = learnPWM(PFM)
         col_i = get_column(PWM, i)
-        #print 'print col_i %s' % col_i
-        # Determine the consensus based C_i: get the nucleotide with max probability in col_i
+        # Determine the consensus base C_i: get the nucleotide with max probability in col_i
         C_i = index[col_i.index(max(col_i))]
-        #print 'print C_i %s' % C_i
+        consensus.append(C_i)
         # Calculate dependence S_i between C_i and other positions 
-        Si = eval_Si(T, i, C_i)
-        print Si
+        Si_store.append(eval_Si(T, i, C_i))
+    maxS = max(Si_store)
+    if (len(T) > cutoff_seq) and (maxS > cutoff_ChiSq):
+        ## Choose the value i such that S_i is maximal
+        i_max = Si_store.index(maxS)
+        ## Make a node with consensus base C_i as the test
+        # and create a single-column PWM col_i for position i
+        col_i = get_column(PWM, i_max)
+        C_i = index[col_i.index(max(col_i))]
+        ## Partition set of sequences T in to D_i+ and D_i-
+        # D_i+ contains sequences in T with base C_i at position i_max
+        Di_plus = []
+        Di_minus = []
+        for k in range(len(T)):
+            seq = T[k][0]
+            if (seq[i_max] == C_i):
+                Di_plus.append(seq)
+            else:
+                Di_minus.append(seq)
+
 
     return 0
 
