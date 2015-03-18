@@ -428,12 +428,13 @@ if __name__ == '__main__':
     print '\n\n\n\n\n\n\n\n\n POSITIVE SEQUENCES'
     T = sequences_real
     built_MDDmodel(T)
-    #eval_Prob_Seq(sequence)
+    seq_test = 'AAGGTCAGT' 
+    eval_Prob_Seq(seq_test)
 
 
-    print '\n\n\n\n\n\n\n\n\n NEGATIVE SEQUENCES'
-    T = sequences_false
-    built_MDDmodel(T)
+    # print '\n\n\n\n\n\n\n\n\n NEGATIVE SEQUENCES'
+    # T = sequences_false
+    # built_MDDmodel(T)
 
 
     #doctest.testmod()
