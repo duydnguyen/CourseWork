@@ -254,6 +254,7 @@ def find_MDD_subtree(T, P):
     global Nodes
     global Store
     global Parent
+    global Parent_Prob
     ncol = len(T[0][0])
     index = {0:'A', 1:'C', 2:'G', 3:'T'}
     negate_index = {'G':'H', 'A':'B', 'T':'V', 'C':'D'}
@@ -287,6 +288,7 @@ def find_MDD_subtree(T, P):
         Store[Nodes + 1] = [i_max, C_i]
         Store[Nodes + 2] = [i_max, negate_index[C_i] ]
         Tree.append([Parent, Nodes+1, Nodes +2])
+        Parent_Prob[Parent] = col_i
         Nodes += 2
         print '+++ Nodes = % s' % Nodes
         print '+++ Store = % s' % Store
@@ -302,7 +304,8 @@ def find_MDD_subtree(T, P):
         Parent = Nodes 
         print '++++++++ RUNNING RIGHT SUBTREE'
         find_MDD_subtree(Di_minus, P)
-    
+    else:
+        print 'IMPLEMENT LATER!!!'
     return 0
 
 if __name__ == '__main__':
@@ -336,6 +339,8 @@ if __name__ == '__main__':
     Store = {}
     Parent = 1
     num_Nodes = 0
+    # store a column of probabilty for parent (internal) nodes
+    Parent_Prob = {}
     ### Built MDD Tree
     find_MDD_subtree(T, P)
     num_Nodes = len(Store) + 1
@@ -343,6 +348,7 @@ if __name__ == '__main__':
     Tree_struct = [False for i in range( num_Nodes+1)]
     print '\n \n +++++++ RESULTS +++++++'
     print '\n Store = % s , \n Tree = % s, \n Number of Nodes = % s' % (Store, Tree, num_Nodes)
+    print '\n Parent Probabilty  = % s' % Parent_Prob
     ### Find internal nodes of MDD Tree
     for i in range(len(Tree)):
         int_node = Tree[i][0]
