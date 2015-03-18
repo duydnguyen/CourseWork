@@ -225,6 +225,8 @@ def eval_Si_store(T, P, PWM):
         Si_store.append(eval_Si(T, i, C_i))
         Si_store_full.append(eval_Si(T, i, C_i))
     
+    #print '~~~~~~ NEW eval_Si_store() ~~~~'
+    #print '+++ P = % s' % P
     #print '+++ Si_store = % s' % Si_store 
     diff =  [x for x in range(ncol) if x not in set(P)]
     #print '+++ diff = % s' % diff
@@ -232,7 +234,9 @@ def eval_Si_store(T, P, PWM):
     maxS = max(Si_store)
     # find i_max in full P i.e., range(9)
     i_max = Si_store_full.index(maxS)
-    return Si_store_full, maxS, i_max
+    
+    P_update = removeList(P, i_max)
+    return Si_store_full, maxS, i_max, P_update
 
 def split_Sequences(T, i_max, C_i):
     "Split sequences in to D_i+ and D_i- by consensus base C_i in MMD algorithm"
@@ -249,13 +253,12 @@ def split_Sequences(T, i_max, C_i):
 
 def removeList(L, i):
     'Given i \in L, remove the i element from L'
-    L.remove(i)
-    L_removed = L
+    L_removed = [x for x in L if x != i]
     return L_removed
     
 def find_MDD_subtree(T, P):
     " Find the tree using the Maximal Dependence Decomposition (MDD) algorithm"
-    print '~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~'
+    print '\n \n ~~~~~~~~~~~~~~~~~~~~~~~~~~~NEW RECURSION~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~'
     global Tree
     global Nodes
     global Store
@@ -277,9 +280,18 @@ def find_MDD_subtree(T, P):
 
     ### STEP 1
     Si_store = []
-    Si_store, maxS, i_max = eval_Si_store(T, P, PWM)
+    Si_store_foo, maxS, i_max_foo, P_update_foo = eval_Si_store(T, P, PWM)
+    print '++++ the new i_max_foo  : % s and maxS = % s' % (i_max_foo, maxS)
+    print '++++ the P_update_foo after removing i_max : % s' % P_update_foo
+    
     ### STEP 2
     if (len(T) > cutoff_seq) and (maxS > cutoff_ChiSq):
+        ### STEP 1
+        Si_store = []
+        Si_store, maxS, i_max, P_update = eval_Si_store(T, P, PWM)
+        print '++++ the new i_max  : % s and maxS = % s' % (i_max, maxS)
+        print '+++++ the P_update after removing i_max : % s' % P_update
+
         ## Choose the value i such that S_i is maximal
         #i_max = Si_store.index(maxS)
         
@@ -298,31 +310,31 @@ def find_MDD_subtree(T, P):
         Tree.append([Parent, Nodes+1, Nodes +2])
         Parent_Prob[Parent] = col_i
         Nodes += 2
-        print '+++ Nodes = % s' % Nodes
+        #print '+++ Nodes = % s' % Nodes
         print '+++ Store = % s' % Store
         ## left subtree
         #import pdb; pdb.set_trace()
         #diff = [i_max]
         # remove i_max element for P
         
-        print '++++ \n \n FOUND ERROR'
-        print 'i_max = % s' % i_max
-        print '+++ current P = % s' % P
+        # print '++++ \n \n FOUND ERROR'
+        # print 'i_max = % s' % i_max
+        # print '+++ current P = % s' % P
         #P.remove(i_max)
         
         print '++++++++ RUNNING LEFT SUBTREE'
         Parent = Nodes - 1
         Check_Subtree = True
-        print '+++ This is the P for left subtree P = % s' % P
+        print '+++ This is the P for left subtree P = % s' % P_update
         print '+++ This is the i_max left subtree i_max = % s' % i_max
-        find_MDD_subtree(Di_plus, removeList(P, i_max))
+        find_MDD_subtree(Di_plus, P_update)
         ## right subtree
         Parent = Nodes 
         print '++++++++ RUNNING RIGHT SUBTREE'
         Check_Subtree = False
-        print '+++ \t This is the P for right subtree = % s' % P
+        print '+++ \t This is the P for right subtree = % s' % P_update
         print '+++ This is the i_max right subtree i_max = % s' % i_max
-        find_MDD_subtree(Di_minus, P)
+        find_MDD_subtree(Di_minus, P_update)
     else:
         print '\n \n @@@@@@@@@@ THIS IS WHEN STOPPING CRIT. MET!!!'
         print '+++ current P = % s' % P
