@@ -315,6 +315,16 @@ def find_MDD_subtree(T, P):
         print '+++ current len(T) = % s' % len(T)
         print '++ Check_Subtree = % s' % Check_Subtree
         print '@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@'
+        
+        diff =  [x for x in range(ncol) if x not in set(P)]
+        print 'len of diff = % s' % diff 
+        if (Check_Subtree):
+            node_Label = len(diff) * 2
+            Leaf_Prob[node_Label] = PWM
+        else:
+            node_Label = len(diff) * 2 + 1
+            Leaf_Prob[node_Label] = PWM
+        #print '+++ current Leaf_Prob = % s' % Leaf_Prob
     return 0
 
 if __name__ == '__main__':
