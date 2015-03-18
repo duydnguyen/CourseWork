@@ -315,12 +315,12 @@ def find_MDD_subtree(T, P):
         Check_Subtree = False
         find_MDD_subtree(Di_minus, P)
     else:
-        print '\n \n @@@@@@@@@@ THIS IS WHEN STOPPING CRIT. MET!!!'
-        print '+++ current P = % s' % P
-        #print 'Current Parent = % s' % Parent
-        print '+++ current len(T) = % s' % len(T)
-        print '++ Check_Subtree = % s' % Check_Subtree
-        print '@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@'
+        # print '\n \n @@@@@@@@@@ THIS IS WHEN STOPPING CRIT. MET!!!'
+        # print '+++ current P = % s' % P
+        # #print 'Current Parent = % s' % Parent
+        # print '+++ current len(T) = % s' % len(T)
+        # print '++ Check_Subtree = % s' % Check_Subtree
+        # print '@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@'
         
         diff =  [x for x in range(ncol) if x not in set(P)]
         print 'len of diff = % s' % diff 
@@ -373,6 +373,12 @@ def built_MDDmodel(T):
 
     return 0
 
+def eval_Prob_Seq(sequence):
+    'Eval the probability of a sequence given the current MDD model'
+    prob_seq = 0
+    return prob_seq
+
+
 if __name__ == '__main__':
     
     ### input data
@@ -390,9 +396,12 @@ if __name__ == '__main__':
     print '\n\n\n\n\n\n\n\n\n NEGATIVE SEQUENCES'
     T = sequences_real
     built_MDDmodel(T)
-    print '\n\n\n\n\n\n\n\n\n NEGATIVE SEQUENCES'
-    T = sequences_false
-    built_MDDmodel(T)
+    eval_Prob_Seq(sequence)
+
+
+    # print '\n\n\n\n\n\n\n\n\n NEGATIVE SEQUENCES'
+    # T = sequences_false
+    # built_MDDmodel(T)
 
 
     #doctest.testmod()
