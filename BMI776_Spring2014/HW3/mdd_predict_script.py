@@ -396,7 +396,7 @@ if __name__ == '__main__':
     print '\n\n\n\n\n\n\n\n\n NEGATIVE SEQUENCES'
     T = sequences_real
     built_MDDmodel(T)
-    eval_Prob_Seq(sequence)
+    #eval_Prob_Seq(sequence)
 
 
     # print '\n\n\n\n\n\n\n\n\n NEGATIVE SEQUENCES'
