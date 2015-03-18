@@ -392,7 +392,7 @@ def built_MDDmodel(T):
     print '\n \n +++++++ RESULTS +++++++'
     print '\n Store = % s , \n Tree = % s, \n Number of Nodes = % s' % (Store, Tree, num_Nodes)
     print '\n Parent Probabilty  = % s' % Parent_Prob
-    print '\n Leaf Probability  = % s' % Leaf_Prob
+    #print '\n Leaf Probability  = % s' % Leaf_Prob
     print '\n Leaf Probability index = % s' % Leaf_Prob_index
 
     ### Find internal nodes of MDD Tree
@@ -412,28 +412,54 @@ def inverseDict(Dict):
         invDict[v].append(k)
     return invDict
 
+def findParent(Tree):
+    """ Given Tree, create a dictionary to store parent for each node
+    >>> findParent([[1, 2, 3], [2, 4, 5], [4, 6, 7]])
+    {2: 1, 3: 1, 4: 2, 5: 2, 6: 4, 7: 4}
+    
+    >>> findParent([[1, 2, 3], [3, 4, 5], [5, 6, 7]])
+    {2: 1, 3: 1, 4: 3, 5: 3, 6: 5, 7: 5}
+    """
+    dict_Parent = {}
+    for L in Tree:
+        par = L[0]
+        dict_Parent[ L[1] ] = par
+        dict_Parent[ L[2] ] = par
+    return dict_Parent
+
 def eval_Prob_Seq(sequence):
     'Eval the probability of a sequence given the current MDD model'
     index = {0:'A', 1:'C', 2:'G', 3:'T'}
     inverse_index = {'A':0, 'C':1, 'G':2, 'T':3}
     negate_index = {'G':'H', 'A':'B', 'T':'V', 'C':'D'}
     prob_seq = 1
-    ## Step 1: Get the position at the node 2
+    # ## Step 1: Get the position at the node 2
+    # Node = 2
+    # i_max = Store[Node][0]
+    # Ci = Store[2][1]
+    # x_pos = sequence[i_max]  # base of sequence at i_max
+    # parent_node = 1 # parent of node 2 is 1
+    # col_imax = Parent_Prob[parent_node]
+    # prob_pos = col_imax[inverse_index[ x_pos ]]
+    
+    # prob_seq *= prob_pos
+    # print '+++ Step1 :prob_seq = % s, x_pos = % s, Ci = % s' % (prob_seq, x_pos, Ci)
+    
+    # ## Step 2:
+    # if (x_pos != Ci):
+    #     print 'Use the PWM for (not Ci)'
+    #     Node += 1
+    
+    ## Find parent of nodes given Tree
+    findParent(Tree)
+    ## check = False if node is leaf; True if node is internal node
+    check = True
     Node = 2
-    i_max = Store[Node][0]
-    Ci = Store[2][1]
-    x_pos = sequence[i_max]  # base of sequence at i_max
-    parent_node = 1 # parent of node 2 is 1
-    col_imax = Parent_Prob[parent_node]
-    prob_pos = col_imax[inverse_index[ x_pos ]]
+    while check == True:
+        check = False
+        
     
-    prob_seq *= prob_pos
-    print '+++ Step1 :prob_seq = % s, x_pos = % s, Ci = % s' % (prob_seq, x_pos, Ci)
-    
-    ## Step 2:
-    if (x_pos != Ci):
-        print 'Use the PWM for (not Ci)'
-        Node += 1
+
         
     return prob_seq
 
