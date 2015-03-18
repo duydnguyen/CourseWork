@@ -475,7 +475,19 @@ def eval_Prob_Seq(sequence):
         col_imax = Parent_Prob[Node]
         prob_seq *= col_imax[inverse_index[ x_pos ]]
         if x_pos != Ci:
-            print 'Use weight matrix for H7'
+            if Tree_struct[child_right]:
+                import pdb; pdb.set_trace()
+                print 'IN PROGRESS'
+                #Node = child_right
+            ## Case: child_right is leaf
+            else:
+                leaf_index = Leaf_Prob_index[ child_right ]
+                leaf_PWM = Leaf_Prob[ child_right ]
+                print 'leaf_index = % s, leaf_PWM = %s' % (leaf_index, leaf_PWM)
+                #import pdb; pdb.set_trace()
+                prob_leaf = evalProb_leaf(sequence, leaf_index, leaf_PWM)
+                prob_seq *= prob_leaf
+                Node = child_right
         else:
             if Tree_struct[child_left]:
                 Node = child_left
@@ -484,7 +496,7 @@ def eval_Prob_Seq(sequence):
                 leaf_index = Leaf_Prob_index[ child_left ]
                 leaf_PWM = Leaf_Prob[ child_left ]
                 print 'leaf_index = % s, leaf_PWM = %s' % (leaf_index, leaf_PWM)
-                import pdb; pdb.set_trace()
+                #import pdb; pdb.set_trace()
                 prob_leaf = evalProb_leaf(sequence, leaf_index, leaf_PWM)
                 prob_seq *= prob_leaf
                 Node = child_left
@@ -516,7 +528,8 @@ if __name__ == '__main__':
     T = sequences_real
     built_MDDmodel(T)
     seq_test = 'AAGGTCAGT' 
-    eval_Prob_Seq(seq_test)
+    prob_seq = eval_Prob_Seq(seq_test)
+    print '+++ prob_seq = % s' % prob_seq
 
 
     # print '\n\n\n\n\n\n\n\n\n NEGATIVE SEQUENCES'
