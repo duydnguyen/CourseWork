@@ -403,11 +403,38 @@ def built_MDDmodel(T):
     print '\n Labels of nodes in MDD Tree  = % s' % Tree_struct
     return 0
 
+def inverseDict(Dict):
+    "Inverse a dictionary, also for case of non-unique map. This is used for computing childrens of a given internal node"
+    invDict = {}
+    for k, v in Dict.iteritems():
+        # This creates a list to store nodes of inverse map
+        invDict[v] = invDict.get(v, [])
+        invDict[v].append(k)
+    return invDict
+
 def eval_Prob_Seq(sequence):
     'Eval the probability of a sequence given the current MDD model'
-    #### IN PROGRESS
-
-    prob_seq = 0
+    index = {0:'A', 1:'C', 2:'G', 3:'T'}
+    inverse_index = {'A':0, 'C':1, 'G':2, 'T':3}
+    negate_index = {'G':'H', 'A':'B', 'T':'V', 'C':'D'}
+    prob_seq = 1
+    ## Step 1: Get the position at the node 2
+    Node = 2
+    i_max = Store[Node][0]
+    Ci = Store[2][1]
+    x_pos = sequence[i_max]  # base of sequence at i_max
+    parent_node = 1 # parent of node 2 is 1
+    col_imax = Parent_Prob[parent_node]
+    prob_pos = col_imax[inverse_index[ x_pos ]]
+    
+    prob_seq *= prob_pos
+    print '+++ Step1 :prob_seq = % s, x_pos = % s, Ci = % s' % (prob_seq, x_pos, Ci)
+    
+    ## Step 2:
+    if (x_pos != Ci):
+        print 'Use the PWM for (not Ci)'
+        Node += 1
+        
     return prob_seq
 
 
