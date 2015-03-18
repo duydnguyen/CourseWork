@@ -477,7 +477,6 @@ def eval_Prob_Seq(sequence):
         if x_pos != Ci:
             print 'Use weight matrix for H7'
         else:
-            print 'calculate P(x_2) from G7'
             if Tree_struct[child_left]:
                 Node = child_left
             ## Case: child_left is leaf
