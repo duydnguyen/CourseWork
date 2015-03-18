@@ -333,6 +333,46 @@ def find_MDD_subtree(T, P):
         #print '+++ current Leaf_Prob = % s' % Leaf_Prob
     return 0
 
+def built_MDDmodel(T):
+    "Given a set of sequences (positive or negative), outout MDD model"
+    global Tree
+    global Nodes
+    global Store
+    global Parent
+    global Parent_Prob
+    global Leaf_Prob
+    global Check_Subtree
+    global P
+    global num_Nodes
+    global ncol
+    ### Initiliaze all variables
+    ncol = len(T[0][0])
+    P = range(ncol)
+    Tree = []
+    Nodes = 1 
+    Store = {}
+    Parent = 1
+    num_Nodes = 0
+    # store a column of probabilty for parent (internal) nodes
+    Parent_Prob = {}
+    Leaf_Prob = {}
+    # check current states whether in left subtree or right subtree: Check_Subtree = True of on right subtree; False otherwise
+    Check_Subtree = True
+    find_MDD_subtree(T, P)
+    num_Nodes = len(Store) + 1
+    # check if a node is internal node or leaf: True = internal node; False = leaf
+    Tree_struct = [False for i in range( num_Nodes+1)]
+    print '\n \n +++++++ RESULTS +++++++'
+    print '\n Store = % s , \n Tree = % s, \n Number of Nodes = % s' % (Store, Tree, num_Nodes)
+    print '\n Parent Probabilty  = % s' % Parent_Prob
+    ### Find internal nodes of MDD Tree
+    for i in range(len(Tree)):
+        int_node = Tree[i][0]
+        Tree_struct[int_node] = True
+    #print '\n Tree_struct = % s' % Tree_struct
+
+    return 0
+
 if __name__ == '__main__':
     
     ### input data
@@ -346,35 +386,14 @@ if __name__ == '__main__':
     PWM_positive = []
     PWM_negative = []
 
-    #####  MDD algorithm #####
-    ### Initiliaze all variables
-    T = sequences_real
-    #T = sequences_false
-    ncol = len(T[0][0])
-    P = range(ncol)
-    Tree = []
-    Nodes = 1 
-    Store = {}
-    Parent = 1
-    num_Nodes = 0
-    # store a column of probabilty for parent (internal) nodes
-    Parent_Prob = {}
-    Leaf_Prob = {}
-    # check current states whether in left subtree or right subtree: Check_Subtree = True of on right subtree; False otherwise
-    Check_Subtree = True
     ### Built MDD Tree
-    find_MDD_subtree(T, P)
-    num_Nodes = len(Store) + 1
-    # check if a node is internal node or leaf: True = internal node; False = leaf
-    Tree_struct = [False for i in range( num_Nodes+1)]
-    #print '\n \n +++++++ RESULTS +++++++'
-    #print '\n Store = % s , \n Tree = % s, \n Number of Nodes = % s' % (Store, Tree, num_Nodes)
-    #print '\n Parent Probabilty  = % s' % Parent_Prob
-    ### Find internal nodes of MDD Tree
-    for i in range(len(Tree)):
-        int_node = Tree[i][0]
-        Tree_struct[int_node] = True
-    #print '\n Tree_struct = % s' % Tree_struct
+    print '\n\n\n\n\n\n\n\n\n NEGATIVE SEQUENCES'
+    T = sequences_real
+    built_MDDmodel(T)
+    print '\n\n\n\n\n\n\n\n\n NEGATIVE SEQUENCES'
+    T = sequences_false
+    built_MDDmodel(T)
+
 
     #doctest.testmod()
     
