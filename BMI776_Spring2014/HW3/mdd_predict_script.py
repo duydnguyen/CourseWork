@@ -349,8 +349,8 @@ if __name__ == '__main__':
 
     #####  MDD algorithm #####
     ### Init T, P
-    T = sequences_real
-    #T = sequences_false
+    #T = sequences_real
+    T = sequences_false
     ncol = len(T[0][0])
     P = range(ncol)
     Tree = []
