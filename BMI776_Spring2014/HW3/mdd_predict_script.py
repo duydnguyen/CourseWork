@@ -265,6 +265,7 @@ def find_MDD_subtree(T, P):
     global Parent
     global Parent_Prob
     global Leaf_Prob
+    global Leaf_Prob_index    
     global Check_Subtree
     ncol = len(T[0][0])
     index = {0:'A', 1:'C', 2:'G', 3:'T'}
@@ -348,9 +349,11 @@ def find_MDD_subtree(T, P):
         if (Check_Subtree):
             node_Label = len(diff) * 2
             Leaf_Prob[node_Label] = PWM
+            Leaf_Prob_index[node_Label] = P
         else:
             node_Label = len(diff) * 2 + 1
             Leaf_Prob[node_Label] = PWM
+            Leaf_Prob_index[node_Label] = P
         #print '+++ current Leaf_Prob = % s' % Leaf_Prob
     return 0
 
@@ -362,20 +365,24 @@ def built_MDDmodel(T):
     global Parent
     global Parent_Prob
     global Leaf_Prob
+    global Leaf_Prob_index
     global Check_Subtree
     global num_Nodes
     global ncol
-    ### Initiliaze all variables
+    global Tree_struct
+    ### Initilize all variables
     ncol = len(T[0][0])
     #P = range(ncol)
     Tree = []
     Nodes = 1 
     Store = {}
+    Tree_struct = {}
     Parent = 1
     num_Nodes = 0
     # store a column of probabilty for parent (internal) nodes
     Parent_Prob = {}
     Leaf_Prob = {}
+    Leaf_Prob_index = {}
     # check current states whether in left subtree or right subtree: Check_Subtree = True of on right subtree; False otherwise
     Check_Subtree = True
     find_MDD_subtree(T, range(ncol))
@@ -385,16 +392,21 @@ def built_MDDmodel(T):
     print '\n \n +++++++ RESULTS +++++++'
     print '\n Store = % s , \n Tree = % s, \n Number of Nodes = % s' % (Store, Tree, num_Nodes)
     print '\n Parent Probabilty  = % s' % Parent_Prob
+    print '\n Leaf Probability  = % s' % Leaf_Prob
+    print '\n Leaf Probability index = % s' % Leaf_Prob_index
+
     ### Find internal nodes of MDD Tree
     for i in range(len(Tree)):
         int_node = Tree[i][0]
         Tree_struct[int_node] = True
     #print '\n Tree_struct = % s' % Tree_struct
-
+    print '\n Labels of nodes in MDD Tree  = % s' % Tree_struct
     return 0
 
 def eval_Prob_Seq(sequence):
     'Eval the probability of a sequence given the current MDD model'
+    #### IN PROGRESS
+
     prob_seq = 0
     return prob_seq
 
@@ -419,9 +431,9 @@ if __name__ == '__main__':
     #eval_Prob_Seq(sequence)
 
 
-    # print '\n\n\n\n\n\n\n\n\n NEGATIVE SEQUENCES'
-    # T = sequences_false
-    # built_MDDmodel(T)
+    print '\n\n\n\n\n\n\n\n\n NEGATIVE SEQUENCES'
+    T = sequences_false
+    built_MDDmodel(T)
 
 
     #doctest.testmod()
