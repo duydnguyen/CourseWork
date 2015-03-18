@@ -511,17 +511,45 @@ def eval_Prob_Seq(sequence):
 
     return prob_seq
 
-def output_Prob(Node):
+def output_Prob(sequence, Node):
     'Eval the probability of a sequence given the current MDD model using RECURSION'
+    global prob_seq 
     index = {0:'A', 1:'C', 2:'G', 3:'T'}
     inverse_index = {'A':0, 'C':1, 'G':2, 'T':3}
     negate_index = {'G':'H', 'A':'B', 'T':'V', 'C':'D'}
     dict_Parent = {}
     TreeDict = {}
-    prob_seq = 1
     ## Find parent of nodes given Tree
     dict_Parent = findParent(Tree)
     TreeDict = findTreeDict(Tree)
+    ## Case Node is leaf
+    if Tree_struct[Node] == False:
+        leaf_index = Leaf_Prob_index[Node]
+        leaf_PWM = Leaf_Prob[Node]
+        print '+++ node is LEAF: leaf_index = % s, leaf_PWM = %s' % (leaf_index, leaf_PWM)
+        prob_leaf = evalProb_leaf(sequence, leaf_index, leaf_PWM)
+        prob_seq *= prob_leaf
+    ## Case Node is internal
+    else:
+        child_left = TreeDict[Node][0]
+        child_right = TreeDict[Node][1]
+        i_max = Store[child_left][0] # 7
+        Ci = Store[child_left][1] # G
+        # x_pos =  base of sequence at i_max
+        x_pos = sequence[i_max] 
+        col_imax = Parent_Prob[Node]
+        prob_seq *= col_imax[inverse_index[ x_pos ]]
+        #import pdb; pdb.set_trace()
+        print 'Node = % s, i_max = % s, Ci = % s, x_pos = % s, \n prob_seq = % s' % (Node, i_max, Ci, x_pos, prob_seq)
+        if x_pos != Ci:
+            print '\n @@@ Running child_right = % s ' % child_right
+            output_Prob(sequence, child_right)
+            print '+++ current prob_seq = % s' % prob_seq
+        else:
+            print '\n @@@ Running child_left = % s ' % child_left
+            output_Prob(sequence, child_left)
+            print '+++ current prob_seq = % s' % prob_seq
+     
     return 0
 
 if __name__ == '__main__':
@@ -536,14 +564,16 @@ if __name__ == '__main__':
     sequences_test = read_sequences(test_file)
     PWM_positive = []
     PWM_negative = []
-
+    
     ### Built MDD Tree
     print '\n\n\n\n\n\n\n\n\n POSITIVE SEQUENCES'
-    #T = sequences_real
-    T = sequences_false
+    T = sequences_real
+    #T = sequences_false
     built_MDDmodel(T)
     seq_test = 'AAGGTCAGT' 
-    prob_seq = eval_Prob_Seq(seq_test)
+    prob_seq = 1
+    #prob_seq = eval_Prob_Seq(seq_test)
+    output_Prob(seq_test, 1)
     print '+++ prob_seq = % s' % prob_seq
 
 
