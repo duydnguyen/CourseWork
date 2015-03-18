@@ -265,7 +265,7 @@ def find_MDD_subtree(T, P):
     ## Compute PWM given current T and P
     PFM = learnPFM(T)
     PWM = learnPWM(PFM)
-    #print '+++ current P = % s' % P
+    print '+++ current P = % s' % P
     #print '+++ current len(T) = % s' % len(T)
     #print '+++ current Nodes = % s' % Nodes
 
@@ -296,10 +296,16 @@ def find_MDD_subtree(T, P):
         print '+++ Store = % s' % Store
         ## left subtree
         #import pdb; pdb.set_trace()
-        diff = [i_max]
+        #diff = [i_max]
         # remove i_max element for P
-        P = [item for i,item in enumerate(P) if i not in diff]
-        print '++++++++ RUNNING LEFT SUBTREE'
+        
+        print '++++ \n \n FOUND ERROR'
+        print 'i_max = % s' % i_max
+        print '+++ current P = % s' % P
+        #P = [item for i,item in enumerate(P) if i not in diff]
+        P.remove(i_max)
+        print '+++ updated P = % s' % P
+        print '++++++++ \n RUNNING LEFT SUBTREE'
         Parent = Nodes - 1
         Check_Subtree = True
         find_MDD_subtree(Di_plus, P)
