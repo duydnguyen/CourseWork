@@ -345,18 +345,11 @@ if __name__ == '__main__':
     sequences_test = read_sequences(test_file)
     PWM_positive = []
     PWM_negative = []
-    ### Learn PWM_positive
-    #PFM_positive = learnPFM(sequences_real)
-    #PWM_positive = learnPWM(PFM_positive)
-    #doctest.testmod()
-    ### Learn PWM_negative
-    #PFM_negative = learnPFM(sequences_false)
-    #PWM_negative = learnPWM(PFM_negative)
 
     #####  MDD algorithm #####
-    ### Init T, P
-    #T = sequences_real
-    T = sequences_false
+    ### Initiliaze all variables
+    T = sequences_real
+    #T = sequences_false
     ncol = len(T[0][0])
     P = range(ncol)
     Tree = []
@@ -374,19 +367,17 @@ if __name__ == '__main__':
     num_Nodes = len(Store) + 1
     # check if a node is internal node or leaf: True = internal node; False = leaf
     Tree_struct = [False for i in range( num_Nodes+1)]
-    print '\n \n +++++++ RESULTS +++++++'
-    print '\n Store = % s , \n Tree = % s, \n Number of Nodes = % s' % (Store, Tree, num_Nodes)
-    print '\n Parent Probabilty  = % s' % Parent_Prob
+    #print '\n \n +++++++ RESULTS +++++++'
+    #print '\n Store = % s , \n Tree = % s, \n Number of Nodes = % s' % (Store, Tree, num_Nodes)
+    #print '\n Parent Probabilty  = % s' % Parent_Prob
     ### Find internal nodes of MDD Tree
     for i in range(len(Tree)):
         int_node = Tree[i][0]
         Tree_struct[int_node] = True
-    print '\n Tree_struct = % s' % Tree_struct
+    #print '\n Tree_struct = % s' % Tree_struct
 
     #doctest.testmod()
     
-
-
     print 'complied :D'
     
 
