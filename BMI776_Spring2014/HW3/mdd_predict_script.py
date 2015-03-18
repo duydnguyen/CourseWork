@@ -1,7 +1,7 @@
 #!/user/bin/env python
 # Author: Duy Nguyen
-# BMI/CS_776, Homework 3, Question 2
-# PWM Models
+# BMI/CS_776, 
+# Maximum Dependence Decomposition (MDD) Model
 # You should be able to run the program as of the following command
 # python ???
 
@@ -508,7 +508,6 @@ if __name__ == '__main__':
     built_MDDmodel(T)
     seq_test = 'AAGGTCAGT' 
     prob_seq = 1
-    #prob_seq = eval_Prob_Seq(seq_test)
     output_Prob(seq_test, 1)
     print '+++ prob_seq = % s' % prob_seq
 
