@@ -432,30 +432,33 @@ def eval_Prob_Seq(sequence):
     index = {0:'A', 1:'C', 2:'G', 3:'T'}
     inverse_index = {'A':0, 'C':1, 'G':2, 'T':3}
     negate_index = {'G':'H', 'A':'B', 'T':'V', 'C':'D'}
+    dict_Parent = {}
     prob_seq = 1
-    # ## Step 1: Get the position at the node 2
-    # Node = 2
-    # i_max = Store[Node][0]
-    # Ci = Store[2][1]
-    # x_pos = sequence[i_max]  # base of sequence at i_max
-    # parent_node = 1 # parent of node 2 is 1
-    # col_imax = Parent_Prob[parent_node]
-    # prob_pos = col_imax[inverse_index[ x_pos ]]
-    
-    # prob_seq *= prob_pos
-    # print '+++ Step1 :prob_seq = % s, x_pos = % s, Ci = % s' % (prob_seq, x_pos, Ci)
-    
-    # ## Step 2:
-    # if (x_pos != Ci):
-    #     print 'Use the PWM for (not Ci)'
-    #     Node += 1
-    
     ## Find parent of nodes given Tree
-    findParent(Tree)
+    dict_Parent = findParent(Tree)
     ## check = False if node is leaf; True if node is internal node
     check = True
     Node = 2
     while check == True:
+        ### This is the 'internal node' case
+        i_max = Store[Node][0]
+        Ci = Store[2][1]
+        parent_node = dict_Parent[Node]
+        # base of sequence at i_max
+        x_pos = sequence[i_max]  
+        print ' +++ current Node = % s, check = % s, i_max = % s, x_pos = % s, Ci = % s' % (Node, check, i_max, x_pos, Ci)
+        if x_pos == Ci:
+            col_imax = Parent_Prob[parent_node]
+            prob_pos = col_imax[inverse_index[ x_pos ]]
+            prob_seq *= prob_pos
+            print '+++ Step1 :prob_seq = % s, x_pos = % s, Ci = % s' % (prob_seq, x_pos, Ci)
+            
+        else:
+            print 'In progress'
+            
+
+        
+
         check = False
         
     
