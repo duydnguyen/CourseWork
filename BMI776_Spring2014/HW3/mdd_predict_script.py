@@ -488,6 +488,13 @@ def output_Prob(sequence, Node):
      
     return 0
 
+def eval_score(MDD_p, MDD_n):
+    'Eval score(sequence) = log ( P(seq|MDD+) / P(seq|MDD-)  )'
+    scores = []
+    for i in range(len(MDD_p)):
+        scores.append( log(MDD_p[i]) - log(MDD_n[i])   )
+        
+    return scores
 if __name__ == '__main__':
     
     ### input data
@@ -529,7 +536,8 @@ if __name__ == '__main__':
         prob_NegativeMDD.append(prob_seq)
 
     #doctest.testmod()
-    
+    scores = eval_score(prob_PositiveMDD, prob_NegativeMDD)
+    print scores
     print 'complied :D'
     
 
