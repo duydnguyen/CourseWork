@@ -247,6 +247,12 @@ def split_Sequences(T, i_max, C_i):
     
     return Di_plus, Di_minus
 
+def removeList(L, i):
+    'Given i \in L, remove the i element from L'
+    L.remove(i)
+    L_removed = L
+    return L_removed
+    
 def find_MDD_subtree(T, P):
     " Find the tree using the Maximal Dependence Decomposition (MDD) algorithm"
     print '~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~'
@@ -302,25 +308,28 @@ def find_MDD_subtree(T, P):
         print '++++ \n \n FOUND ERROR'
         print 'i_max = % s' % i_max
         print '+++ current P = % s' % P
-        #P = [item for i,item in enumerate(P) if i not in diff]
-        P.remove(i_max)
-        print '+++ updated P = % s' % P
-        print '++++++++ \n RUNNING LEFT SUBTREE'
+        #P.remove(i_max)
+        
+        print '++++++++ RUNNING LEFT SUBTREE'
         Parent = Nodes - 1
         Check_Subtree = True
-        find_MDD_subtree(Di_plus, P)
+        print '+++ This is the P for left subtree P = % s' % P
+        print '+++ This is the i_max left subtree i_max = % s' % i_max
+        find_MDD_subtree(Di_plus, removeList(P, i_max))
         ## right subtree
         Parent = Nodes 
         print '++++++++ RUNNING RIGHT SUBTREE'
         Check_Subtree = False
+        print '+++ \t This is the P for right subtree = % s' % P
+        print '+++ This is the i_max right subtree i_max = % s' % i_max
         find_MDD_subtree(Di_minus, P)
     else:
-        # print '\n \n @@@@@@@@@@ THIS IS WHEN STOPPING CRIT. MET!!!'
-        # print '+++ current P = % s' % P
-        # #print 'Current Parent = % s' % Parent
-        # print '+++ current len(T) = % s' % len(T)
-        # print '++ Check_Subtree = % s' % Check_Subtree
-        # print '@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@'
+        print '\n \n @@@@@@@@@@ THIS IS WHEN STOPPING CRIT. MET!!!'
+        print '+++ current P = % s' % P
+        #print 'Current Parent = % s' % Parent
+        print '+++ current len(T) = % s' % len(T)
+        print '++ Check_Subtree = % s' % Check_Subtree
+        print '@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@'
         
         diff =  [x for x in range(ncol) if x not in set(P)]
         print 'len of diff = % s' % diff 
@@ -342,12 +351,11 @@ def built_MDDmodel(T):
     global Parent_Prob
     global Leaf_Prob
     global Check_Subtree
-    global P
     global num_Nodes
     global ncol
     ### Initiliaze all variables
     ncol = len(T[0][0])
-    P = range(ncol)
+    #P = range(ncol)
     Tree = []
     Nodes = 1 
     Store = {}
@@ -358,7 +366,7 @@ def built_MDDmodel(T):
     Leaf_Prob = {}
     # check current states whether in left subtree or right subtree: Check_Subtree = True of on right subtree; False otherwise
     Check_Subtree = True
-    find_MDD_subtree(T, P)
+    find_MDD_subtree(T, range(ncol))
     num_Nodes = len(Store) + 1
     # check if a node is internal node or leaf: True = internal node; False = leaf
     Tree_struct = [False for i in range( num_Nodes+1)]
@@ -393,7 +401,7 @@ if __name__ == '__main__':
     PWM_negative = []
 
     ### Built MDD Tree
-    print '\n\n\n\n\n\n\n\n\n NEGATIVE SEQUENCES'
+    print '\n\n\n\n\n\n\n\n\n POSITIVE SEQUENCES'
     T = sequences_real
     built_MDDmodel(T)
     #eval_Prob_Seq(sequence)
