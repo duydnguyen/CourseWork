@@ -447,70 +447,6 @@ def evalProb_leaf(sequence, leaf_index, leaf_PWM):
         prob *= col[ char_index ] 
     return prob
 
-def eval_Prob_Seq(sequence):
-    'Eval the probability of a sequence given the current MDD model'
-    index = {0:'A', 1:'C', 2:'G', 3:'T'}
-    inverse_index = {'A':0, 'C':1, 'G':2, 'T':3}
-    negate_index = {'G':'H', 'A':'B', 'T':'V', 'C':'D'}
-    dict_Parent = {}
-    TreeDict = {}
-    prob_seq = 1
-    ## Find parent of nodes given Tree
-    dict_Parent = findParent(Tree)
-    TreeDict = findTreeDict(Tree)
-    print '$$$ TreeDict = % s' % TreeDict
-    ## check = False if node is leaf; True if node is internal node
-    check = True
-
-    Node = 1 
-    ### while (Node is an internal node)
-    
-    while Tree_struct[Node]:
-        child_left = TreeDict[Node][0]
-        child_right = TreeDict[Node][1]
-        i_max = Store[child_left][0] # 7
-        Ci = Store[child_left][1] # G
-        # x_pos =  base of sequence at i_max
-        x_pos = sequence[i_max] 
-        col_imax = Parent_Prob[Node]
-        prob_seq *= col_imax[inverse_index[ x_pos ]]
-        if x_pos != Ci:
-            if Tree_struct[child_right]:
-                import pdb; pdb.set_trace()
-                print 'IN PROGRESS'
-                
-                # grand_left = TreeDict[child_right][0]
-                # grand_right = TreeDict[child_right][1]
-                # i_max_grand = Store[grand_left][0]  # 7
-                # Ci_grand = Store[grand_left][1]  # A
-                # x_pos_grand = sequence[i_max_grand] # G
-                # if x_pos_grand != Ci_grand:
-                    
-                #Node = child_right
-            ## Case: child_right is leaf
-            else:
-                leaf_index = Leaf_Prob_index[ child_right ]
-                leaf_PWM = Leaf_Prob[ child_right ]
-                print 'leaf_index = % s, leaf_PWM = %s' % (leaf_index, leaf_PWM)
-                #import pdb; pdb.set_trace()
-                prob_leaf = evalProb_leaf(sequence, leaf_index, leaf_PWM)
-                prob_seq *= prob_leaf
-                Node = child_right
-        else:
-            if Tree_struct[child_left]:
-                Node = child_left
-            ## Case: child_left is leaf
-            else: 
-                leaf_index = Leaf_Prob_index[ child_left ]
-                leaf_PWM = Leaf_Prob[ child_left ]
-                print 'leaf_index = % s, leaf_PWM = %s' % (leaf_index, leaf_PWM)
-                #import pdb; pdb.set_trace()
-                prob_leaf = evalProb_leaf(sequence, leaf_index, leaf_PWM)
-                prob_seq *= prob_leaf
-                Node = child_left
-
-    return prob_seq
-
 def output_Prob(sequence, Node):
     'Eval the probability of a sequence given the current MDD model using RECURSION'
     global prob_seq 
@@ -567,8 +503,8 @@ if __name__ == '__main__':
     
     ### Built MDD Tree
     print '\n\n\n\n\n\n\n\n\n POSITIVE SEQUENCES'
-    T = sequences_real
-    #T = sequences_false
+    #T = sequences_real
+    T = sequences_false
     built_MDDmodel(T)
     seq_test = 'AAGGTCAGT' 
     prob_seq = 1
