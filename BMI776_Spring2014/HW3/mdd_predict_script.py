@@ -249,12 +249,14 @@ def split_Sequences(T, i_max, C_i):
 
 def find_MDD_subtree(T, P):
     " Find the tree using the Maximal Dependence Decomposition (MDD) algorithm"
-    print '~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~'
+    print '~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~'
     global Tree
     global Nodes
     global Store
     global Parent
     global Parent_Prob
+    global Leaf_Prob
+    global Check_Subtree
     ncol = len(T[0][0])
     index = {0:'A', 1:'C', 2:'G', 3:'T'}
     negate_index = {'G':'H', 'A':'B', 'T':'V', 'C':'D'}
@@ -263,9 +265,9 @@ def find_MDD_subtree(T, P):
     ## Compute PWM given current T and P
     PFM = learnPFM(T)
     PWM = learnPWM(PFM)
-    print '+++ current P = % s' % P
-    print '+++ current len(T) = % s' % len(T)
-    print '+++ current Nodes = % s' % Nodes
+    #print '+++ current P = % s' % P
+    #print '+++ current len(T) = % s' % len(T)
+    #print '+++ current Nodes = % s' % Nodes
 
     ### STEP 1
     Si_store = []
@@ -299,13 +301,20 @@ def find_MDD_subtree(T, P):
         P = [item for i,item in enumerate(P) if i not in diff]
         print '++++++++ RUNNING LEFT SUBTREE'
         Parent = Nodes - 1
+        Check_Subtree = True
         find_MDD_subtree(Di_plus, P)
         ## right subtree
         Parent = Nodes 
         print '++++++++ RUNNING RIGHT SUBTREE'
+        Check_Subtree = False
         find_MDD_subtree(Di_minus, P)
     else:
-        print 'IMPLEMENT LATER!!!'
+        print '\n \n @@@@@@@@@@ THIS IS WHEN STOPPING CRIT. MET!!!'
+        print '+++ current P = % s' % P
+        #print 'Current Parent = % s' % Parent
+        print '+++ current len(T) = % s' % len(T)
+        print '++ Check_Subtree = % s' % Check_Subtree
+        print '@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@'
     return 0
 
 if __name__ == '__main__':
@@ -341,6 +350,9 @@ if __name__ == '__main__':
     num_Nodes = 0
     # store a column of probabilty for parent (internal) nodes
     Parent_Prob = {}
+    Leaf_Prob = {}
+    # check current states whether in left subtree or right subtree: Check_Subtree = True of on right subtree; False otherwise
+    Check_Subtree = True
     ### Built MDD Tree
     find_MDD_subtree(T, P)
     num_Nodes = len(Store) + 1
