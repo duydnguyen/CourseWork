@@ -458,14 +458,14 @@ def output_Prob(sequence, Node):
     ## Find parent of nodes given Tree
     dict_Parent = findParent(Tree)
     TreeDict = findTreeDict(Tree)
-    ## Case Node is leaf
+    ## Case: Node is leaf
     if Tree_struct[Node] == False:
         leaf_index = Leaf_Prob_index[Node]
         leaf_PWM = Leaf_Prob[Node]
-        print '+++ node is LEAF: leaf_index = % s, leaf_PWM = %s' % (leaf_index, leaf_PWM)
+        print '+++ node is LEAF: leaf_index = % s' % leaf_index
         prob_leaf = evalProb_leaf(sequence, leaf_index, leaf_PWM)
         prob_seq *= prob_leaf
-    ## Case Node is internal
+    ## Case: Node is internal
     else:
         child_left = TreeDict[Node][0]
         child_right = TreeDict[Node][1]
@@ -494,7 +494,7 @@ if __name__ == '__main__':
     train_real_file = 'Data/hw3_train_real'
     train_false_file = 'Data/hw3_train_false'
     test_file = 'Data/hw3_test_real'
-    test_file = 'Data/hw3_test_false'
+    #test_file = 'Data/hw3_test_false'
     sequences_real = read_sequences(train_real_file)
     sequences_false = read_sequences(train_false_file)
     sequences_test = read_sequences(test_file)
@@ -502,20 +502,31 @@ if __name__ == '__main__':
     PWM_negative = []
     
     ### Built MDD Tree
-    print '\n\n\n\n\n\n\n\n\n POSITIVE SEQUENCES'
-    #T = sequences_real
+    ## 1. Built MDD_p Tree
+    T = sequences_real
+    built_MDDmodel(T)
+    ##############################
+    ## Compute prob(seq| MDD_p)
+    prob_PositiveMDD = []
+    for seq in sequences_test:
+        seq_test = seq[0]
+        prob_seq = 1        
+        output_Prob(seq_test, 1)
+        #print 'seq = % s, prob_seq = % s' % (seq_test, prob_seq)
+        prob_PositiveMDD.append(prob_seq)
+
+    ## 2. Built MDD_n Tree
     T = sequences_false
     built_MDDmodel(T)
-    seq_test = 'AAGGTCAGT' 
-    prob_seq = 1
-    output_Prob(seq_test, 1)
-    print '+++ prob_seq = % s' % prob_seq
-
-
-    # print '\n\n\n\n\n\n\n\n\n NEGATIVE SEQUENCES'
-    # T = sequences_false
-    # built_MDDmodel(T)
-
+    ##############################
+    ## Compute prob(seq| MDD_n)
+    prob_NegativeMDD = []
+    for seq in sequences_test:
+        seq_test = seq[0]
+        prob_seq = 1        
+        output_Prob(seq_test, 1)
+        #print 'seq = % s, prob_seq = % s' % (seq_test, prob_seq)
+        prob_NegativeMDD.append(prob_seq)
 
     #doctest.testmod()
     
