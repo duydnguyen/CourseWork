@@ -311,7 +311,7 @@ if __name__ == '__main__':
     train_real_file = 'Data/hw3_train_real'
     train_false_file = 'Data/hw3_train_false'
     test_file = 'Data/hw3_test_real'
-    #test_file = 'Data/hw3_test_false'
+    test_file = 'Data/hw3_test_false'
     sequences_real = read_sequences(train_real_file)
     sequences_false = read_sequences(train_false_file)
     sequences_test = read_sequences(test_file)
@@ -327,19 +327,27 @@ if __name__ == '__main__':
 
     #####  MDD algorithm #####
     ### Init T, P
-    #T = sequences_real
-    T = sequences_false
+    T = sequences_real
+    #T = sequences_false
     ncol = len(T[0][0])
     P = range(ncol)
     Tree = []
     Nodes = 1 
     Store = {}
     Parent = 1
+    num_Nodes = 0
     ### Built MDD Tree
     find_MDD_subtree(T, P)
-    print Store
-    print Tree
-
+    num_Nodes = len(Store) + 1
+    # check if a node is internal node or leaf: True = internal node; False = leaf
+    Tree_struct = [False for i in range( num_Nodes+1)]
+    print '\n \n +++++++ RESULTS +++++++'
+    print '\n Store = % s , \n Tree = % s, \n Number of Nodes = % s' % (Store, Tree, num_Nodes)
+    ### Find internal nodes of MDD Tree
+    for i in range(len(Tree)):
+        int_node = Tree[i][0]
+        Tree_struct[int_node] = True
+    print '\n Tree_struct = % s' % Tree_struct
 
     #doctest.testmod()
     
