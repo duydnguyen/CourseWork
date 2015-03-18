@@ -478,6 +478,14 @@ def eval_Prob_Seq(sequence):
             if Tree_struct[child_right]:
                 import pdb; pdb.set_trace()
                 print 'IN PROGRESS'
+                
+                # grand_left = TreeDict[child_right][0]
+                # grand_right = TreeDict[child_right][1]
+                # i_max_grand = Store[grand_left][0]  # 7
+                # Ci_grand = Store[grand_left][1]  # A
+                # x_pos_grand = sequence[i_max_grand] # G
+                # if x_pos_grand != Ci_grand:
+                    
                 #Node = child_right
             ## Case: child_right is leaf
             else:
@@ -500,15 +508,21 @@ def eval_Prob_Seq(sequence):
                 prob_leaf = evalProb_leaf(sequence, leaf_index, leaf_PWM)
                 prob_seq *= prob_leaf
                 Node = child_left
-    
-    
-
-
-
-    
 
     return prob_seq
 
+def output_Prob(Node):
+    'Eval the probability of a sequence given the current MDD model using RECURSION'
+    index = {0:'A', 1:'C', 2:'G', 3:'T'}
+    inverse_index = {'A':0, 'C':1, 'G':2, 'T':3}
+    negate_index = {'G':'H', 'A':'B', 'T':'V', 'C':'D'}
+    dict_Parent = {}
+    TreeDict = {}
+    prob_seq = 1
+    ## Find parent of nodes given Tree
+    dict_Parent = findParent(Tree)
+    TreeDict = findTreeDict(Tree)
+    return 0
 
 if __name__ == '__main__':
     
@@ -525,7 +539,8 @@ if __name__ == '__main__':
 
     ### Built MDD Tree
     print '\n\n\n\n\n\n\n\n\n POSITIVE SEQUENCES'
-    T = sequences_real
+    #T = sequences_real
+    T = sequences_false
     built_MDDmodel(T)
     seq_test = 'AAGGTCAGT' 
     prob_seq = eval_Prob_Seq(seq_test)
