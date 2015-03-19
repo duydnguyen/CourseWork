@@ -1,6 +1,5 @@
 #!/user/bin/env python
 # Author: Duy Nguyen
-# BMI/CS_776, 
 # Maximum Dependence Decomposition (MDD) Model
 # You should be able to run the program as of the following command
 #python mdd_predict.py train_real train_false test test.scores
