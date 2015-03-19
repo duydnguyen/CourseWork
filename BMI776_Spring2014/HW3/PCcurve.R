@@ -19,13 +19,12 @@ getLabel <- function(scores, cutoff) {
 
 
 ### Plot PC curve: labels (real = 1, false = 0 )
-evalPC <- function(real, false) {
+evalPC <- function(real, false, lenT = 100) {
   real = matrix(real, nrow = 1000, ncol =1)
   false = matrix(false, nrow = 1000, ncol =1)
   scores = rbind(real, false)
   min = min(scores)
   max = max(scores)
-  lenT = 100
   T_seq = seq(min, max, length.out = lenT)
   Precision = rep(0, lenT)
   Recall = rep(0, lenT)
@@ -44,8 +43,8 @@ evalPC <- function(real, false) {
   return(PC)
 }
 
-PCmdd <- evalPC(df$realMDD, df$falseMDD)
-PCpwd <- evalPC(df$realPWM, df$falsePWM)
+PCmdd <- evalPC(df$realMDD, df$falseMDD, lenT = 500)
+PCpwd <- evalPC(df$realPWM, df$falsePWM, lenT = 500)
 # Plots
 plot(x = PCpwd$Recall, y = PCpwd$Precision, type = 'l', col = 1,
      xlab = 'Recall', ylab = 'Precision', main = 'Precision-Recall Curve')
