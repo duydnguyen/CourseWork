@@ -6,7 +6,6 @@ For a better view of this file in Markdown, please go to `https://github.com/duy
 pwm_predict
 -----------
 
-
 1. *pwm_predict* learns PWM models from training data and output scores for test data.
 
 2. To run the program
@@ -28,3 +27,29 @@ pwm_predict
 ``python pwm_predict.py hw3_train_real hw3_train_false hw3_test_real test_scores_real``
 
 ``python pwm_predict.py hw3_train_real hw3_train_false hw3_test_false test_scores_false``
+
+
+mdd_predict
+-----------
+
+1. *mdd_predict* learns Maximal Dependence Decomposition models from training data and output scores for test data.
+
+2. To run the program
+
+* The command line to run *mdd_predict* should be
+
+``python mdd_predict.py train_real train_false test test.scores``
+
++ ***train_real*** is the file containing a set of positive train examples.
+
++ ***train_false*** is the file containing a set of negative train examples.
+
++ ***test*** is a file containing a set of test sequences for which you are to output scores.
+
++ ***test.scores*** is the file into which scores will be written.
+
+* To run *mdd_predict* for the current Data set, simply run the following command line (assuming *pwm_predict.py* is in the same directory with data files)
+
+``python mdd_predict.py hw3_train_real hw3_train_false hw3_test_real test_scores_real_mdd``
+
+``python mdd_predict.py hw3_train_real hw3_train_false hw3_test_false test_scores_false_mdd``
