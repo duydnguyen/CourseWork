@@ -333,7 +333,7 @@ def find_MDD_subtree(T, P):
         Parent = Nodes 
         print '++++++++ RUNNING RIGHT SUBTREE'
         Check_Subtree = False
-        print '+++ \t This is the P for right subtree = % s' % P_update
+        print '+++ This is the P for right subtree = % s' % P_update
         print '+++ This is the i_max right subtree i_max = % s' % i_max
         find_MDD_subtree(Di_minus, P_update)
     else:
@@ -521,10 +521,11 @@ def output_scores(scores, test_scores):
 if __name__ == '__main__':
     
     ### input data
-    train_real_file = 'Data/hw3_train_real'
-    train_false_file = 'Data/hw3_train_false'
-    test_file = 'Data/hw3_test_real'
-    #test_file = 'Data/hw3_test_false'
+    inputs = main(sys.argv[1:])
+    train_real_file = inputs[0]
+    train_false_file = inputs[1]
+    test_file = inputs[2]
+    test_scores = inputs[3]
     sequences_real = read_sequences(train_real_file)
     sequences_false = read_sequences(train_false_file)
     sequences_test = read_sequences(test_file)
@@ -534,9 +535,12 @@ if __name__ == '__main__':
     ### Built MDD Tree
     ## 1. Built MDD_p Tree
     T = sequences_real
+    print '\n \n \t \t ~~~ Train MDD positive model ~~~'
     built_MDDmodel(T)
     ##############################
+
     ## Compute prob(seq| MDD_p)
+    
     prob_PositiveMDD = []
     for seq in sequences_test:
         seq_test = seq[0]
@@ -547,6 +551,7 @@ if __name__ == '__main__':
 
     ## 2. Built MDD_n Tree
     T = sequences_false
+    print '\n \n \t \t ~~~ Train MDD negative model ~~~'
     built_MDDmodel(T)
     ##############################
     ## Compute prob(seq| MDD_n)
@@ -560,4 +565,6 @@ if __name__ == '__main__':
 
     #doctest.testmod()
     scores = eval_score(prob_PositiveMDD, prob_NegativeMDD)
+    ### Output scores to file test_scores
+    output_scores(scores, test_scores)
 
