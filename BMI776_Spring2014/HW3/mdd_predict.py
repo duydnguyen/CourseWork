@@ -3,7 +3,7 @@
 # BMI/CS_776, 
 # Maximum Dependence Decomposition (MDD) Model
 # You should be able to run the program as of the following command
-# python ???
+#python mdd_predict.py train_real train_false test test.scores
 
 import sys
 import io
@@ -275,23 +275,23 @@ def find_MDD_subtree(T, P):
     ## Compute PWM given current T and P
     PFM = learnPFM(T)
     PWM = learnPWM(PFM)
-    print '+++ current P = % s' % P
+    #print '+++ current P = % s' % P
     #print '+++ current len(T) = % s' % len(T)
     #print '+++ current Nodes = % s' % Nodes
 
     ### STEP 1
     Si_store = []
     Si_store_foo, maxS, i_max_foo, P_update_foo = eval_Si_store(T, P, PWM)
-    print '++++ the new i_max_foo  : % s and maxS = % s' % (i_max_foo, maxS)
-    print '++++ the P_update_foo after removing i_max : % s' % P_update_foo
+    #print '++++ the new i_max_foo  : % s and maxS = % s' % (i_max_foo, maxS)
+    #print '++++ the P_update_foo after removing i_max : % s' % P_update_foo
     
     ### STEP 2
     if (len(T) > cutoff_seq) and (maxS > cutoff_ChiSq):
         ### STEP 1
         Si_store = []
         Si_store, maxS, i_max, P_update = eval_Si_store(T, P, PWM)
-        print '++++ the new i_max  : % s and maxS = % s' % (i_max, maxS)
-        print '+++++ the P_update after removing i_max : % s' % P_update
+        #print '++++ the new i_max  : % s and maxS = % s' % (i_max, maxS)
+        #print '+++++ the P_update after removing i_max : % s' % P_update
 
         ## Choose the value i such that S_i is maximal
         #i_max = Si_store.index(maxS)
@@ -312,7 +312,7 @@ def find_MDD_subtree(T, P):
         Parent_Prob[Parent] = col_i
         Nodes += 2
         #print '+++ Nodes = % s' % Nodes
-        print '+++ Store = % s' % Store
+        #print '+++ Store = % s' % Store
         ## left subtree
         #import pdb; pdb.set_trace()
         #diff = [i_max]
@@ -337,15 +337,15 @@ def find_MDD_subtree(T, P):
         print '+++ This is the i_max right subtree i_max = % s' % i_max
         find_MDD_subtree(Di_minus, P_update)
     else:
-        print '\n \n @@@@@@@@@@ THIS IS WHEN STOPPING CRIT. MET!!!'
-        print '+++ current P = % s' % P
-        #print 'Current Parent = % s' % Parent
-        print '+++ current len(T) = % s' % len(T)
-        print '++ Check_Subtree = % s' % Check_Subtree
-        print '@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@'
+        # print '\n \n @@@@@@@@@@ THIS IS WHEN STOPPING CRIT. MET!!!'
+        # print '+++ current P = % s' % P
+        # #print 'Current Parent = % s' % Parent
+        # print '+++ current len(T) = % s' % len(T)
+        # print '++ Check_Subtree = % s' % Check_Subtree
+        # print '@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@'
         
         diff =  [x for x in range(ncol) if x not in set(P)]
-        print 'len of diff = % s' % diff 
+        #print 'len of diff = % s' % diff 
         if (Check_Subtree):
             node_Label = len(diff) * 2
             Leaf_Prob[node_Label] = PWM
@@ -389,11 +389,11 @@ def built_MDDmodel(T):
     num_Nodes = len(Store) + 1
     # check if a node is internal node or leaf: True = internal node; False = leaf
     Tree_struct = [False for i in range( num_Nodes+1)]
-    print '\n \n +++++++ RESULTS +++++++'
-    print '\n Store = % s , \n Tree = % s, \n Number of Nodes = % s' % (Store, Tree, num_Nodes)
-    print '\n Parent Probabilty  = % s' % Parent_Prob
+    #print '\n \n +++++++ RESULTS +++++++'
+    #print '\n Store = % s , \n Tree = % s, \n Number of Nodes = % s' % (Store, Tree, num_Nodes)
+    #print '\n Parent Probabilty  = % s' % Parent_Prob
     #print '\n Leaf Probability  = % s' % Leaf_Prob
-    print '\n Leaf Probability index = % s' % Leaf_Prob_index
+    #print '\n Leaf Probability index = % s' % Leaf_Prob_index
 
     ### Find internal nodes of MDD Tree
     for i in range(len(Tree)):
@@ -401,7 +401,7 @@ def built_MDDmodel(T):
         if len(Tree[i]) > 1:
             Tree_struct[int_node] = True
     #print '\n Tree_struct = % s' % Tree_struct
-    print '\n Labels of nodes in MDD Tree  = % s' % Tree_struct
+    #print '\n Labels of nodes in MDD Tree  = % s' % Tree_struct
     return 0
 
 def inverseDict(Dict):
@@ -462,7 +462,7 @@ def output_Prob(sequence, Node):
     if Tree_struct[Node] == False:
         leaf_index = Leaf_Prob_index[Node]
         leaf_PWM = Leaf_Prob[Node]
-        print '+++ node is LEAF: leaf_index = % s' % leaf_index
+        #print '+++ node is LEAF: leaf_index = % s' % leaf_index
         prob_leaf = evalProb_leaf(sequence, leaf_index, leaf_PWM)
         prob_seq *= prob_leaf
     ## Case: Node is internal
@@ -476,15 +476,15 @@ def output_Prob(sequence, Node):
         col_imax = Parent_Prob[Node]
         prob_seq *= col_imax[inverse_index[ x_pos ]]
         #import pdb; pdb.set_trace()
-        print 'Node = % s, i_max = % s, Ci = % s, x_pos = % s, \n prob_seq = % s' % (Node, i_max, Ci, x_pos, prob_seq)
+        #print 'Node = % s, i_max = % s, Ci = % s, x_pos = % s, \n prob_seq = % s' % (Node, i_max, Ci, x_pos, prob_seq)
         if x_pos != Ci:
-            print '\n @@@ Running child_right = % s ' % child_right
+            #print '\n @@@ Running child_right = % s ' % child_right
             output_Prob(sequence, child_right)
-            print '+++ current prob_seq = % s' % prob_seq
+            #print '+++ current prob_seq = % s' % prob_seq
         else:
-            print '\n @@@ Running child_left = % s ' % child_left
+            #print '\n @@@ Running child_left = % s ' % child_left
             output_Prob(sequence, child_left)
-            print '+++ current prob_seq = % s' % prob_seq
+            #print '+++ current prob_seq = % s' % prob_seq
      
     return 0
 
@@ -495,6 +495,29 @@ def eval_score(MDD_p, MDD_n):
         scores.append( log(MDD_p[i]) - log(MDD_n[i])   )
         
     return scores
+
+def main(argv):
+    """ Take arguments from the following command
+    python pwm_predict.py train_real train_false test test.scores
+    """
+    try:
+        opts, args = getopt.getopt(argv, "hg:d", ["help", "grammar="])
+    except getopt.GetoptError:
+        usage()
+        sys.exit(2)
+    train_real_file = args[0]
+    train_false_file = args[1]
+    test_file = args[2]
+    test_scores = args[3]
+    return [train_real_file, train_false_file, test_file, test_scores]
+
+def output_scores(scores, test_scores):
+    " Write scores of sequences in test_file  file test_scores "
+    f = open(test_scores, 'w')
+    for i in range(len(scores)):
+        f.write(str(scores[i]) + '\n')
+    f.close()
+
 if __name__ == '__main__':
     
     ### input data
@@ -537,8 +560,4 @@ if __name__ == '__main__':
 
     #doctest.testmod()
     scores = eval_score(prob_PositiveMDD, prob_NegativeMDD)
-    print scores
-    print 'complied :D'
-    
 
-    

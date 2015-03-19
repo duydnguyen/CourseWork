@@ -1,6 +1,6 @@
 #!/user/bin/env python
 # Author: Duy Nguyen
-# BMI/CS_776, Homework 3, Question 1
+# BMI/CS_776
 # PWM Models
 # You should be able to run the program as of the following command
 # python pwm_predict.py train_real train_false test test.scores
