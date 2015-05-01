@@ -1,5 +1,6 @@
 #!/user/bin/env python
-# Author: Duy Nguyen
+# Author: Duy Nguyen 
+# Date: April 30, 2015
 # BMI/CS_776: Nussinov Algorithm
 # You should be able to run the program as of the following command
 # python Nussinov.py RNASEQUENCE

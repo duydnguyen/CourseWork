@@ -1,7 +1,6 @@
 #  Implemetations of Nussinov Algorithm
 
 ## Nussinov
------------
 
 1. *Nussinov* takes as input an RNA sequence, and output the base-paired positions of a structure that maximizes the number of base pairings.
 
@@ -22,4 +21,5 @@
 should output
 
 2 6 
+
 3 5
