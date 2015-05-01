@@ -10,16 +10,7 @@ import io
 import getopt
 import numpy as np
 # import doctest
-from math import log
-
-def read_sequences(filename):
-    " Read sequences from file "
-    sequences = []
-    with open(filename, 'r') as file:
-        for line in file:
-            seq = line.strip().split()
-            sequences.append(seq)
-    return sequences
+# from math import log
 
 def evaldelta(seq, i, j):
     """Evaluate delta function: 1(x_i and x_j are complementary); i ,j in 1:L

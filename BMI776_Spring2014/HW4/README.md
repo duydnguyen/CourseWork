@@ -1,4 +1,4 @@
-#  Implemetations of Nussinov Algorithm
+#  Implemetation of Nussinov Algorithm
 
 ## Nussinov
 
